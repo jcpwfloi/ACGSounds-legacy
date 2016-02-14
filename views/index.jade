@@ -8,13 +8,14 @@ block content
                     a.brand-logo(href='#') ACGSounds
                     ul#nav-mobile.right.hide-on-med-and-down
                         li
-                            a(href='sass.html')= __('Homepage')
+                            a(href='/')= __('Homepage')
                         li
-                            a(href='badges.html')= __('Experimental')
+                            a(href='/exp')= __('Experimental')
                         li
-                            a(href='collapsible.html')= __('Upload Sheets')
+                            a(href='/user/upload')= __('Upload Sheets')
         #index-banner.section.no-pad-bot
             .container
+                br
                 br
                 h1.header.center.orange-text= __('ACGSounds Sheets')
                 .row.center
@@ -30,6 +31,7 @@ block content
                             .input-field.col.s8
                                 input(type='text')
                                 label= __('Search Input')
+                br
                 .row.center
                     .btn.orange= __('Search')
 
