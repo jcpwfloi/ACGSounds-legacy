@@ -1,14 +1,24 @@
 var express = require('express');
+var i18n = require('i18n');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var csurf = require('csurf');
+var session = require('express-session');
+
+require('mongoose').connect('mongodb://127.0.0.1/acgs_sheet');
 
 var routes = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+i18n.configure({
+    locales: ['zh', 'en'],
+    directory: __dirname + '/locales'
+});
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -20,8 +30,23 @@ app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session({
+    secret: 'iughp093478yoEFIUH',
+    resave: false,
+    saveUninitialized: true
+}));
+app.use(i18n.init);
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(function(req, res, next) {
+    /*
+    res.locals.__ = res.__ = function() {
+        return i18n.__.apply(req, arguments);
+    };*/
+
+    next();
+});
 
 app.use('/', routes);
 app.use('/users', users);

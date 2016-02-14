@@ -1,5 +1,41 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+    header
+        nav.top-nav.lighten-1.light-blue
+            .container
+                .nav-wrapper
+                    a.brand-logo(href='#') ACGSounds
+                    ul#nav-mobile.right.hide-on-med-and-down
+                        li
+                            a(href='sass.html')= __('Homepage')
+                        li
+                            a(href='badges.html')= __('Experimental')
+                        li
+                            a(href='collapsible.html')= __('Upload Sheets')
+        #index-banner.section.no-pad-bot
+            .container
+                br
+                h1.header.center.orange-text= __('ACGSounds Sheets')
+                .row.center
+                    h5.header.col.s12.light= __('A Sheet Website Specially Designed for Transcribers.')
+                .row
+                    form.col.s6.offset-s3
+                        .row
+                            .input-field.col.s4
+                                select
+                                    option(value='0')= __('Default')
+                                    option(value='1', disabled)= __('Melody')
+                                label= __('Search Type')
+                            .input-field.col.s8
+                                input(type='text')
+                                label= __('Search Input')
+                .row.center
+                    .btn.orange= __('Search')
+
+block script
+    script.
+        $(document).ready(function() {
+            $('select').material_select();
+        });
+
