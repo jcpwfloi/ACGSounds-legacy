@@ -8,9 +8,10 @@ var bodyParser = require('body-parser');
 var csurf = require('csurf');
 var session = require('express-session');
 
-require('mongoose').connect('mongodb://127.0.0.1/acgs_sheet');
+require('mongoose').connect('mongodb://hk2.codebursts.com/acgs_sheet');
 
 var routes = require('./routes/index');
+var search = require('./routes/search');
 var users = require('./routes/users');
 
 var app = express();
@@ -49,6 +50,7 @@ app.use(function(req, res, next) {
 });
 
 app.use('/', routes);
+app.use('/search', search);
 app.use('/users', users);
 
 // catch 404 and forward to error handler

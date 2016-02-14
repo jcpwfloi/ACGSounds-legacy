@@ -29,15 +29,25 @@ block content
                                     option(value='1', disabled)= __('Melody')
                                 label= __('Search Type')
                             .input-field.col.s8
-                                input(type='text')
+                                input#searchInput(type='text')
                                 label= __('Search Input')
                 br
                 .row.center
-                    .btn.orange= __('Search')
+                    a(href='javascript:search()').btn.orange= __('Search')
 
 block script
     script.
+        function search() {
+            if ($('select').val() == '0') { // Default Search
+                window.location.href = '/search/' + $('input#searchInput').val();
+            } else {
+                alert('developing');
+            }
+        }
         $(document).ready(function() {
             $('select').material_select();
+            $('input').keyup(function(e) {
+                if (e.keyCode == 10 || e.keyCode == 13) search();
+            });
         });
 
