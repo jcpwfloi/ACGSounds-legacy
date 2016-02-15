@@ -1,18 +1,10 @@
+include util
+
 extends layout
 
 block content
     header
-        nav.top-nav.lighten-1.light-blue
-            .container
-                .nav-wrapper
-                    a.brand-logo(href='#') ACGSounds
-                    ul#nav-mobile.right.hide-on-med-and-down
-                        li
-                            a(href='/')= __('Homepage')
-                        li
-                            a(href='/exp')= __('Experimental')
-                        li
-                            a(href='/user/upload')= __('Upload Sheets')
+        +normalNav()
         #index-banner.section.no-pad-bot
             .container
                 br
@@ -29,7 +21,7 @@ block content
                                     option(value='1', disabled)= __('Melody')
                                 label= __('Search Type')
                             .input-field.col.s8
-                                input#searchInput(type='text')
+                                input#searchInput(type='text', placeholder!=__('Enter related info (i.e. name, author)'))
                                 label= __('Search Input')
                 br
                 .row.center

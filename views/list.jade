@@ -1,0 +1,92 @@
+include util
+
+extends layout
+
+block content
+    header
+        +normalNav()
+    br
+    .row
+        .col.s3
+            ul.collapsible(data-collapsible='expandable')
+                li
+                    .collapsible-header.active
+                        i.material-icons sort_by_alpha
+                        | #{__('Sorting Criteria')}
+                    .collapsible-body
+                        .collection
+                            a.collection-item(href='#')
+                                | #{__('Sort by Time')}
+                                span.badge= __('New to Old')
+                            a.collection-item(href='#')
+                                | #{__('Sort by Views')}
+                                span.badge= __('More to Less')
+                            a.collection-item(href='#')
+                                | #{__('Sort by Scoring')}
+                                span.badge= __('Higher to Lower')
+                li
+                    .collapsible-header.active
+                        i.material-icons filter_list
+                        | #{__('Filter')}
+                    .collapsible-body
+                        .input-field.col.s12
+                            select(multiple)
+                                option(value='' disabled selected)= __('Choose your Option')
+                                option(value='0')= __('Etudes')
+                                option(value='1')= __('Nocturnes')
+                                option(value='2')= __('Transcriptions')
+                                option(value='3')= __('Ballades')
+                                option(value='4')= __('Concertos')
+                                option(value='5')= __('Mazurkas')
+                                option(value='6')= __('Impromptus')
+                                option(value='7')= __('Preludes')
+                                option(value='8')= __('Polonaises')
+                            label= __('Sheet Type')
+                        .input-field.col.s12
+                            select(multiple)
+                                option(value='' disabled selected)= __('Choose your Option')
+                                option(value='0') Easy
+                                option(value='1') Normal
+                                option(value='2') Hard
+                                option(value='3') Lunatic
+                            label= __('Sheet Difficulty')
+                li
+                    .collapsible-header
+                        i.material-icons settings
+                        | #{__('Settings')}
+                    .collapsible-body
+                        .container
+                            .row
+                                .switch
+                                    h6= __('Provide Statistical Data')
+                                    label
+                                        | #{__('Don\'t agree')}
+                                        input(type='checkbox')
+                                        span.lever
+                                        | #{__('Agree')}
+
+        .col.s9
+            .row
+                form.col.s10
+                    .row
+                        .input-field.col.s2
+                            select
+                                option(value='0')= __('Default')
+                                option(value='1', disabled)= __('Melody')
+                            label= __('Search Type')
+                        .input-field.col.s10
+                            input#searchInput(type='text', value!=text, placeholder!=__('Enter related info (i.e. name, author)'))
+                            label= __('Search Input')
+                .col.s2
+                    br
+                    .btn.orange.lighten-1= __('Search')
+
+block script
+    script.
+        $(document).ready(function() {
+            $('select').material_select();
+            $('.collapsible').collapsible({
+                accordion : false
+            });
+        });
+

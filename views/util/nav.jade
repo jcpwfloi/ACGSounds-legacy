@@ -1,0 +1,12 @@
+mixin normalNav()
+    nav.top-nav.lighten-1.light-blue
+        .container
+            .nav-wrapper
+                a.brand-logo(href='/') ACGSounds
+                ul#nav-mobile.right.hide-on-med-and-down
+                    li
+                        a(href='/')= __('Homepage')
+                    li
+                        a(href='/exp')= __('Experimental')
+                    li
+                        a(href='/user/upload')= __('Upload Sheets')
