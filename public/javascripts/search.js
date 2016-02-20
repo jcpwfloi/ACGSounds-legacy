@@ -72,6 +72,12 @@ function search(str, page) {
 
 $(document).ready(function() {
     search(window.querystr, 1);
+    $('#doSearch').click(function() {
+        search($('#searchInput').val(), 1);
+    });
+    $('#searchInput').keyup(function(e) {
+        if (e.keyCode == 13) $('#doSearch').click();
+    });
     $('select').material_select();
     $('.collapsible').collapsible({
         accordion : false

@@ -5,7 +5,7 @@ var Schema = mongoose.Schema;
 
 var sheetSchema = new Schema({
     sheetName: String,
-    sheetIntroduction: String,
+    sheetIntro: String,
     sheetTag: [String]
 });
 

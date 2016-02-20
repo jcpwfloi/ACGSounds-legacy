@@ -13,6 +13,7 @@ require('mongoose').connect('mongodb://hk2.codebursts.com/acgs_sheet');
 var routes = require('./routes/index');
 var search = require('./routes/search');
 var api = require('./routes/api');
+var sheets = require('./routes/sheets');
 
 var app = express();
 
@@ -55,6 +56,7 @@ app.use(function(req, res, next) {
 app.use('/', routes);
 app.use('/api', api);
 app.use('/search', search);
+app.use('/sheets', sheets);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

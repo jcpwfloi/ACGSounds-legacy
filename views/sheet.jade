@@ -1,0 +1,21 @@
+include util
+extends layout
+
+block content
+    header
+        +normalNav()
+    .row
+        .col.s4
+            .row
+                .col.s12
+                    .card.blue-grey.darken-1
+                        .card-content.white-text
+                            h6= sheet.sheetName
+                            p 上传者：
+                            p 标签：
+                            p(style='font-size: 12px') 简介：#{sheet.sheetIntro.length > 100 ? sheet.sheetIntro.substr(0, 96) + '....' : sheet.sheetIntro}
+                        .card-action
+                            a(href='#') 下载 MIDI
+                            a(href='#') 下载 PDF
+                            a(href='#') 下载 SIB
+        .col.s9
