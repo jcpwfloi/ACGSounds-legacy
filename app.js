@@ -12,7 +12,7 @@ require('mongoose').connect('mongodb://hk2.codebursts.com/acgs_sheet');
 
 var routes = require('./routes/index');
 var search = require('./routes/search');
-var users = require('./routes/users');
+var api = require('./routes/api');
 
 var app = express();
 
@@ -37,6 +37,7 @@ app.use(session({
     saveUninitialized: true
 }));
 app.use(i18n.init);
+app.use(csurf());
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -46,12 +47,14 @@ app.use(function(req, res, next) {
         return i18n.__.apply(req, arguments);
     };*/
 
+    res.locals.csrf = req.csrfToken();
+
     next();
 });
 
 app.use('/', routes);
+app.use('/api', api);
 app.use('/search', search);
-app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

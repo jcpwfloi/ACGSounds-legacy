@@ -66,7 +66,7 @@ block content
                                         | #{__('Agree')}
 
         .col.s9
-            .row
+            .row(style='margin-bottom:0')
                 form.col.s10
                     .row
                         .input-field.col.s2
@@ -82,101 +82,20 @@ block content
                     .btn.orange.lighten-1= __('Search')
             .row
                 .col.s11
-                    ul.collapsible.popout(data-collapsible='accordion')
-                        li
-                            .collapsible-header.active
-                                i.material-icons library_books
-                                | 肖邦练习曲 Op.25 Nr.11 冬风练习曲
-                            .collapsible-body
-                                p
-                                    | 冬风练习曲，作品25-11（op25nr11）是肖邦练习曲中是技巧最艰深篇幅最大的音乐会练习曲之一。它的训练课题是手指触键的灵敏，快速和准确，与此同时，由于篇幅大，因此对手指快速跑动中的耐力也是一大考验。 这首练习曲的演奏版本很多，比较出色的包括意大利钢琴家波里尼（M.Pollini），法国钢琴家弗朗索瓦（S.Francois），智利钢琴家阿劳（C.Arrou），美国钢琴家布宁（J.Browning）等。
-                                .row.center
-                                    a.btn.orange.lighten-1 详细信息
-                                .row.center
-                                    | 标签：
-                                    .chip Chopin Etude
-                                    .chip 肖邦练习曲
-                                    .chip 冬风
-                                    .chip 冬风练习曲
-                                    .chip 高难度练习曲
-                        li
-                            .collapsible-header.active
-                                i.material-icons library_books
-                                | 肖邦练习曲 Op.10 Nr.12 革命练习曲
-                            .collapsible-body
-                                p
-                                    | 肖邦的这首练习曲，表现了肖邦在华沙革命失败后内心感受。因此，被后人命名为“革命”练习曲。全曲激昂悲愤，深刻地反映了肖邦在华沙陷落、起义失败后的心情，那催人奋起的旋律，表现了波兰人民的呐喊与抗争。
-                                .row.center
-                                    a.btn.orange.lighten-1 详细信息
-                                .row.center
-                                    | 标签：
-                                    .chip Chopin Etude
-                                    .chip 肖邦练习曲
-                                    .chip 革命
-                                    .chip 革命练习曲
-                                    .chip 高难度练习曲
-                        li
-                            .collapsible-header.active
-                                i.material-icons library_books
-                                | 肖邦练习曲 Op.10 Nr.5 黑键练习曲
-                            .collapsible-body
-                                p
-                                    | 肖邦练习曲OP10，NO5 ，俗称黑键练习曲。由于绝大多数的音都出现在黑键上，故习惯称之为黑键练习曲。
-                                    br
-                                    | 在这支曲子里，肖邦是第一次尝试性的、用有明确练习目的的手法，把旋律和主题交给左手，而让右手持续地弹奏特定的练习音型(Etude-figure)好像是对主题进行注解。它给以后一些练习曲的发展作了有益的探索。
-                                .row.center
-                                    a.btn.orange.lighten-1 详细信息
-                                .row.center
-                                    | 标签：
-                                    .chip Chopin Etude
-                                    .chip 肖邦练习曲
-                                    .chip 黑键
-                                    .chip 黑键练习曲
-                                    .chip 高难度练习曲
+                    ul.collapsible.popout#searchResult(data-collapsible='accordion')
 
-            .row.center
+            .row
                 ul.pagination
-                    li.disabled
-                        a(href='#')
-                            i.material-icons chevron_left
-                    li.active.blue.lighten-2
-                        a(href='#') 1
-                    li
-                        a(href='#')
-                            i.material-icons chevron_right
+                    //
+                        li.disabled
+                            a(href='#')
+                                i.material-icons chevron_left
+                        li.active.blue.lighten-2
+                            a(href='#') 1
+                        li
+                            a(href='#')
+                                i.material-icons chevron_right
 
 block script
-    script.
-        /*
-            FUNC: parseData
-                Accept data form search API and render the views
-
-            FUNC: parsePagination
-                Render pagination with current and total
-        */
-
-        function parseData(data) {
-            $().html('');
-            for (i in data)
-                $().append('<li><div class="collapsible-header"><i class="material-icons">library_books</i>' + data[i].sheetName + '</div><div class="collapsible-body"><p>' + data[i].sheetIntro + '</p></div></li>');
-        }
-
-        function parsePagination(current, total) {
-            $('.pagination').html('');
-            $('.pagination').append('<li class="disabled"><a href="javascript:prev()"><i class="material-icons">chevron_left</i></a></li>');
-            $('.pagination').append('<li class="waves-effect"><a href="javascript:next()"><i class="material-icons">chevron_right</i></a></li>');
-        }
-
-        function prev() {
-        }
-
-        function next() {
-        }
-
-        $(document).ready(function() {
-            $('select').material_select();
-            $('.collapsible').collapsible({
-                accordion : false
-            });
-        });
-
+    script window.querystr = '#{text}';
+    script(src='/javascripts/search.js')
