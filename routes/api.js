@@ -4,15 +4,28 @@ var Sheet = require('../model/sheet');
 
 router.post('/search', function(req, res) {
     var ret = {
-        current: 1,
-        total: 1
+        current: req.body.current ? req.body.current : 1
     };
 
-    Sheet.find(function(err, sheet) {
-        ret.data = sheet;
-        
-        res.json(ret);
+    var str = req.body.querystring;
+
+    Sheet.find().or([ { sheetName: { $regex: str } }, { sheetIntro: { $regex: str } } ]).count(function(err, count) {
+        Sheet.find().or([ { sheetName: { $regex: str } }, { sheetIntro: { $regex: str } } ]).exec(function(err, sheet) {
+            ret.data = sheet;
+            ret.total = Math.floor(count / 20) + 1;
+            res.json(ret);
+        });
     });
+
+    /*
+    Sheet.count( { sheetName: new RegExp(req.body.querystring) }, function(err, count) {
+        Sheet.find( { sheetName: new RegExp(req.body.querystring) }, function(err, sheet) {
+            ret.data = sheet;
+            ret.total = count / 20 + 1;
+            res.json(ret);
+        });
+    });*/
+
 });
 
 module.exports = router;

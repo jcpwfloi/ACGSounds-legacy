@@ -18,4 +18,30 @@ block content
                             a(href='#') 下载 MIDI
                             a(href='#') 下载 PDF
                             a(href='#') 下载 SIB
-        .col.s9
+            .row
+                .col.s12
+                    ul.collection#commentBox
+                        .progress
+                            .indeterminate
+                        .row.center
+                            | Loading...
+        .col.s8
+            #carouse
+                object(data='http://aeroflow.com.cn/brave.pdf', type='application/pdf', style='width: 100%; height: 600px')
+
+        .template-1(style='display: none')
+            li.collection-item.avatar
+                img.circle(src='', alt='')
+                a.title(href='/user/{0}') {0}
+                p {1}
+                .secondary-content.grey-text(style='margin-right: 90px; margin-top: -10px') {2}#
+                .secondary-content.grey-text(style='margin-right: 40px; margin-top: -10px') {3}
+                a.secondary-content.teal-text.text-lighten-4(href='#', data-comment='{2}', style='margin-top: -10px')
+                    i.material-icons thumb_up
+
+block script
+    script(src='/javascripts/comment.js')
+    script.
+        $(document).ready(function() {
+            $('#carouse').pdfSlider({});
+        });

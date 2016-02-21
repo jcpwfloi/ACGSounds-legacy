@@ -67,6 +67,7 @@ function search(str, page) {
                 parseData(res.data);
                 parsePagination(res.current, res.total);
             }, "json").error(function(e) {
+        $('#searchResult').html('<center>搜索失败，建议重新加载页面&nbsp;&nbsp;<a href="javascript:window.location.reload()">重新加载</a></center>');
     });
 }
 
