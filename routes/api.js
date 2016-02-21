@@ -9,8 +9,8 @@ router.post('/search', function(req, res) {
 
     var str = req.body.querystring;
 
-    Sheet.find().or([ { sheetName: { $regex: str } }, { sheetIntro: { $regex: str } } ]).count(function(err, count) {
-        Sheet.find().or([ { sheetName: { $regex: str } }, { sheetIntro: { $regex: str } } ]).exec(function(err, sheet) {
+    Sheet.find().or([ { sheetName: { $regex: str } }, { sheetTag: { $regex: str } }/*, { sheetIntro: { $regex: str } }*/ ]).count(function(err, count) {
+        Sheet.find().or([ { sheetName: { $regex: str } }, { sheetTag: { $regex: str }}/*, { sheetIntro: { $regex: str } }*/ ]).exec(function(err, sheet) {
             ret.data = sheet;
             ret.total = Math.floor(count / 20) + 1;
             res.json(ret);
