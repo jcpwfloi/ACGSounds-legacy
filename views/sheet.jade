@@ -54,12 +54,14 @@ block content
 
 block script
     script(src='/javascripts/comment.js')
-    script(src='/javascripts/midi.js')
+    script(src='http://7xr4a5.com1.z0.glb.clouddn.com/lib/midi.js')
+
     script.
         $(document).ready(function() {
             $('#carouse').pdfSlider({});
 
             MIDIjs.message_callback = function(res) {
-                Materialize.toast(res, 4000);
+                Materialize.toast(res, 2000);
             }
         });
+
