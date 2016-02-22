@@ -28,7 +28,8 @@ block content
                                 i.material-icons stop
                             .secondary-content
                                 | MIDI 播放控制
-                            br
+                            .progress
+                                .determinate
                             //span#message
             .row
                 .col.s12
@@ -53,12 +54,63 @@ block content
 
 block script
     script(src='/javascripts/comment.js')
+    script(src='/javascripts/midievents.js')
+    script(src='/javascripts/midifile.js')
     script(src='http://7xr4a5.com1.z0.glb.clouddn.com/lib/midi.js')
 
     script.
+        var read_array_buffer_async = function (url, callback) {
+            var req = new XMLHttpRequest();
+            req.open('GET', url, true);
+            req.responseType = 'arraybuffer';
+            req.onload = function (e) {
+                var buf = req.response;
+                if (buf) {
+                    callback(buf);
+                }
+            };
+            req.send(null);
+        };
+        var read_midi_events = function (url, callback) {
+            read_array_buffer_async(url, function (buf) {
+                var file = new MIDIFile(buf);
+                var events = file.getEvents();
+                var ret = [];
+                for (var i = 0; i < events.length; ++i) {
+                    if (events[i].type === MIDIEvents.EVENT_MIDI) {
+                        if (events[i].subtype === MIDIEvents.EVENT_MIDI_NOTE_OFF) {
+                            ret.push({
+                                time: events[i].playTime,
+                                is_on: 0,
+                                pitch: events[i].param1,
+                                vel: events[i].param2
+                            });
+                        } else if (events[i].subtype === MIDIEvents.EVENT_MIDI_NOTE_ON) {
+                            ret.push({
+                                time: events[i].playTime,
+                                is_on: 1,
+                                pitch: events[i].param1,
+                                vel: events[i].param2
+                            });
+                        }
+                    }
+                }
+                callback(ret);
+            });
+        };
+        function lengthParser(callback) {
+            read_midi_events('http://7xr3so.com1.z0.glb.clouddn.com/#{sheet._id}.mid', function(data) {
+                callback(data[data.length - 1].time / 1000);
+            });
+        }
         $(document).ready(function() {
-            MIDIjs.message_callback = function(res) {
-                Materialize.toast(res, 2000);
-            }
+            lengthParser(function(length) {
+                MIDIjs.message_callback = function(res) {
+                    Materialize.toast(res, 2000);
+                }
+                MIDIjs.player_callback = function(res) {
+                    console.log(res);
+                    $('.determinate').css('width', Math.floor(res.time * 100 / length) + '%');
+                }
+            });
         });
-
