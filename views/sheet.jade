@@ -18,6 +18,18 @@ block content
                             a(href='#') 下载 MIDI
                             a(href='#') 下载 PDF
                             a(href='#') 下载 SIB
+                .col.s12
+                    .card
+                        .card-content
+                            a(href='#', onClick='MIDIjs.play("http://7xr3so.com1.z0.glb.clouddn.com/56c8419d1e373bbf04efcc18.mid")')
+                                i.material-icons play_circle_filled
+                            | &nbsp;&nbsp;
+                            a(href='#', onClick='MIDIjs.stop()')
+                                i.material-icons stop
+                            .secondary-content
+                                | MIDI 播放控制
+                            br
+                            //span#message
             .row
                 .col.s12
                     ul.collection#commentBox
@@ -42,7 +54,12 @@ block content
 
 block script
     script(src='/javascripts/comment.js')
+    script(src='/javascripts/midi.js')
     script.
         $(document).ready(function() {
             $('#carouse').pdfSlider({});
+
+            MIDIjs.message_callback = function(res) {
+                Materialize.toast(res, 4000);
+            }
         });
