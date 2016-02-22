@@ -38,7 +38,7 @@ block content
                         .row.center
                             | Loading...
         .col.s8
-            #carouse
+            #carousel
                 object(data!='http://7xr3so.com1.z0.glb.clouddn.com/' + sheet._id + '.pdf', type='application/pdf', style='width: 100%; height: 600px')
 
         .template-1(style='display: none')
@@ -58,7 +58,7 @@ block script
 
     script.
         $(document).ready(function() {
-            $('#carouse').pdfSlider({});
+            $('#carousel').pdfSlider({ itemWidth: '100%', itemHeight: '600px' });
 
             MIDIjs.message_callback = function(res) {
                 Materialize.toast(res, 2000);
