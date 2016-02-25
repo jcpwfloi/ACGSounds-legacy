@@ -14,6 +14,7 @@ var routes = require('./routes/index');
 var search = require('./routes/search');
 var api = require('./routes/api');
 var sheets = require('./routes/sheets');
+var user = require('./routes/user');
 
 var app = express();
 
@@ -56,6 +57,7 @@ app.use(function(req, res, next) {
 app.use('/', routes);
 app.use('/api', api);
 app.use('/search', search);
+app.use('/user', user);
 app.use('/sheets', sheets);
 
 // catch 404 and forward to error handler

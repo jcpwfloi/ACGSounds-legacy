@@ -44,7 +44,8 @@ $(function() {
     };
 
     var bindComment = function() {
-        $('a[data-comment]').click(function() {
+        $('a[data-comment]').click(function(e) {
+            e.preventDefault();
             if ($(this).hasClass('text-lighten-4')) {
                 $(this).removeClass('text-lighten-4');
                 $(this).prev().html(Number($(this).prev().html()) + 1);

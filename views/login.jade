@@ -1,0 +1,33 @@
+include util
+
+extends layout
+
+block content
+    .row(style='margin-top: 100px')
+        .col.s4.z-depth-4.card-panel.offset-s4
+            form.login-form
+                    .input-field.col.s12.center
+                        h4 Login
+                        p.center Login to your account now!
+                .row
+                    .input-field.col.s12
+                        i.mdi-social-person-outline.prefix
+                        input#username(type='text')
+                        label.center-align(for='username') Username
+                    .input-field.col.s12
+                        i.mdi-action-lock-outline.prefix
+                        input#password(type='password')
+                        label(for='password') Password
+                    .input-field.col.s12
+                        a.btn.waves-effect.waves-light.col.s12(href='javascript:register()') Register Now
+                    .input-field.col.s12
+                        p.center.medium-small.sign-up
+                            | Already have an account? 
+                            a(href='/user/register') Register
+
+block script
+    script.
+        $(document).ready(function() {
+            $('body').addClass('cyan');
+            //$('body').addClass('lighten-2');
+        });
