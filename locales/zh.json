@@ -39,7 +39,16 @@
 	"Agree": "Agree",
 	"Provide Statistical Data": "Provide Statistical Data",
 	"languageSetting": "zh",
-	"Register": "Register",
-	"Enter your Email": "Enter your Email",
-	"Login": "Login"
+	"Register": "注册",
+	"Enter your Email": "输入您的邮箱地址",
+	"Login": "登录",
+	"Login to your account now!": "立即登录您的账户！",
+	"Username": "用户名",
+	"Password": "密码",
+	"Login Now": "立即登录",
+	"Already have an account?": "已有账户？",
+	"Join our community now!": "立即加入我们！",
+	"Email": "电子邮箱",
+	"Password again": "重复密码",
+	"Register Now": "立即注册"
 }

@@ -7,25 +7,26 @@ block content
         .col.s4.z-depth-4.card-panel.offset-s4
             form.login-form
                     .input-field.col.s12.center
-                        h4 Login
-                        p.center Login to your account now!
+                        h4= __('Login')
+                        p.center= __('Login to your account now!')
                 .row
                     .input-field.col.s12
                         i.mdi-social-person-outline.prefix
-                        input#username(type='text')
-                        label.center-align(for='username') Username
+                        input#username(type='text', autocomplete='off', autocorrect='off')
+                        label.center-align(for='username')= __('Username')
                     .input-field.col.s12
                         i.mdi-action-lock-outline.prefix
-                        input#password(type='password')
-                        label(for='password') Password
+                        input#password(type='password', autocomplete="off")
+                        label(for='password')= __('Password')
                     .input-field.col.s12
-                        a.btn.waves-effect.waves-light.col.s12(href='javascript:register()') Register Now
+                        a#login.btn.waves-effect.waves-light.col.s12(href='javascript:login()')= __('Login Now')
                     .input-field.col.s12
                         p.center.medium-small.sign-up
-                            | Already have an account? 
-                            a(href='/user/register') Register
+                            | #{__('Already have an account?')}
+                            a(href='/user/register')= __('Register')
 
 block script
+    script(src='/javascripts/login.js')
     script.
         $(document).ready(function() {
             $('body').addClass('cyan');

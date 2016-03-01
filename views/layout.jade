@@ -12,4 +12,15 @@ html
         script(src='/javascripts/jquery.md5.js')
     body
         block content
+    script.
+        function __get(a,b) {return a ? a : b;}
+        function __(str) {
+            return window.locales[languageSetting] ? __get(window.locales[languageSetting][str], str) : __get(window.locales['default'][str], str);
+        }
+        String.prototype.format = function() {
+            var args = arguments;
+            return this.replace(/{(\d+)}/g, function(match, number) { 
+                return typeof args[number] != 'undefined' ? args[number] : match;
+            });
+        };
     block script

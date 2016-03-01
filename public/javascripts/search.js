@@ -6,13 +6,6 @@
         Render pagination with current and total
 */
 
-String.prototype.format = function() {
-    var args = arguments;
-    return this.replace(/{(\d+)}/g, function(match, number) { 
-        return typeof args[number] != 'undefined' ? args[number] : match;
-    });
-};
-
 var locales = {
     zh: {
         "Searching....Wait": '搜索中....请稍候'

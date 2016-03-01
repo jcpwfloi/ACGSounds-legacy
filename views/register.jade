@@ -8,33 +8,35 @@ block content
             .col.s4.z-depth-4.card-panel.offset-s4
                 form.login-form
                         .input-field.col.s12.center
-                            h4 Register
-                            p.center Join to our community now !
+                            h4= __('Register')
+                            p.center= __('Join our community now!')
                     .row
                         .input-field.col.s12
                             i.mdi-social-person-outline.prefix
                             input#username(type='text')
-                            label.center-align(for='username') Username
+                            label.center-align(for='username')= __('Username')
                         .input-field.col.s12
                             i.mdi-communication-email.prefix
                             input#email(type='email')
-                            label.center-align(for='email') Email
+                            label.center-align(for='email')= __('Email')
                         .input-field.col.s12
                             i.mdi-action-lock-outline.prefix
                             input#password(type='password')
-                            label(for='password') Password
+                            label(for='password')= __('Password')
                         .input-field.col.s12
                             i.mdi-action-lock-outline.prefix
                             input#password-again(type='password')
-                            label(for='password-again') Password again
+                            label(for='password-again')= __('Password again')
+                        .col.s12
                         .input-field.col.s12
-                            a.btn.waves-effect.waves-light.col.s12(href='javascript:register()') Register Now
+                            a.btn.waves-effect.waves-light.col.s12(href='javascript:register()')= __('Register Now')
                         .input-field.col.s12
                             p.center.medium-small.sign-up
-                                | Already have an account? 
-                                a(href='/user/login') Login
+                                | #{__('Already have an account?')}
+                                a(href='/user/login')= __('Login')
 
     block script
+        script(src='/javascripts/register.js')
         script.
             $(document).ready(function() {
                 $('body').addClass('cyan');
