@@ -24,6 +24,7 @@ var userSchema = new Schema({
     },
     mobile: {
         type: String,
+        unique: true,
         sparse: true,
         validate: {
             validator: function(v) {
