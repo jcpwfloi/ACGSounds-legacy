@@ -35,6 +35,12 @@ router.get('/upload', function(req, res) {
 router.post('/upload', multipartMiddleware, function(req, res) {
     delete req.body._csrf;
 
+    req.body.sheetTag = req.body.sheetTag.replace(/，/, ",");
+    req.body.sheetTag = req.body.sheetTag.replace(/\ ,/, ",");
+    req.body.sheetTag = req.body.sheetTag.replace(/,\ /, ",");
+    
+    req.body.sheetTag = req.body.sheetTag.split(',');
+
     var sheet = new Sheet(req.body);
     sheet.save(function(err) {
         Sheet.findOne(req.body, function(err, sheet) {
