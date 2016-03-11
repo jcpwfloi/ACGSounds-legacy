@@ -31,7 +31,6 @@ router.post('/login', function(req, res) {
 
 router.post('/register', function(req, res) {
     var user = new User(req.body);
-    console.log(JSON.stringify(user));
     var error = user.validateSync();
     if (error) {
         res.status(400);
