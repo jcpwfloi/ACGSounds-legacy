@@ -42,6 +42,7 @@ router.post('/register', function(req, res) {
                 return res.json(err);
             } else return res.json({msg: 'Success'});
         });
+        req.session.user = user;
     }
 });
 
