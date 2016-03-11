@@ -53,6 +53,7 @@ function register() {
     };
 
     $.post('/api/register', data, function(res) {
+        window.location.href = '/';
     }, "json").error(function(e) {
         if (e.status == 400) {
             var res = JSON.parse(e.responseText);
