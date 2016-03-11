@@ -39,6 +39,7 @@ app.use(session({
 }));
 app.use(i18n.init);
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
+app.use(require('express-uglify').middleware({src: path.join(__dirname, 'public')}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(csurf());
