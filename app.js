@@ -32,16 +32,16 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
 app.use(session({
     secret: 'iughp093478yoEFIUH',
     resave: false,
     saveUninitialized: true
 }));
 app.use(i18n.init);
-app.use(csurf());
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(csurf());
 
 app.use(function(req, res, next) {
     /*
@@ -50,6 +50,7 @@ app.use(function(req, res, next) {
     };*/
 
     res.locals.csrf = req.csrfToken();
+    res.locals.user = req.session.user;
 
     next();
 });

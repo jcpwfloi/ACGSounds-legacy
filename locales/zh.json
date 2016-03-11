@@ -50,5 +50,18 @@
 	"Join our community now!": "立即加入我们！",
 	"Email": "电子邮箱",
 	"Password again": "重复密码",
-	"Register Now": "立即注册"
+	"Register Now": "立即注册",
+	"Welcome, ": "欢迎您，",
+	"User Center": "用户中心",
+	"Profile Settings": "用户资料设置",
+	"Logout": "登出",
+	"Upload Sheets- ACGSounds": "上传乐谱 - ACGSounds",
+	"Sheet Name": "乐谱名称",
+	"Sheet Tags": "乐谱标签 (请用空格隔开)",
+	"Sheet Introduction": "乐谱简介",
+	"Upload pdf, sib and midi here": "此处上传乐谱、pdf、midi 文件 (按住 Ctrl 多选)",
+	"Submit": "提交审核",
+	"Upload pdf here": "Upload pdf here",
+	"Upload midi here": "Upload midi here",
+	"No account?": "No account?"
 }

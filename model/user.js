@@ -4,6 +4,7 @@ var Schema = mongoose.Schema;
 var userSchema = new Schema({
     username: {
         type: String,
+        unique: true,
         required: true,
         minlength: 4,
         maxlength: 12
@@ -16,12 +17,14 @@ var userSchema = new Schema({
     },
     email: {
         type: String,
+        unique: true,
         required: true,
         minlength: 5,
         maxlength: 40
     },
     mobile: {
         type: String,
+        unique: true,
         validate: {
             validator: function(v) {
                 return /(\d{11})|(\d{3}-\d{4}-\d{4})/.test(v);

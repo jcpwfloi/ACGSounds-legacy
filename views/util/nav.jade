@@ -10,3 +10,18 @@ mixin normalNav()
                         a(href='/exp')= __('Experimental')
                     li
                         a(href='/user/upload')= __('Upload Sheets')
+                    if user
+                        li
+                            a.dropdown-button(href='#', data-activates='dropdown1')
+                                | #{__('Welcome, ') + user.username + '!'}
+                        ul.dropdown-content#dropdown1
+                            li
+                                a(href='/user')= __('User Center')
+                            li
+                                a(href='/user/profile')= __('Profile Settings')
+                            li.divider
+                            li
+                                a(href='/user/logout')= __('Logout')
+                    else
+                        li
+                            a(href='/user/login')= __('Login')

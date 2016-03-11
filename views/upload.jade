@@ -1,0 +1,48 @@
+include util
+extends layout
+
+block content
+    header
+        +normalNav()
+    .container
+        .row
+            form.col.s12(method="POST", enctype="multipart/form-data", action!='upload?_csrf=' + csrf)
+                input(style='display: none', name='_csrf', value!=csrf)
+                .row(style='margin: 0')
+                    .input-field.col.s6
+                        input.validate#sheetName(type='text', name='sheetName')
+                        label(for='sheetName')= __('Sheet Name')
+                .row(style='margin: 0')
+                    .input-field.col.s10
+                        input.validate#sheetTag(type='text', name='sheetTag')
+                        label(for='sheetTag')= __('Sheet Tags')
+                .row(style='margin: 0')
+                    .input-field.col.s12
+                        textarea.materialize-textarea#sheetIntro(rows='8', name='sheetIntro')
+                        label(for='sheetIntro')= __('Sheet Introduction')
+                    .right-align
+                        | Word Count: 
+                        span#textCount 0
+                        |  / 500
+                .row(style='margin: 0')
+                    .file-field.input-field
+                        .btn
+                            span PDF
+                            input(type='file', name='pdf')
+                        .file-path-wrapper
+                            input.file-path.validate(type='text', placeholder!=__('Upload pdf here'))
+                .row(style='margin: 0')
+                    .file-field.input-field
+                        .btn
+                            span MIDI
+                            input(type='file', name='midi')
+                        .file-path-wrapper
+                            input.file-path.validate(type='text', placeholder!=__('Upload midi here'))
+                br
+                br
+                .row
+                    .btn#submit= __('Submit')
+
+block script
+    script(src='/javascripts/upload.js')
+

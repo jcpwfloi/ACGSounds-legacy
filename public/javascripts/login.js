@@ -5,10 +5,14 @@ function login() {
         _csrf: $('meta[name=csrf-token]').attr('content')
     };
 
-    console.log(data);
-
     $.post('/api/login', data, function(res) {
+        if (res.msg == 'Success') {
+            if ($.urlParam('callback'))
+                window.location.href = $.urlParam('callback');
+            else window.location.href = '/';
+        } else Materialize.toast('未知错误', 3000, 'rounded');
     }, "json").error(function(e) {
+        Materialize.toast('网络错误', 3000, 'rounded');
     });
 }
 
