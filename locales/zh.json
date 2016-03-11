@@ -57,11 +57,11 @@
 	"Logout": "登出",
 	"Upload Sheets- ACGSounds": "上传乐谱 - ACGSounds",
 	"Sheet Name": "乐谱名称",
-	"Sheet Tags": "乐谱标签 (请用空格隔开)",
+	"Sheet Tags": "乐谱标签 (请用半角逗号隔开)",
 	"Sheet Introduction": "乐谱简介",
 	"Upload pdf, sib and midi here": "此处上传乐谱、pdf、midi 文件 (按住 Ctrl 多选)",
 	"Submit": "提交审核",
 	"Upload pdf here": "Upload pdf here",
 	"Upload midi here": "Upload midi here",
-	"No account?": "No account?"
+	"No account?": "没有账户？"
 }
