@@ -36,11 +36,12 @@ $(function() {
         }, "json").error(function(e) {
         });*/
 
+       /*
         str = str.format('jcpwfloi', '嘿嘿嘿', '1', 0, new Date().Format('yyyy-MM-dd hh:mm:ss'));
         $('#commentBox').append(str);
         $('#commentBox li:last img').attr('src', 'http://cn.gravatar.com/avatar/' + $.md5('jcpwfloi@gmail.com'));
         $('#commentBox').append(str);
-        $('#commentBox li:last img').attr('src', 'http://cn.gravatar.com/avatar/' + $.md5('jcpwfloi@gmail.com'));
+        $('#commentBox li:last img').attr('src', 'http://cn.gravatar.com/avatar/' + $.md5('jcpwfloi@gmail.com'));*/
     };
 
     var bindComment = function() {

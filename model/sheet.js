@@ -6,7 +6,8 @@ var Schema = mongoose.Schema;
 var sheetSchema = new Schema({
     sheetName: String,
     sheetIntro: String,
-    sheetTag: [String]
+    sheetTag: [String],
+    approved: Boolean
 });
 
 sheetSchema.plugin(lastUpdate);
