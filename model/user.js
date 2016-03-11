@@ -26,6 +26,8 @@ var userSchema = new Schema({
         type: String,
         unique: true,
         sparse: true,
+        trim: true,
+        index: true,
         validate: {
             validator: function(v) {
                 return /(\d{11})|(\d{3}-\d{4}-\d{4})/.test(v);
