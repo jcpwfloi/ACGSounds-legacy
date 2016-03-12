@@ -7,6 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var csurf = require('csurf');
 var session = require('express-session');
+var MemcachedStore = require('connect-memcached')(session);
 
 require('mongoose').connect('mongodb://hk2.codebursts.com/acgs_sheet');
 
@@ -32,25 +33,33 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(session({
-    secret: 'iughp093478yoEFIUH',
-    resave: false,
-    saveUninitialized: true
-}));
+if (app.get('env') === 'development') {
+    app.use(session({
+        secret: 'iughp093478yoEFIUH',
+        resave: false,
+        saveUninitialized: true,
+        store: new MemcachedStore({
+            hosts: ['0f70e13014304832.m.cnhzaliqshpub001.ocs.aliyuncs.com:11211']
+        })
+    }));
+} else {
+    app.use(session({
+        secret: 'iughp093478yoEFIUH',
+        resave: false,
+        saveUninitialized: true
+    }));
+}
 app.use(i18n.init);
 app.use(require('less-middleware')(path.join(__dirname, 'public')));
-//app.use(require('express-uglify').middleware({src: path.join(__dirname, 'public')}));
-app.use(require('connect-uglify-js').middleware(path.join(__dirname, 'public')));
+app.use(require('express-minify')({
+    cache: __dirname + '/cache'
+}));
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(csurf());
 
 app.use(function(req, res, next) {
-    /*
-    res.locals.__ = res.__ = function() {
-        return i18n.__.apply(req, arguments);
-    };*/
-
     res.locals.csrf = req.csrfToken();
     res.locals.user = req.session.user;
 
