@@ -9,13 +9,14 @@ var csurf = require('csurf');
 var session = require('express-session');
 var MemcachedStore = require('connect-memcached')(session);
 
-require('mongoose').connect('mongodb://hk2.codebursts.com/acgs_sheet');
+require('mongoose').connect('mongodb://127.0.0.1/acgs_sheet');
 
 var routes = require('./routes/index');
 var search = require('./routes/search');
 var api = require('./routes/api');
 var sheets = require('./routes/sheets');
 var user = require('./routes/user');
+var audit = require('./routes/audit');
 
 var app = express();
 
@@ -71,6 +72,7 @@ app.use('/api', api);
 app.use('/search', search);
 app.use('/user', user);
 app.use('/sheets', sheets);
+app.use('/audit', audit);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
