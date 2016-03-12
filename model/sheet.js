@@ -18,7 +18,9 @@ var sheetSchema = new Schema({
     sheetTag: [ { type: String, minlength: 1, maxlength: 20 } ],
     approved: Number,
     comments: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ],
-    user: { type: Schema.Types.ObjectId, ref: 'User' }
+    user: { type: Schema.Types.ObjectId, ref: 'User' },
+    auditor: [ { type: Schema.Types.ObjectId, ref: 'User' } ],
+    auditDate: [ Date ]
 });
 
 sheetSchema.plugin(lastUpdate);
