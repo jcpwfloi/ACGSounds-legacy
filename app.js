@@ -16,6 +16,7 @@ var search = require('./routes/search');
 var api = require('./routes/api');
 var sheets = require('./routes/sheets');
 var user = require('./routes/user');
+var audit = require('./routes/audit');
 
 var app = express();
 
@@ -71,6 +72,7 @@ app.use('/api', api);
 app.use('/search', search);
 app.use('/user', user);
 app.use('/sheets', sheets);
+app.use('/audit', audit);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
