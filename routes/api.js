@@ -14,8 +14,8 @@ router.post('/search', function(req, res) {
     var ret = {current: req.body.current ? req.body.current : 1};
     var str = req.body.querystring;
 
-    Sheet.find().or([ { sheetName: { $regex: str }, approved: 3 }, { sheetTag: { $regex: str }/*, approved: 3*/ }]).count(function(err, count) {
-        Sheet.find().or([ { sheetName: { $regex: str }, approved: 3 }, { sheetTag: { $regex: str }/*, approved: 3*/ }]).exec(function(err, sheet) {
+    Sheet.find().or([ { sheetName: { $regex: str }, approved: 3 }, { sheetTag: { $regex: str }, approved: 3 }]).count(function(err, count) {
+        Sheet.find().or([ { sheetName: { $regex: str }, approved: 3 }, { sheetTag: { $regex: str }, approved: 3 }]).exec(function(err, sheet) {
             ret.data = sheet;
             ret.total = Math.floor(count / 20) + 1;
             res.json(ret);

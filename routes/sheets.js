@@ -7,7 +7,12 @@ router.get('/', function(req, res) {
 });
 
 router.get('/:id', function(req, res) {
-    Sheet.findOne({_id: req.params.id}, function(err, sheet) {
+    Sheet.findOne({_id: req.params.id}).populate({
+        path: 'user',
+        model: 'User',
+        select: 'username email'
+    })
+        .exec(function(err, sheet) {
         if (sheet) {
             res.locals.title = '查看乐谱 - ' + sheet.sheetName;
             res.render('sheet', { sheet: sheet });
