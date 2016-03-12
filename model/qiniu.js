@@ -43,15 +43,15 @@ module.exports = {
     }, 
     delete: function(remoteFile, callback) {
         var client = new qiniu.rs.Client();
-        client.remove(bucket, remoteFile, function(err) {
-            callback(err);
-        });
+        client.remove(bucket, remoteFile, callback);
     },
     exists: function(remoteFile, callback) {
         var client = new qiniu.rs.Client();
-        client.stat(bucket, remoteFile, function(err, ret) {
-            callback(err, ret);
-        });
+        client.stat(bucket, remoteFile, callback);
+    },
+    move: function(originalPath, destPath, callback) {
+        var client = new qiniu.rs.Client();
+        client.move(bucket, originalPath, bucket, destPath, callback);
     }
 };
 
