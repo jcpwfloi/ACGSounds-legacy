@@ -2,6 +2,17 @@ include util
 extends layout
 
 block content
+    style.
+        .thumb-up-btn {
+            transition: color 0.5s;
+        }
+        .thumb-up-icon {
+            transition: transform 0.5s;
+            transform: scale(1, 1);
+        }
+        .thumb-popping {
+            transform: scale(0.8, 0.8);
+        }
     header
         +normalNav()
     .row
@@ -41,6 +52,15 @@ block content
                             .indeterminate
                         .row.center
                             | Loading...
+                    
+                    div.input-field
+                        textarea.materialize-textarea(id='text-comment')
+                        label(for='text-comment')
+                            | Say something
+                        a.waves-effect.waves-light.btn(id='btn-comment', style='width: 100%')
+                            i.material-icons.left
+                                | navigation
+                            | Send
         .col.s8
             object#pdf(data!='http://7xr3so.com1.z0.glb.clouddn.com/' + sheet._id + '.pdf', type='application/pdf', style='width: 100%; height: 600px')
 
@@ -52,8 +72,8 @@ block content
                 p.right-align.grey-text {4}
                 .secondary-content.grey-text(style='margin-right: 90px; margin-top: -10px') {2}#
                 .secondary-content.grey-text(style='margin-right: 40px; margin-top: -10px', id='comment-likes-{2}') {3}
-                a.secondary-content.teal-text.text-lighten-4(id='comment-thumbup-{2}', href='javascript:likeComment({2});', style='margin-top: -10px')
-                    i.material-icons thumb_up
+                a.secondary-content.teal-text.text-lighten-4.thumb-up-btn(id='comment-thumbup-{2}', href='javascript:likeComment({2});', style='margin-top: -10px')
+                    i.material-icons.thumb-up-icon thumb_up
 
 block script
     script(src='/javascripts/comment.js')

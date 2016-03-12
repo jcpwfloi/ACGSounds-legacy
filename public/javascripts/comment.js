@@ -49,15 +49,33 @@ $(function() {
     window.likeComment = function (floor) {
         var cmt = comments[floor - 1];
         var likesDisp = $('#comment-likes-' + floor);
-        $('#comment-thumbup-' + floor).removeClass('text-lighten-4');
-        if (!cmt.isLiked) {
-            likesDisp.html(Number(likesDisp.html()) + 1);
-            $('#comment-thumbup-' + floor).removeClass('text-lighten-4');
-        } else {
-            likesDisp.html(Number(likesDisp.html()) - 1);
-            $('#comment-thumbup-' + floor).addClass('text-lighten-4');
-        }
-        cmt.isLiked = !cmt.isLiked;
+        var thumbBtn = $('#comment-thumbup-' + floor);
+        if (thumbBtn.hasClass('disabled')) return;
+        thumbBtn.addClass('disabled').toggleClass('text-lighten-4').children().first().addClass('thumb-popping');
+        var data = {
+            id: cmt._id,
+            _csrf: $('meta[name=csrf-token]').attr('content')
+        };
+        $.ajax({
+            type: 'POST',
+            url: '/api/comment/like',
+            data: data,
+            statusCode: { 403: function () {
+                Materialize.toast('请先登录', 3000, 'rounded');
+                thumbBtn.removeClass('disabled').addClass('text-lighten-4').children().first().removeClass('thumb-popping');
+                return;
+            } },
+            success: function (r) {
+                setTimeout(function () {
+                    if (r.operation === 'like') {
+                        likesDisp.html(Number(likesDisp.html()) + 1);
+                        thumbBtn.removeClass('disabled').removeClass('text-lighten-4').children().first().removeClass('thumb-popping');
+                    } else {
+                        likesDisp.html(Number(likesDisp.html()) - 1);
+                        thumbBtn.removeClass('disabled').addClass('text-lighten-4').children().first().removeClass('thumb-popping');
+                }}, 400);
+            }
+        });
     };
 
     $(document).ready(function() {
