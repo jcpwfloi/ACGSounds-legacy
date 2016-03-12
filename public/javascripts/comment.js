@@ -28,7 +28,7 @@ $(function() {
         $('#commentBox').append($('.template-1').html().format(
             cmt.author.username, cmt.text, floor, cmt.likeCount, (new Date(cmt.createdAt)).Format('yyyy-MM-dd hh:mm:ss')
         ));
-        $("#commentBox li:last img").attr('src' , 'http://cn.gravatar.com/avatar/' + $.md5(cmt.email));
+        $("#commentBox li:last img").attr('src' , 'http://cn.gravatar.com/avatar/' + $.md5(cmt.author.email));
         if (cmt.isLiked) {
             $('#comment-thumbup-' + floor).removeClass('text-lighten-4');
         }
