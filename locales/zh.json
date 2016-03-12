@@ -63,5 +63,11 @@
 	"Submit": "提交审核",
 	"Upload pdf here": "Upload pdf here",
 	"Upload midi here": "Upload midi here",
-	"No account?": "没有账户？"
+	"No account?": "没有账户？",
+	"全部乐谱": "全部乐谱",
+	"过审核的乐谱": "过审核的乐谱",
+	"未通过审核": "未通过审核",
+	"修改待审核": "修改待审核",
+	"这个人太懒了，什么都没有写": "这个人太懒了，什么都没有写",
+	"Follow": "关注"
 }

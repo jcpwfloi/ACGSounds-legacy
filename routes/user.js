@@ -4,12 +4,6 @@ var multipartMiddleware = multipart({uploadDir: __dirname + '/../tmp'});
 var Sheet = require('../model/sheet');
 var fs = require('fs');
 
-router.get('/', function(req, res) {
-    res.render('user', {
-        title: req.__('User Center') + ' - ACGSounds'
-    });
-});
-
 router.get('/login', function(req, res) {
     res.render('login', {
         title: req.__('Login')
@@ -32,6 +26,13 @@ router.get('*', function(req, res, next) {
     else res.redirect('/user/login?callback=' + '/user' + req.url);
 });
 
+router.get('/', function(req, res) {
+    res.render('user', {
+        title: req.__('User Center') + ' - ACGSounds'
+    });
+});
+
+
 router.get('/upload', function(req, res) {
     res.render('upload', {
         title: req.__('Upload Sheets' + '- ACGSounds')
@@ -48,6 +49,7 @@ router.post('/upload', multipartMiddleware, function(req, res) {
     req.body.sheetTag = req.body.sheetTag.split(',');
 
     req.body.user = req.session.user._id;
+    req.body.approved = 0;
 
     var sheet = new Sheet(req.body);
     sheet.save(function(err) {
@@ -64,6 +66,12 @@ router.post('/upload', multipartMiddleware, function(req, res) {
                 });
             });
         });
+    });
+});
+
+router.post('/mysheet', function(req, res) {
+    Sheet.find({user: req.session.user._id}, function(err, doc) {
+        res.json(doc);
     });
 });
 

@@ -6,7 +6,68 @@ block content
     header
         +normalNav()
     .container
-        h3 User Center
         .row
+            .col.s8
+                h4= __('User Center')
+                .row
+                    .col.s12
+                        ul.tabs
+                            li.tab.col.s3: a(href='#tab1')= __('全部乐谱')
+                            li.tab.col.s3: a(href='#tab2')= __('过审核的乐谱')
+                            li.tab.col.s3: a(href='#tab3')= __('未通过审核')
+                            li.tab.col.s3: a(href='#tab4')= __('修改待审核')
+                        #tab1.col.s12
+                            table.striped
+                                thead
+                                    th Sheet Name
+                                    th Sheet Status
+                                    th Action
+                                tbody#all
+                        #tab2.col.s12
+                            table.striped
+                                thead
+                                    th Sheet Name
+                                    th Sheet Status
+                                    th Action
+                                tbody#approved
+                        #tab3.col.s12
+                            table.striped
+                                thead
+                                    th Sheet Name
+                                    th Sheet Status
+                                    th Action
+                                tbody#unapproved
+                        #tab4.col.s12
+                            table.striped
+                                thead
+                                    th Sheet Name
+                                    th Sheet Status
+                                    th Action
+                                tbody#pending
+            table(style='display: none')
+                tbody.template-1
+                    tr
+                        td {0}
+                        td {1}
+                        td: a(href='/user/modify/{2}') Details
+
+            .col.s4
+                .row
+                    .col.s12
+                        .card
+                            .card-image
+                                img(data-email!=user.email)
+                                span.card-title= user.username
+                            .card-content
+                                p= user.intro ? user.intro : __('这个人太懒了，什么都没有写')
+                            .card-action
+                                a(href='#')= __('Follow')
+
+block script
+    script(src='/javascripts/usercenter.js')
+    script.
+        $(document).ready(function() {
+            $('img[data-email]').attr('src', 'http://cn.gravatar.com/avatar/' + $.md5($('img[data-email]').data('email')) + '?s=2048');
+        });
 
 

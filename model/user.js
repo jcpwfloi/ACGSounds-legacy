@@ -22,6 +22,11 @@ var userSchema = new Schema({
         minlength: 5,
         maxlength: 40
     },
+    intro: {
+        type: String,
+        minlength: 5,
+        maxlength: 50
+    },
     mobile: {
         type: String,
         unique: true,
