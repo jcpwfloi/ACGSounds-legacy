@@ -33,17 +33,40 @@ $(function() {
             $('#comment-thumbup-' + floor).removeClass('text-lighten-4');
         }
     };
-    var loadComments = function() {
+    var pag_size = 5;
+    var pag_cur = undefined;
+    window.pag_go = function (page) {
         $('#commentBox').html('');
+        if (pag_cur) $('#pag-' + pag_cur).removeClass('active');
+        $('#pag-' + page).addClass('active');
+        pag_cur = page;
+        --page;
+        for (var i = comments.length - page * pag_size - 1; i > Math.max(-1, comments.length - page * pag_size - 1 - pag_size); --i) {
+            addComment(comments[i], i + 1);
+        }
+        if (page === 0) $('#pag-prev').addClass('disabled');
+        else $('#pag-prev').removeClass('disabled');
+        if (page === Math.ceil(comments.length / pag_size) - 1) $('#pag-next').addClass('disabled');
+        else $('#pag-next').removeClass('disabled');
+    };
+    window.pag_prev = function () { if (pag_cur !== 1) window.pag_go(pag_cur - 1); };
+    window.pag_next = function () { if (pag_cur !== Math.ceil(comments.length / pag_size)) window.pag_go(pag_cur + 1); };
+    var loadComments = function() {
         var data = {
             sheet_id: window.sheet_id,
             _csrf: $('meta[name=csrf-token]').attr('content')
         };
         $.post('/api/comment/list', data, function(r) {
             comments = r;
-            for (var i = 0; i < r.length; ++i) {
-                addComment(r[i], i + 1);
+            // Create pagination
+            $('#pag-numbers').html('');
+            for (var i = 0; i < Math.ceil(r.length / pag_size); ++i) {
+                var li = $('<li class="waves-effect" id="pag-{0}"><a href="javascript:;">{0}</a></li>'.format(i + 1));
+                li.click((function (_i) { return function () { window.pag_go(_i); }; })(i + 1));
+                $('#pag-numbers').append(li);
             }
+            pag_cur = undefined;
+            window.pag_go(1);
         }, 'json').error(function (err) {
         });
     };

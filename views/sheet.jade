@@ -52,6 +52,14 @@ block content
                             .indeterminate
                         .row.center
                             | Loading...
+                    ul.pagination(id='pag')
+                        li.waves-effect(id='pag-prev')
+                            a(href='javascript:pag_prev();')
+                                i.material-icons chevron_left
+                        span(id='pag-numbers')
+                        li.waves-effect(id='pag-next')
+                            a(href='javascript:pag_next();')
+                                i.material-icons chevron_right
                     if user
                         div.input-field
                             textarea.materialize-textarea(id='text-comment')
