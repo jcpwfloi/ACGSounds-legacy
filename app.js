@@ -33,7 +33,7 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-if (app.get('env') === 'development') {
+if (app.get('env') === 'production') {
     app.use(session({
         secret: 'iughp093478yoEFIUH',
         resave: false,
