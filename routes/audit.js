@@ -32,7 +32,9 @@ router.post('/submit', function(req, res) {
 });
 
 router.get('/:id', function(req, res) {
-    Sheet.findOne({_id: req.params.id}, function(err, sheet) {
+    Sheet.findOne({_id: req.params.id})
+    .populate( { path: 'user', select: 'username email' } )
+    .exec(function(err, sheet) {
         res.render('sheet', {
             title: '审核预览',
             sheet: sheet
