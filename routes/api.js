@@ -48,8 +48,9 @@ router.post('/register', function(req, res) {
 });
 
 // Lists all the comments of a given sheet.
-router.get('/comment/list/:sheet_id', function (req, res) {
-    Sheet.find({ _id: req.params.sheet_id }).populate({
+// `sheet_id` should be provided in request body.
+router.post('/comment/list', function (req, res) {
+    Sheet.find({ _id: req.body.sheet_id }).populate({
         path: 'comments',
         populate: { path: 'author', model: 'User', select: 'username' }
     }).exec(function (err, sheet) {
@@ -79,8 +80,8 @@ router.get('/comment/list/:sheet_id', function (req, res) {
 });
 
 // Sends a comment on a sheet.
-// `text` should be provided in request body.
-router.post('/comment/create/:sheet_id', function (req, res) {
+// `sheet_id` and `text` should be provided in request body.
+router.post('/comment/create', function (req, res) {
     if (!req.session.user) {
         res.status(403);
         return res.json({ msg: 'Please log in first  = =' });
@@ -95,7 +96,7 @@ router.post('/comment/create/:sheet_id', function (req, res) {
             res.status(400);
             return res.json(err);
         } else {
-            Sheet.update({ _id: req.params.sheet_id }, { $push: { 'comments': comment._id } }, function (err) {
+            Sheet.update({ _id: req.body.sheet_id }, { $push: { 'comments': comment._id } }, function (err) {
                 if (err) {
                     res.status(400);
                     return res.json(err);
