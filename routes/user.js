@@ -4,6 +4,12 @@ var multipartMiddleware = multipart({uploadDir: __dirname + '/../tmp'});
 var Sheet = require('../model/sheet');
 var fs = require('fs');
 
+router.get('/', function(req, res) {
+    res.render('user', {
+        title: req.__('User Center') + ' - ACGSounds'
+    });
+});
+
 router.get('/login', function(req, res) {
     res.render('login', {
         title: req.__('Login')

@@ -4,10 +4,19 @@ var lastUpdate = require('./plugins/lastUpdate');
 var Schema = mongoose.Schema;
 
 var sheetSchema = new Schema({
-    sheetName: String,
-    sheetIntro: String,
-    sheetTag: [String],
-    approved: Boolean,
+    sheetName: {
+        type: String,
+        unique: true,
+        minlength: 3,
+        maxlength: 40
+    },
+    sheetIntro: {
+        type: String,
+        minlength: 3,
+        maxlength: 500
+    },
+    sheetTag: [ { type: String, minlength: 1, maxlength: 10 } ],
+    approved: Number,
     comments: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ],
     user: { type: Schema.Types.ObjectId, ref: 'User' }
 });

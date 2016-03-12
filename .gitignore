@@ -42,6 +42,7 @@
 config/local.js
 tmp/
 .cache/
+cache/
 
 
 
