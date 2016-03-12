@@ -15,7 +15,7 @@ block content
                             li.tab.col.s3: a(href='#tab1')= __('全部乐谱')
                             li.tab.col.s3: a(href='#tab2')= __('过审核的乐谱')
                             li.tab.col.s3: a(href='#tab3')= __('未通过审核')
-                            li.tab.col.s3: a(href='#tab4')= __('修改待审核')
+                            li.tab.col.s3: a(href='#tab4')= __('待审核')
                         #tab1.col.s12
                             table.striped
                                 thead
@@ -49,7 +49,7 @@ block content
                     tr
                         td {0}
                         td {1}
-                        td: a(href='/user/modify/{2}') Details
+                        td: a(href='/user/sheet/{2}') Details
 
             .col.s4
                 .row

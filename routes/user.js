@@ -2,6 +2,8 @@ var router = require('express').Router();
 var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart({uploadDir: __dirname + '/../tmp'});
 var Sheet = require('../model/sheet');
+var Qiniu = require('../model/qiniu');
+var Step = require('step');
 var fs = require('fs');
 
 router.get('/login', function(req, res) {
@@ -60,10 +62,13 @@ router.post('/upload', multipartMiddleware, function(req, res) {
             return;
         }
         Sheet.findOne(req.body, function(err, sheet) {
-            fs.rename(req.files.pdf.path, __dirname + '/../tmp/' + sheet._id + '.pdf', function(err) {
-                fs.rename(req.files.midi.path, __dirname + '/../tmp/' + sheet._id + '.mid', function(err) {
-                    res.send('提交成功等待审核');
-                });
+            Step(function() {
+                Qiniu.upload(req.files.pdf.path, sheet._id + '.pdf', this.parallel());
+                Qiniu.upload(req.files.midi.path, sheet._id + '.mid', this.parallel());
+            }, function(err, res1, res2, res3) {
+                fs.unlinkSync(req.files.pdf.path);
+                fs.unlinkSync(req.files.midi.path);
+                res.send('提交成功等待审核');
             });
         });
     });
