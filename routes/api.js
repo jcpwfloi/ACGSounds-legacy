@@ -42,6 +42,15 @@ router.post('/login', function(req, res) {
     });
 });
 
+/**
+ * Register API v1.0
+ * @param {JSON Object} req.body username, password, email
+ * @return {JSON Object} error or success
+ *  if duplicate, return 400
+ *  for other errors, return 400
+ *  unknown errors, return 500
+ *  else return success
+ */
 router.post('/register', function(req, res) {
     var user = new User(req.body);
     var error = user.validateSync();
