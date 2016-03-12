@@ -32,7 +32,8 @@ var userSchema = new Schema({
             },
             message: '{VALUE} is not a valid mobile number'
         }
-    }
+    },
+    commentLikes: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ]
 });
 
 module.exports = mongoose.model('User', userSchema);
