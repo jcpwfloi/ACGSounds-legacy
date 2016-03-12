@@ -1,6 +1,23 @@
+include util
+
 extends layout
 
 block content
-    h1= message
-    h2= error.status
-    pre #{error.stack}
+    header
+        +normalNav()
+    .container
+        br
+        center
+            .row
+                .col.s12
+                    .card
+                        .card-content
+                            span.card-title 害怕
+                            p= message
+                            if error && error.status
+                                p HTTP 状态码：#{error.status}
+                            br
+                            p 好害怕！请检查地址是否输入正确 0.0 输入正确还跳出这个说明程序猿被智障光环笼罩啦！
+                            br
+                            a(href='javascript:history.go(-1)') 返回
+
