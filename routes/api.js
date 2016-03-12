@@ -4,6 +4,12 @@ var Sheet = require('../model/sheet');
 var User = require('../model/user');
 var Comment = require('../model/comment');
 
+/**
+ * Search API v0.1
+ * @param {String} req.body.current query page
+ * @param {String} req.body.querystring query strying of search
+ * @return {JSON Object}
+ */
 router.post('/search', function(req, res) {
     var ret = {current: req.body.current ? req.body.current : 1};
     var str = req.body.querystring;
@@ -17,6 +23,12 @@ router.post('/search', function(req, res) {
     });
 });
 
+/**
+ * Login API v1.0
+ * @param {String} req.body.username username
+ * @param {String} req.body.password MD5 Encrypted Password
+ * @return {JSON Object} error or success
+ */
 router.post('/login', function(req, res) {
     delete req.body._csrf;
     User.findOne(req.body, function(err, user) {
@@ -30,6 +42,15 @@ router.post('/login', function(req, res) {
     });
 });
 
+/**
+ * Register API v1.0
+ * @param {JSON Object} req.body username, password, email
+ * @return {JSON Object} error or success
+ *  if duplicate, return 400
+ *  for other errors, return 400
+ *  unknown errors, return 500
+ *  else return success
+ */
 router.post('/register', function(req, res) {
     var user = new User(req.body);
     var error = user.validateSync();
