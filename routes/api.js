@@ -106,6 +106,9 @@ router.post('/comment/create', function (req, res) {
     if (!req.session.user) {
         res.status(403);
         return res.json({ msg: 'Please log in first  = =' });
+    } else if (req.body.text.length > 500) {
+        res.status(403);
+        return res.json({ msg: 'Content exceeds maximum length (500 characters).' });
     }
     var comment = new Comment({
         author: req.session.user._id,

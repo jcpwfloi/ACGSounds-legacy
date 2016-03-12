@@ -105,7 +105,14 @@ $(function() {
 
     var loadCommentBox = function () {
         // Will be ignored if no comment buttons are present.
+        var updateWordCount = function () {
+            var remaining = 500 - $('#text-comment').val().length;
+            $('#words-disp').text(remaining).css('color', remaining < 0 ? 'red' : 'black');
+            if (remaining < 0) $('#btn-comment').addClass('disabled');
+            else $('#btn-comment').removeClass('disabled');
+        };
         $('#btn-comment').click(function () {
+            if ($('#btn-comment').hasClass('disabled')) return;
             var data = {
                 sheet_id: window.sheet_id,
                 text: $('#text-comment').val(),
@@ -121,8 +128,13 @@ $(function() {
                 url: '/api/comment/create',
                 data: data,
                 statusCode: { 400: function (r) {
-                    Materialize.toast('出错啦 &gt; &lt;<br>' + r.responseJSON.msg, 3000, 'rounded');
+                    Materialize.toast('出错啦 &gt; &lt; (400)<br>' + r.responseJSON.msg, 3000, 'rounded');
                     $('#btn-comment').removeClass('disabled');
+                    updateWordCount();
+                }, 403: function (r) {
+                    Materialize.toast('出错啦 &gt; &lt; (403)<br>' + r.responseJSON.msg, 3000, 'rounded');
+                    $('#btn-comment').removeClass('disabled');
+                    updateWordCount();
                 } },
                 success: function (r) {
                     Materialize.toast('评论发送成功 √', 3000, 'rounded');
@@ -132,6 +144,8 @@ $(function() {
                 }
             });
         });
+        $('#text-comment').change(updateWordCount);
+        $('#text-comment').keyup(updateWordCount);
     };
 
     $(document).ready(function() {
