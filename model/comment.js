@@ -4,7 +4,9 @@ var lastUpdate = require('./plugins/lastUpdate');
 var Schema = mongoose.Schema;
 
 var commentSchema = new Schema({
-    belongTo: { type: Schema.Types.ObjectId, ref: 'Sheet' }
+    author: { type: Schema.Types.ObjectId, ref: 'User' },
+    text: String,
+    likeCount: Number
 });
 
 commentSchema.plugin(lastUpdate);

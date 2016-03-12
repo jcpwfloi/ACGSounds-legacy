@@ -7,7 +7,8 @@ var sheetSchema = new Schema({
     sheetName: String,
     sheetIntro: String,
     sheetTag: [String],
-    approved: Boolean
+    approved: Boolean,
+    comments: [ { type: Schema.Types.ObjectId, ref: 'Comment' } ]
 });
 
 sheetSchema.plugin(lastUpdate);

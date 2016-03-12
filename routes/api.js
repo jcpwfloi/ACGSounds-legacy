@@ -2,6 +2,7 @@ var router = require('express').Router();
 
 var Sheet = require('../model/sheet');
 var User = require('../model/user');
+var Comment = require('../model/comment');
 
 router.post('/search', function(req, res) {
     var ret = {current: req.body.current ? req.body.current : 1};
@@ -43,6 +44,94 @@ router.post('/register', function(req, res) {
             } else return res.json({msg: 'Success'});
         });
         req.session.user = user;
+    }
+});
+
+// Lists all the comments of a given sheet.
+// `sheet_id` should be provided in request body.
+router.post('/comment/list', function (req, res) {
+    Sheet.find({ _id: req.body.sheet_id }).populate({
+        path: 'comments',
+        populate: { path: 'author', model: 'User', select: 'username' }
+    }).exec(function (err, sheet) {
+        if (req.session.user) {
+            return res.json(sheet[0].comments.map(function (cmt) {
+                return {
+                    _id: cmt._id,
+                    createdAt: cmt.createdAt,
+                    author: cmt.author,
+                    text: cmt.text,
+                    likeCount: cmt.likeCount,
+                    isLiked: (req.session.user.commentLikes.indexOf(cmt._id.toString()) !== -1)
+                }
+            }));
+        } else {
+            return res.json(sheet[0].comments.map(function (cmt) {
+                return {
+                    _id: cmt._id,
+                    createdAt: cmt.createdAt,
+                    author: cmt.author,
+                    text: cmt.text,
+                    likeCount: cmt.likeCount
+                }
+            }));
+        }
+    });
+});
+
+// Sends a comment on a sheet.
+// `sheet_id` and `text` should be provided in request body.
+router.post('/comment/create', function (req, res) {
+    if (!req.session.user) {
+        res.status(403);
+        return res.json({ msg: 'Please log in first  = =' });
+    }
+    var comment = new Comment({
+        author: req.session.user._id,
+        text: req.body.text,
+        likeCount: 0
+    });
+    comment.save(function (err) {
+        if (err) {
+            res.status(400);
+            return res.json(err);
+        } else {
+            Sheet.update({ _id: req.body.sheet_id }, { $push: { 'comments': comment._id } }, function (err) {
+                if (err) {
+                    res.status(400);
+                    return res.json(err);
+                } else {
+                    return res.json({ msg: 'Success' });
+                }
+            });
+        }
+    });
+});
+
+// Like/Unlike(?) a comment.
+// `id` should be provided in request body.
+router.post('/comment/like', function (req, res) {
+    if (!req.session.user) {
+        res.status(403);
+        return res.json({ msg: 'Please log in first  = =' });
+    }
+    var ret = { msg: 'Not processed. Unknown error QAQ' };
+    var callback = function (err) {
+        User.findOne({ _id: req.session.user._id }, function (err, user) {
+            req.session.user = user;
+            res.json(ret);
+        });
+    };
+    if (req.session.user.commentLikes.indexOf(req.body.id) !== -1) {
+        // Dad-tricking > <
+        // http://stackoverflow.com/q/15748660/
+        Comment.update({ _id: req.body.id }, { $inc: { 'likeCount': -1 } }, function (err) { });
+        User.update({ _id: req.session.user._id }, { $pull: { 'commentLikes': req.body.id } }, callback);
+        ret = { operation: 'cancel', msg: 'Success' };
+    } else {
+        Comment.update({ _id: req.body.id }, { $inc: { 'likeCount': 1 } }, function (err) { });
+        User.update({ _id: req.session.user._id }, { $push: { 'commentLikes': req.body.id } }, callback);
+        ret = { operation: 'like', msg: 'Success' };
     }
 });
 
