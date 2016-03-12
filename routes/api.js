@@ -14,8 +14,8 @@ router.post('/search', function(req, res) {
     var ret = {current: req.body.current ? req.body.current : 1};
     var str = req.body.querystring;
 
-    Sheet.find().or([ { sheetName: { $regex: str }, approved: 3 }, { sheetTag: { $regex: str }, approved: 3 }]).count(function(err, count) {
-        Sheet.find().or([ { sheetName: { $regex: str }, approved: 3 }, { sheetTag: { $regex: str }, approved: 3 }]).exec(function(err, sheet) {
+    Sheet.find().or([ { sheetName: { $regex: str }, approved: 3 }, { sheetTag: { $regex: str }/*, approved: 3*/ }]).count(function(err, count) {
+        Sheet.find().or([ { sheetName: { $regex: str }, approved: 3 }, { sheetTag: { $regex: str }/*, approved: 3*/ }]).exec(function(err, sheet) {
             ret.data = sheet;
             ret.total = Math.floor(count / 20) + 1;
             res.json(ret);
@@ -73,7 +73,7 @@ router.post('/register', function(req, res) {
 router.post('/comment/list', function (req, res) {
     Sheet.find({ _id: req.body.sheet_id }).populate({
         path: 'comments',
-        populate: { path: 'author', model: 'User', select: 'username' }
+        populate: { path: 'author', model: 'User', select: 'username email' }
     }).exec(function (err, sheet) {
         if (req.session.user) {
             return res.json(sheet[0].comments.map(function (cmt) {
