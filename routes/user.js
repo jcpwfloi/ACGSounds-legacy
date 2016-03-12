@@ -51,6 +51,12 @@ router.post('/upload', multipartMiddleware, function(req, res) {
 
     var sheet = new Sheet(req.body);
     sheet.save(function(err) {
+        if (err) {
+            res.render('error', { message: JSON.stringify(err) } );
+            fs.unlinkSync(req.files.pdf.path);
+            fs.unlinkSync(req.files.midi.path);
+            return;
+        }
         Sheet.findOne(req.body, function(err, sheet) {
             fs.rename(req.files.pdf.path, __dirname + '/../tmp/' + sheet._id + '.pdf', function(err) {
                 fs.rename(req.files.midi.path, __dirname + '/../tmp/' + sheet._id + '.mid', function(err) {
