@@ -24,9 +24,17 @@ $(function() {
     };
 
     var comments = [];
+    var addComment = function (cmt, floor) {
+        $('#commentBox').append($('.template-1').html().format(
+            cmt.author.username, cmt.text, floor, cmt.likeCount, (new Date(cmt.createdAt)).Format('yyyy-MM-dd hh:mm:ss')
+        ));
+        $("#commentBox li:last img").attr('src' , 'http://cn.gravatar.com/avatar/' + $.md5(cmt.email));
+        if (cmt.isLiked) {
+            $('#comment-thumbup-' + floor).removeClass('text-lighten-4');
+        }
+    };
     var loadComments = function() {
         $('#commentBox').html('');
-        var str = $('.template-1').html();
         var data = {
             sheet_id: window.sheet_id,
             _csrf: $('meta[name=csrf-token]').attr('content')
@@ -34,13 +42,7 @@ $(function() {
         $.post('/api/comment/list', data, function(r) {
             comments = r;
             for (var i = 0; i < r.length; ++i) {
-                $('#commentBox').append(str.format(
-                    r[i].author.username, r[i].text, i + 1, r[i].likeCount, (new Date(r[i].createdAt)).Format('yyyy-MM-dd hh:mm:ss')
-                ));
-                $("#commentBox li:last img").attr('src' , 'http://cn.gravatar.com/avatar/' + $.md5(r[i].email));
-                if (r[i].isLiked) {
-                    $('#comment-thumbup-' + (i + 1)).removeClass('text-lighten-4');
-                }
+                addComment(r[i], i + 1);
             }
         }, 'json').error(function (err) {
         });
@@ -78,8 +80,40 @@ $(function() {
         });
     };
 
+    var loadCommentBox = function () {
+        // Will be ignored if no comment buttons are present.
+        $('#btn-comment').click(function () {
+            var data = {
+                sheet_id: window.sheet_id,
+                text: $('#text-comment').val(),
+                _csrf: $('meta[name=csrf-token]').attr('content')
+            };
+            if (data.text.trim().length === 0) {
+                Materialize.toast('请输入内容', 3000, 'rounded');
+                return;
+            }
+            $('#btn-comment').addClass('disabled');
+            $.ajax({
+                type: 'POST',
+                url: '/api/comment/create',
+                data: data,
+                statusCode: { 400: function (r) {
+                    Materialize.toast('出错啦 &gt; &lt;<br>' + r.responseJSON.msg, 3000, 'rounded');
+                    $('#btn-comment').removeClass('disabled');
+                } },
+                success: function (r) {
+                    Materialize.toast('评论发送成功 √', 3000, 'rounded');
+                    $('#btn-comment').removeClass('disabled');
+                    $('#text-comment').val('');
+                    loadComments();
+                }
+            });
+        });
+    };
+
     $(document).ready(function() {
         loadComments();
+        loadCommentBox();
     });
 
 });
