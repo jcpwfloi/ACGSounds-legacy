@@ -37,7 +37,7 @@ $(function() {
                 $('#commentBox').append(str.format(
                     r[i].author.username, r[i].text, i + 1, r[i].likeCount, (new Date(r[i].createdAt)).Format('yyyy-MM-dd hh:mm:ss')
                 ));
-                $("#commentBox li:last img").attr('src' , 'http://cn.gravatar.com/avatar/' + $.md5(r[i].email))
+                $("#commentBox li:last img").attr('src' , 'http://cn.gravatar.com/avatar/' + $.md5(r[i].email));
                 if (r[i].isLiked) {
                     $('#comment-thumbup-' + (i + 1)).removeClass('text-lighten-4');
                 }
