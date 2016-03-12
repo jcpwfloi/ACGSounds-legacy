@@ -1,0 +1,31 @@
+include util
+
+extends layout
+
+block content
+    header
+        +normalNav()
+    .container
+        h4 审核
+        blockquote
+            | 审核页面丑点就丑点了别抱怨了，反正也不是给别人看的
+        table.table-striped
+            thead
+                th sheetName
+                th sheetStatus
+                th Preview
+                th Action
+            tbody
+                each i in sheet
+                    tr
+                        td= i.sheetName
+                        td= i.approved
+                        td: a(href!='/audit/' + i._id, target='_new') 预览
+                        td
+                            a(href='#', data-id!=String(i._id), data-type='approve') 通过
+                            span  / 
+                            a(href='#', data-id!=String(i._id), data-type='unapprove') 拒绝
+
+block script
+    script(src='/javascripts/audit.js')
+
