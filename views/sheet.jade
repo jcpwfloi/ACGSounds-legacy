@@ -52,6 +52,15 @@ block content
                             .indeterminate
                         .row.center
                             | Loading...
+                    
+                    div.input-field
+                        textarea.materialize-textarea(id='text-comment')
+                        label(for='text-comment')
+                            | Say something
+                        a.waves-effect.waves-light.btn(id='btn-comment', style='width: 100%')
+                            i.material-icons.left
+                                | navigation
+                            | Send
         .col.s8
             object#pdf(data!='http://7xr3so.com1.z0.glb.clouddn.com/' + sheet._id + '.pdf', type='application/pdf', style='width: 100%; height: 600px')
 
