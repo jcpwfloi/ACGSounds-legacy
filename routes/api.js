@@ -61,7 +61,7 @@ router.get('/comment/list/:sheet_id', function (req, res) {
                     author: cmt.author,
                     text: cmt.text,
                     likeCount: cmt.likeCount,
-                    isLiked: (req.session.user.commentLikes.indexOf(cmt._id) !== -1)
+                    isLiked: (req.session.user.commentLikes.indexOf(cmt._id.toString()) !== -1)
                 }
             }));
         } else {
@@ -114,23 +114,24 @@ router.post('/comment/like', function (req, res) {
         res.status(403);
         return res.json({ msg: 'Please log in first  = =' });
     }
-    var liked_list = req.session.user.commentLikes.map(function (e) { return e.toString(); });
-    console.log(req.session.user.commentLikes);
-    console.log(liked_list);
+    var ret = { msg: 'Not processed. Unknown error QAQ' };
+    var callback = function (err) {
+        User.findOne({ _id: req.session.user._id }, function (err, user) {
+            req.session.user = user;
+            res.json(ret);
+        });
+    };
     if (req.session.user.commentLikes.indexOf(req.body.id) !== -1) {
         // Dad-tricking > <
         // http://stackoverflow.com/q/15748660/
         Comment.update({ _id: req.body.id }, { $inc: { 'likeCount': -1 } }, function (err) { });
-        User.update({ _id: req.session.user._id }, { $pull: { 'commentLikes': req.body.id } }, function (err) { });
-        return res.json({ operation: 'cancel', msg: 'Success' });
+        User.update({ _id: req.session.user._id }, { $pull: { 'commentLikes': req.body.id } }, callback);
+        ret = { operation: 'cancel', msg: 'Success' };
     } else {
         Comment.update({ _id: req.body.id }, { $inc: { 'likeCount': 1 } }, function (err) { });
-        User.update({ _id: req.session.user._id }, { $push: { 'commentLikes': req.body.id } }, function (err) { });
-        return res.json({ operation: 'like', msg: 'Success' });
+        User.update({ _id: req.session.user._id }, { $push: { 'commentLikes': req.body.id } }, callback);
+        ret = { operation: 'like', msg: 'Success' };
     }
-    User.find({ _id: req.session.user_id }, function (err, user) {
-        req.session.user = user;
-    });
 });
 
 module.exports = router;
