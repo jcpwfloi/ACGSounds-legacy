@@ -9,7 +9,7 @@ var csurf = require('csurf');
 var session = require('express-session');
 var MemcachedStore = require('connect-memcached')(session);
 
-require('mongoose').connect('mongodb://hk2.codebursts.com/acgs_sheet');
+require('mongoose').connect('mongodb://127.0.0.1/acgs_sheet');
 
 var routes = require('./routes/index');
 var search = require('./routes/search');
