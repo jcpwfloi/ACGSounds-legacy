@@ -8,7 +8,7 @@ router.use('*', function(req, res, next) {
         next();
     } else {
         res.status(403);
-        res.send('403 Forbidden');
+        res.render('error', { message: '木有权限' })
     }
 });
 

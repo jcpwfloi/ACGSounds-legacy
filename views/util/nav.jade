@@ -19,6 +19,9 @@ mixin normalNav()
                                 a(href='/user')= __('User Center')
                             li
                                 a(href='/user/profile')= __('Profile Settings')
+                            if user.admin || user.audit
+                                li
+                                    a(href='/audit')= 审核系统
                             li.divider
                             li
                                 a(href='/user/logout')= __('Logout')
