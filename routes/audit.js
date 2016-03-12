@@ -26,7 +26,7 @@ router.get('/', function(req, res) {
 });
 
 router.post('/submit', function(req, res) {
-    Sheet.update({_id: req.body.id}, {$set: { approved: req.body.type === 'approved' ? 3 : 2 }, $push: { auditor: req.session.user._id, auditDate: new Date }}, function(err, doc) {
+    Sheet.update({_id: req.body.id}, {$set: { approved: req.body.type == 'approve' ? 3 : 2 }, $push: { auditor: req.session.user._id, auditDate: new Date }}, function(err, doc) {
         res.json({message: '成功'});
     });
 });
