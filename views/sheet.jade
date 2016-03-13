@@ -26,13 +26,13 @@ block content
                             p 标签：
                             p(style='font-size: 12px') 简介：#{sheet.sheetIntro.length > 100 ? sheet.sheetIntro.substr(0, 96) + '....' : sheet.sheetIntro}
                         .card-action
-                            a(href!='http://cdn.acgsounds.com/' + sheet._id + '.mid') 下载 MIDI
-                            a(href!='http://cdn.acgsounds.com/' + sheet._id + '.pdf') 下载 PDF
+                            a(href!='http://7xr3so.com1.z0.glb.clouddn.com/' + sheet._id + '.mid') 下载 MIDI
+                            a(href!='http://7xr3so.com1.z0.glb.clouddn.com/' + sheet._id + '.pdf') 下载 PDF
                             a(href='#') 下载 SIB
                 .col.s12
                     .card(style='margin-bottom: 0')
                         .card-content
-                            a(href!='javascript:MIDIjs.play(\'http://cdn.acgsounds.com/' + sheet._id + '.mid\')')
+                            a(href!='javascript:MIDIjs.play(\'http://7xr3so.com1.z0.glb.clouddn.com/' + sheet._id + '.mid\')')
                                 i.material-icons play_circle_filled
                             | &nbsp;&nbsp;
                             a(href='#', onClick='MIDIjs.stop()')
@@ -71,7 +71,7 @@ block content
                                 i.material-icons.left navigation
                                 = __('Submit comment')
         .col.s8
-            object#pdf(data!='http://cdn.acgsounds.com/' + sheet._id + '.pdf', type='application/pdf', style='width: 100%; height: 600px')
+            object#pdf(data!='http://7xr3so.com1.z0.glb.clouddn.com/' + sheet._id + '.pdf', type='application/pdf', style='width: 100%; height: 600px')
 
         .template-1(style='display: none')
             li.collection-item.avatar(id='comment-display-{2}')

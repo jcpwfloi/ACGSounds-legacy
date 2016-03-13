@@ -46,7 +46,7 @@ var read_midi_events = function (url, callback) {
 };
 
 function lengthParser(callback) {
-    read_midi_events('http://cdn.acgsounds.com/{0}.mid'.format(window.sheet_id), function(data) {
+    read_midi_events('http://7xr3so.com1.z0.glb.clouddn.com/{0}.mid'.format(window.sheet_id), function(data) {
         callback(Math.round(data[data.length - 1].playTime / 1000));
     });
 }
