@@ -63,3 +63,8 @@ $.urlParam = function(name){
         return results[1] || 0;
     }
 }
+
+function loginWithCallback() {
+    window.location.href = '/user/login?callback=' + window.location.href;
+}
+

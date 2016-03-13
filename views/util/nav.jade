@@ -27,4 +27,4 @@ mixin normalNav()
                                 a(href='/user/logout')= __('Logout')
                     else
                         li
-                            a(href='/user/login')= __('Login')
+                            a(href='javascript:loginWithCallback()')= __('Login')
