@@ -10,12 +10,21 @@ var Comment = require('../model/comment');
  * @param {String} req.body.querystring query strying of search
  * @return {JSON Object}
  */
+
+var perPage = 20;
+
 router.post('/search', function(req, res) {
     var ret = {current: req.body.current ? req.body.current : 1};
+    var page = ret.current;
     var str = req.body.querystring;
 
-    Sheet.find().or([ { sheetName: { $regex: str }, approved: 3 }, { sheetTag: { $regex: str }, approved: 3 }]).count(function(err, count) {
-        Sheet.find().or([ { sheetName: { $regex: str }, approved: 3 }, { sheetTag: { $regex: str }, approved: 3 }]).exec(function(err, sheet) {
+    Sheet.find({ approved: 3} ).or([ { sheetName: { $regex: str } }, { sheetTag: { $regex: str } }]).count(function(err, count) {
+        Sheet.find({ approved: 3 })
+        .or([ { sheetName: { $regex: str } }, { sheetTag: { $regex: str } }])
+        .sort({_id: -1})
+        .limit(perPage)
+        .skip(perPage * (page - 1))
+        .exec(function(err, sheet) {
             ret.data = sheet;
             ret.total = Math.floor(count / 20) + 1;
             res.json(ret);
