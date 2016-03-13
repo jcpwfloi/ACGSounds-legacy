@@ -8,7 +8,7 @@ var sheetSchema = new Schema({
         type: String,
         unique: true,
         minlength: 3,
-        maxlength: 40
+        maxlength: 60
     },
     sheetIntro: {
         type: String,
