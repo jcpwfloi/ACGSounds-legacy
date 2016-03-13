@@ -64,7 +64,17 @@ block content
                                         input(type='checkbox')
                                         span.lever
                                         | #{__('Agree')}
-
+        .template-1(style='display: none')
+            li
+                .collapsible-header(class='{2}')
+                    i.material-icons library_books
+                    | {0}
+                .collapsible-body
+                    p {1}
+                    .row.center
+                        a.btn.orange.lighten-1(href='/sheets/{3}') 详细信息
+                    .row.center
+                        | 标签：{4}
         .col.s9
             .row(style='margin-bottom:0')
                 form.col.s10

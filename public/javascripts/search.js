@@ -1,4 +1,4 @@
-/*
+/**
     FUNC: parseData
         Accept data form search API and render the views
 
@@ -20,11 +20,11 @@ function parseData(data) {
     for (i in data) {
         var tagString = '';
         for (j in data[i].sheetTag) tagString = tagString + '<div class="chip">{0}</div>'.format(data[i].sheetTag[j]);
-        $('#searchResult').append(
-                '<li><div class="collapsible-header{2}"><i class="material-icons">library_books</i>{0}</div><div class="collapsible-body"><p>{1}</p>'.format(data[i].sheetName, data[i].sheetIntro, i == 0 ? ' active' : '') +
-                '<div class="row center"><a class="btn orange lighten-1" href="/sheets/{0}">详细信息</a></div>'.format(data[i]._id) +
-                '<div class="row center">标签：{0}</div>'.format(tagString) +
-                '</div></li>');
+        var str = $('.template-1').html();
+        $('#searchResult').append(str.format(data[i].sheetName,
+                                            data[i].sheetIntro,
+                                            (i == 0 ? 'active' : ''),
+                                            data[i]._id, tagString));
         $('.collapsible').collapsible();
     }
 }
