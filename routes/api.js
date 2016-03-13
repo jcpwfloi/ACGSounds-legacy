@@ -85,6 +85,7 @@ router.post('/comment/list', function (req, res) {
         path: 'comments',
         populate: { path: 'author', model: 'User', select: 'username email' }
     }).exec(function (err, sheet) {
+        if (!sheet || sheet.length === 0) return res.json([]);
         if (req.session.user) {
             return res.json(sheet[0].comments.map(function (cmt) {
                 return {
