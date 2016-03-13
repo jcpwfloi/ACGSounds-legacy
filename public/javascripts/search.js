@@ -24,7 +24,8 @@ function parseData(data) {
         $('#searchResult').append(str.format(data[i].sheetName,
                                             data[i].sheetIntro,
                                             (i == 0 ? 'active' : ''),
-                                            data[i]._id, tagString));
+                                            data[i]._id, tagString,
+                                            data[i].user.username));
         $('.collapsible').collapsible();
     }
 }

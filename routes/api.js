@@ -24,6 +24,7 @@ router.post('/search', function(req, res) {
         .sort({_id: -1})
         .limit(perPage)
         .skip(perPage * (page - 1))
+        .populate({ path: 'user', model: 'User', select: 'username'})
         .exec(function(err, sheet) {
             ret.data = sheet;
             ret.total = Math.floor(count / 20) + 1;
