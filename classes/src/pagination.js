@@ -47,7 +47,7 @@
          if (typeof this.options.csrf === "function") data._csrf = csrf();
          extend(data, this.options.postParam);
          $.post(this.remoteURL, data, function(res) {
-             this.total = total;
+             this.total = res.total;
              if (typeof callback === "function") callback(null, res.data);
          }, "json").onerror(function(e) {
              if (typeof callback === "function") callback(e, null);
@@ -120,7 +120,7 @@
  function getNum(paginationObject) {
      return {
          begin: paginationObject.options.perPage * (paginationObject.current - 1),
-         end: paginationObject.options.perPage * paginationObject.current
+         end: Math.min(paginationObject.options.perPage * paginationObject.current, this.total)
      };
  }
 

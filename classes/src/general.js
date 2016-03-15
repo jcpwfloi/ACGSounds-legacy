@@ -34,6 +34,7 @@
          return typeof args[number] != 'undefined' ? args[number] : match;
      });
  };
+
  Date.prototype.Format = function (fmt) {
      var o = {
          "M+": this.getMonth() + 1, //月份

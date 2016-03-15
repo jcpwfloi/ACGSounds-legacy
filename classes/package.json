@@ -1,6 +1,6 @@
 {
   "name": "acgsounds-classes",
-  "version": "0.0.1",
+  "version": "v0.0.2-alpha",
   "description": "ACGSounds Runtime Library",
   "main": "Gruntfile.js",
   "scripts": {
