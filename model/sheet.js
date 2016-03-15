@@ -6,7 +6,6 @@ var Schema = mongoose.Schema;
 var sheetSchema = new Schema({
     sheetName: {
         type: String,
-        unique: true,
         minlength: 3,
         maxlength: 60
     },
