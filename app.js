@@ -29,6 +29,8 @@ i18n.configure({
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
+app.use(express.static(path.join(__dirname, 'public')));
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(__dirname + '/public/favicon.ico'));
 app.use(logger('dev'));
@@ -55,8 +57,6 @@ app.use(require('less-middleware')(path.join(__dirname, 'public')));
 app.use(require('express-minify')({
     cache: __dirname + '/cache'
 }));
-
-app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(csurf());
 
