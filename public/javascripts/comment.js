@@ -2,10 +2,13 @@ $(function() {
     var comments = [];
     var pagination = new Pagination({
         pageButton: function (num, active) {
-        }, prevButton: function (num, disabled) {
-            return $('#template-pag-prev').html();
-        }, nextButton: function (num, disabled) {
-            return $('#template-pag-next').html();
+            return $('#template-pag-button' + (active ? '-active' : '')).html().replace('display: none', '').format(num, num + 1);
+        }, prevButton: function (disabled) {
+            return $('#template-pag-prev' + (disabled ? '-disabled' : '')).html().replace('display: none', '');
+        }, nextButton: function (disabled) {
+            return $('#template-pag-next' + (disabled ? '-disabled' : '')).html().replace('display: none', '');
+        }, pageButtonsAdd: function (html) {
+            $('#pag').html(html);
         }, contentRenderer: function (num, ctnt) {
             $('#commentBox').append($('.template-1').html().format(
                 ctnt.author.username, ctnt.text, num + 1, ctnt.likeCount, (new Date(ctnt.createdAt)).Format('yyyy-MM-dd hh:mm:ss')

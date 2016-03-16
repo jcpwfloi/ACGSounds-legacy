@@ -52,14 +52,29 @@ block content
                             .indeterminate
                         .row.center
                             | Loading...
-                    ul.pagination(id='pag')
-                        li.waves-effect(id='template-pag-prev', style='display: none')
+                    div(id='template-pag-prev')
+                        li.waves-effect(style='display: none')
                             a(href='javascript:pag_prev();')
                                 i.material-icons chevron_left
-                        span(id='pag-numbers')
-                        li.waves-effect(id='template-pag-next', style='display: none')
+                    div(id='template-pag-prev-disabled')
+                        li.disabled.waves-effect(style='display: none')
+                            a(href='javascript:pag_prev();')
+                                i.material-icons chevron_left
+                    div(id='template-pag-button')
+                        li.waves-effect(style='display: none')
+                            a(href='javascript:pag_go({0});') {1}
+                    div(id='template-pag-button-active')
+                        li.active.waves-effect(style='display: none')
+                            a(href='javascript:pag_go({0});') {1}
+                    div(id='template-pag-next')
+                        li.waves-effect(style='display: none')
                             a(href='javascript:pag_next();')
                                 i.material-icons chevron_right
+                    div(id='template-pag-next-disabled')
+                        li.disabled.waves-effect(style='display: none')
+                            a(href='javascript:pag_next();')
+                                i.material-icons chevron_right
+                    ul.pagination(id='pag')
                     if user
                         div.input-field
                             textarea.materialize-textarea(id='text-comment')

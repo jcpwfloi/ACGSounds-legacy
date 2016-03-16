@@ -19,16 +19,20 @@
       * @constructor
       */
      this.defaults = {
-         dispRange: 5,
+         dispRange: 2,
          perPage: 4,
          remote: false,
          postParam: {},
          pageButton: function (num, active) {
              //return '<li class="wave-effect{1}">{0}</div>'.format(num + 1, active ? ' active': '');
          },
-         prevButton: function (num, disabled) {
+         prevButton: function (disabled) {
          },
-         nextButton: function (num, disabled) {
+         nextButton: function (disabled) {
+         },
+         ellipsis: function () {
+         },
+         pageButtonsAdd: function (html) {
          },
          contentRenderer: function (num, ctnt) {
          },
@@ -60,6 +64,7 @@
      },*/
      loadFromArray: function (arr, callback) {
          this.contents = arr;
+         this.itemCount = arr.length;
          this.current = 0;
          this.pageCount = Math.ceil(arr.length / this.options.perPage);
          this.go(0);
@@ -68,16 +73,24 @@
      go: function (num, callback) {
          this.current = num;
          this.options.contentClearer();
-         var rg = getPageRange(this);
+         var rg;
+         rg = getPagesRange(this);
+         var buttons_html = this.options.prevButton(this.current === 0);
+         for (var i = 0; i < rg.length; ++i) {
+             buttons_html += this.options.pageButton(i, this.current === i);
+         }
+         buttons_html += this.options.nextButton(this.current === this.pageCount - 1);
+         this.options.pageButtonsAdd(buttons_html);
+         rg = getSinglePageRange(this);
          for (var i = rg.begin; i < rg.end; ++i) {
              this.options.contentRenderer(i, this.contents[i]);
          }
      },
      prev: function (callback) {
-         if (this.current > 0) this.page(this.current - 1, num);
+         if (this.current > 0) this.go(this.current - 1, callback);
      },
      next: function (callback) {
-         if (this.current < this.pageCount - 1) this.page(this.current + 1, num);
+         if (this.current < this.pageCount - 1) this.go(this.current + 1, callback);
      },
      /**
       * @function load
@@ -99,14 +112,25 @@
  };
 
  /**
-  * @function getPageRange
+  * @function getPagesRange
+  * @param {Pagination} pag The pagination Object
+  * @return {Array} [0, 1, 2, -1, 7, 8, 9, -1, 15, 16, 17]
+  */
+ function getPagesRange(pag) {
+     var ret = [];
+     for (var i = 0; i < pag.pageCount; ++i) ret.push(i);
+     return ret;
+ }
+
+ /**
+  * @function getSinglePageRange
   * @param {Pagination} paginationObject The parent Object
   * @return {JSON Object} { begin: [begin value], end: [end value] }
   */
- function getPageRange(paginationObject) {
+ function getSinglePageRange(paginationObject) {
      return {
          begin: paginationObject.options.perPage * paginationObject.current,
-         end: Math.min(paginationObject.options.perPage * (paginationObject.current + 1), paginationObject.pageCount)
+         end: Math.min(paginationObject.options.perPage * (paginationObject.current + 1), paginationObject.itemCount)
      };
  }
 
