@@ -53,28 +53,28 @@ block content
                         .row.center
                             | Loading...
                     div(id='template-pag-prev')
-                        li.waves-effect(style='display: none')
-                            a(href='javascript:pag_prev();')
+                        li.waves-effect(style='display: none', onclick='window.pagination.prev()')
+                            a(href='javascript:;')
                                 i.material-icons chevron_left
-                    div(id='template-pag-prev-disabled')
+                    div(id='template-pag-prev-disabled', onclick='window.pagination.prev()')
                         li.disabled.waves-effect(style='display: none')
-                            a(href='javascript:pag_prev();')
+                            a(href='javascript:;')
                                 i.material-icons chevron_left
                     div(id='template-pag-next')
-                        li.waves-effect(style='display: none')
-                            a(href='javascript:pag_next();')
+                        li.waves-effect(style='display: none', onclick='window.pagination.next()')
+                            a(href='javascript:;')
                                 i.material-icons chevron_right
                     div(id='template-pag-next-disabled')
-                        li.disabled.waves-effect(style='display: none')
-                            a(href='javascript:pag_next();')
+                        li.disabled.waves-effect(style='display: none', onclick='window.pagination.next()')
+                            a(href='javascript:;')
                                 i.material-icons chevron_right
 
                     div(id='template-pag-button')
-                        li.waves-effect(style='display: none')
-                            a(href='javascript:pag_go({0});') {1}
+                        li.waves-effect(style='display: none', onclick='window.pagination.go({0})')
+                            a(href='javascript:;') {1}
                     div(id='template-pag-button-active')
-                        li.active.waves-effect(style='display: none')
-                            a(href='javascript:pag_go({0});') {1}
+                        li.active.waves-effect(style='display: none', onclick='window.pagination.go({0})')
+                            a(href='javascript:;') {1}
                     div(id='template-pag-ellipsis')
                         li.waves-effect(style='display: none') …
                     ul.pagination(id='pag')

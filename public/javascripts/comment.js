@@ -23,11 +23,7 @@ $(function() {
             $('#commentBox').html('');
         }
     });
-    window.pag_go = function (page) {
-        pagination.go(page);
-    };
-    window.pag_prev = function () { pagination.prev(); };
-    window.pag_next = function () { pagination.next(); };
+    window.pagination = pagination;
     var loadComments = function() {
         /*var data = {
             sheet_id: window.sheet_id,

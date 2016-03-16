@@ -70,7 +70,7 @@
          this.go(0);
          if (typeof callback === "function") callback(null);
      },
-     go: function (num, callback) {
+     go: function (num) {
          this.current = num;
          this.options.contentClearer();
          var rg;
@@ -120,7 +120,7 @@
  function getPagesRange(pag) {
      var ret = [];
      var l1 = 0, u1 = Math.min(pag.options.dispRange, pag.itemCount);
-     var l2 = Math.max(pag.current - pag.options.dispRange, 0), u2 = Math.min(pag.current + pag.options.dispRange + 1, pag.itemCount);
+     var l2 = Math.max(pag.current - pag.options.dispRange, 0), u2 = Math.min(Math.min(pag.current + pag.options.dispRange + 1, pag.itemCount), pag.pageCount);
      var l3 = Math.max(pag.pageCount - pag.options.dispRange), u3 = pag.pageCount;
      for (var i = l1; i < u1; ++i) ret.push(i);
      if (u1 < l2) ret.push(-1);
