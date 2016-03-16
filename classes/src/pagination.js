@@ -92,8 +92,7 @@
          }
      },
      render: function() {
-         var page = getNum(this);
-         return internalRender(page.begin, page.end, this.current, this);
+         return internalRender(Math.max(this.current - this.options.offset, 1), Math.min(this.current + this.options.offset, this.total), this.current, this);
      }
  };
 
