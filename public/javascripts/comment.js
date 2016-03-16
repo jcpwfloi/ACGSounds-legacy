@@ -10,7 +10,7 @@ $(function() {
         }, ellipsis: function () {
             return $('#template-pag-ellipsis').html().replace('display: none', '');
         }, pageButtonsAdd: function (html) {
-            $('#pag').html(html);
+            $('#pagination-container').html(html);
         }, contentRenderer: function (num, ctnt) {
             $('#commentBox').append($('.template-1').html().format(
                 ctnt.author.username, ctnt.text, num + 1, ctnt.likeCount, (new Date(ctnt.createdAt)).Format('yyyy-MM-dd hh:mm:ss')

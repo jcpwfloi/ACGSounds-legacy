@@ -24,7 +24,6 @@
          remote: false,
          postParam: {},
          pageButton: function (num, active) {
-             //return '<li class="wave-effect{1}">{0}</div>'.format(num + 1, active ? ' active': '');
          },
          prevButton: function (disabled) {
          },
