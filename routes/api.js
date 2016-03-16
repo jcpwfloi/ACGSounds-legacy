@@ -78,8 +78,14 @@ router.post('/register', function(req, res) {
     }
 });
 
-// Lists all the comments of a given sheet.
-// `sheet_id`, `start` and `count` should be provided in request body.
+/**
+ * Comment list API v1.0
+ * @param {String} req.body.sheet_id  The object ID of the sheet
+ * @param {String} req.body.start  The index of the first comment to retrieve
+ * @param {String} req.body.count  The number of the comments to retrieve,
+ *                                 i.e. the returned JSON contains comments [start .. start + count - 1]
+ * @return {JSON Object}  A `msg` field denoting the result, and `count` and `list` (matching the requirements of Pagination) on success
+ */
 router.post('/comment/list', function (req, res) {
     Sheet.find({ _id: req.body.sheet_id }).populate({
         path: 'comments',
@@ -108,8 +114,12 @@ router.post('/comment/list', function (req, res) {
     });
 });
 
-// Sends a comment on a sheet.
-// `sheet_id` and `text` should be provided in request body.
+/**
+ * Comment send API v1.0
+ * @param {String} req.body.sheet_id  The object ID of the sheet
+ * @param {String} req.body.text  The text to be sent
+ * @return {JSON Object}  A `msg` field denoting the result
+ */
 router.post('/comment/create', function (req, res) {
     if (!req.session.user) {
         res.status(403);
@@ -140,8 +150,14 @@ router.post('/comment/create', function (req, res) {
     });
 });
 
-// Like/Unlike(?) a comment.
-// `id` should be provided in request body.
+/**
+ * Comment like/unlike API v1.0
+ * 
+ * Toggles the upvote state of a given comment. Only valid when the user is logged in.
+ * 
+ * @param {String} req.body.sheet_id  The object ID of the comment
+ * @return {JSON Object}  A `msg` field denoting the result, and `operation` representing the operation carried out ('like' or 'cancel').
+ */
 router.post('/comment/like', function (req, res) {
     if (!req.session.user) {
         res.status(403);
