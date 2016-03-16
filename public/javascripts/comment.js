@@ -7,6 +7,8 @@ $(function() {
             return $('#template-pag-prev' + (disabled ? '-disabled' : '')).html().replace('display: none', '');
         }, nextButton: function (disabled) {
             return $('#template-pag-next' + (disabled ? '-disabled' : '')).html().replace('display: none', '');
+        }, ellipsis: function () {
+            return $('#template-pag-ellipsis').html().replace('display: none', '');
         }, pageButtonsAdd: function (html) {
             $('#pag').html(html);
         }, contentRenderer: function (num, ctnt) {

@@ -77,7 +77,8 @@
          rg = getPagesRange(this);
          var buttons_html = this.options.prevButton(this.current === 0);
          for (var i = 0; i < rg.length; ++i) {
-             buttons_html += this.options.pageButton(i, this.current === i);
+             if (rg[i] === -1) buttons_html += this.options.ellipsis();
+             else buttons_html += this.options.pageButton(rg[i], this.current === rg[i]);
          }
          buttons_html += this.options.nextButton(this.current === this.pageCount - 1);
          this.options.pageButtonsAdd(buttons_html);
@@ -118,7 +119,9 @@
   */
  function getPagesRange(pag) {
      var ret = [];
-     for (var i = 0; i < pag.pageCount; ++i) ret.push(i);
+     for (var i = 0; i < 10; ++i) ret.push(i);
+     ret.push(-1);
+     for (var i = 10; i < pag.pageCount; ++i) ret.push(i);
      return ret;
  }
 
