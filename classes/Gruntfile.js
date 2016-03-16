@@ -6,7 +6,7 @@ module.exports = function(grunt) {
                 banner: '/*! <%= pkg.name %> <%= pkg.version %> */\n'
             },
             build: {
-                src: ['src/general.js', 'src/pagination.js'],
+                src: ['src/general.js', 'src/pagination.js', 'src/i18n.js'],
                 dest: '../public/javascripts/runtime.min.js'
             }
         },

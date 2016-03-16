@@ -26,7 +26,7 @@
          },
          postParam: {},
          render: function(num, active) {
-             return '<li class="wave-effect{1}">{0}</div>'.format(num, active ? ' active': '');
+             return '<li class="wave-effect{1}" data-id="{0}">{0}</div>'.format(num, active ? ' active': '');
          }
      };
 
