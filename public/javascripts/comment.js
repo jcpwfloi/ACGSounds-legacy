@@ -25,33 +25,11 @@ $(function() {
     });
     window.pagination = pagination;
     var loadComments = function() {
-        /*var data = {
+        pagination.options.postParams = {
             sheet_id: window.sheet_id,
             _csrf: $('meta[name=csrf-token]').attr('content')
         };
-        $.post('/api/comment/list', data, function(r) {
-            comments = r;
-            // Create pagination
-            $('#pag-numbers').html('');
-            for (var i = 0; i < Math.ceil(r.length / pag_size); ++i) {
-                var li = $('<li class="waves-effect" id="pag-{0}"><a href="javascript:;">{0}</a></li>'.format(i + 1));
-                li.click((function (_i) { return function () { window.pag_go(_i); }; })(i + 1));
-                $('#pag-numbers').append(li);
-            }
-            pag_cur = undefined;
-            window.pag_go(1);
-        }, 'json').error(function (err) {
-        });*/
-        r = [];
-        for (var i = 0; i < 100; ++i) {
-            r.push({
-                text: 'Lorem ipsum Dolor<br>I\'m floor #' + (i + 1),
-                likeCount: 233,
-                createdAt: Date.now(),
-                author: {username: 'tester233', email: 'tester233@example.com'}
-            });
-        }
-        pagination.load(r, function (err) { console.log(err); });
+        pagination.load('/api/comment/list', function (err) { console.log(err); });
     };
 
     window.likeComment = function (floor) {

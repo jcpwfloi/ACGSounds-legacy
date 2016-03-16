@@ -11,7 +11,7 @@
       * @param {Number} [opts.dispRange] 
       * @param {Number} [opts.perPage]
       * @param {Boolean} [opts.remote]
-      * @param {JSON Object} [opts.postParam]
+      * @param {JSON Object} [opts.postParams]
       * @param {Function} [opts.pageButton]
       * @param {Function} [opts.prevButton]
       * @param {Function} [opts.nextButton]
@@ -21,8 +21,7 @@
      this.defaults = {
          dispRange: 2,
          perPage: 4,
-         remote: false,
-         postParam: {},
+         postParams: {},
          pageButton: function (num, active) {
          },
          prevButton: function (disabled) {
@@ -49,42 +48,55 @@
       * Load Data from remote URL by POST API
       * @param {Function} [callback] Will be called with argument 'null' on success, or the error object on error
       */
-     /*loadRemote: function (callback) {
+     loadRemote: function (callback, callback_ctx) {
+         if (this.contents && this.contents[this.current * this.options.perPage]) return;
          var data = {
-             page: this.current
+             start: this.current * this.options.perPage,
+             count: this.options.perPage
          };
-         extend(data, this.options.postParam);
-         $.post(this.remoteURL, data, function (res) {
-             if (typeof callback === "function") callback(null);
-             renderAll();
-         }, "json").onerror(function (e) {
-             if (typeof callback === "function") callback(e);
-         });;
-     },*/
+         extend(data, this.options.postParams);
+         $.post(this.remoteURL, data, (function (self, fn) { return function (r) {
+             if (!self.contents) {
+                self.contents = [];
+                self.itemCount = r.count;
+                self.current = 0;
+                self.pageCount = Math.ceil(r.count / self.options.perPage);
+             }
+             for (var i = 0; i < r.list.length; ++i) {
+                 self.contents[i + self.current * self.options.perPage] = r.list[i];
+             }
+             if (typeof fn === "function") fn.call(callback_ctx, null);
+         }; })(this, callback), 'json').error(function (e) {
+             if (typeof callback === "function") callback.call(callback_ctx, e);
+         });
+     },
      loadFromArray: function (arr, callback) {
          this.contents = arr;
          this.itemCount = arr.length;
-         this.current = 0;
          this.pageCount = Math.ceil(arr.length / this.options.perPage);
          this.go(0);
          if (typeof callback === "function") callback(null);
      },
      go: function (num) {
          this.current = num;
-         this.options.contentClearer();
-         var rg;
-         rg = getPagesRange(this);
-         var buttons_html = this.options.prevButton(this.current === 0);
-         for (var i = 0; i < rg.length; ++i) {
-             if (rg[i] === -1) buttons_html += this.options.ellipsis();
-             else buttons_html += this.options.pageButton(rg[i], this.current === rg[i]);
-         }
-         buttons_html += this.options.nextButton(this.current === this.pageCount - 1);
-         this.options.pageButtonsAdd(buttons_html);
-         rg = getSinglePageRange(this);
-         for (var i = rg.begin; i < rg.end; ++i) {
-             this.options.contentRenderer(i, this.contents[i]);
-         }
+         var proceed = function () {
+            this.options.contentClearer();
+            var rg;
+            rg = getPagesRange(this);
+            var buttons_html = this.options.prevButton(this.current === 0);
+            for (var i = 0; i < rg.length; ++i) {
+                if (rg[i] === -1) buttons_html += this.options.ellipsis();
+                else buttons_html += this.options.pageButton(rg[i], this.current === rg[i]);
+            }
+            buttons_html += this.options.nextButton(this.current === this.pageCount - 1);
+            this.options.pageButtonsAdd(buttons_html);
+            rg = getSinglePageRange(this);
+            for (var i = rg.begin; i < rg.end; ++i) {
+                this.options.contentRenderer(i, this.contents[i]);
+            }
+         };
+         if (this.remoteURL) this.loadRemote(proceed, this);
+         else proceed();
      },
      prev: function (callback) {
          if (this.current > 0) this.go(this.current - 1, callback);
@@ -98,13 +110,16 @@
       * @param {Function} [callback] Will be called with argument 'null' on success, or the error object on error
       */
      load: function (arrayOrUrl, callback) {
+         this.current = 0;
          if (typeof arrayOrUrl === "string") {
              this.remoteURL = arrayOrUrl;
              this.init = true;
              this.loadRemote(callback);
+             this.go(0);
          } else if (arrayOrUrl instanceof Array) {
              this.init = true;
              this.loadFromArray(arrayOrUrl, callback);
+             this.go(0);
          } else {
              throw new Error('Must specify an array or a string at creation');
          }

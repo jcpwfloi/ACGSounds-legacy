@@ -79,9 +79,9 @@ router.post('/register', function(req, res) {
 });
 
 // Lists all the comments of a given sheet.
-// `sheet_id` should be provided in request body.
+// `sheet_id`, `start` and `count` should be provided in request body.
 router.post('/comment/list', function (req, res) {
-    Sheet.find({ _id: req.body.sheet_id }).populate({
+    /*Sheet.find({ _id: req.body.sheet_id }).populate({
         path: 'comments',
         populate: { path: 'author', model: 'User', select: 'username email' }
     }).exec(function (err, sheet) {
@@ -108,7 +108,20 @@ router.post('/comment/list', function (req, res) {
                 }
             }));
         }
-    });
+    });*/
+    var ret = [];
+    var start = parseInt(req.body.start);
+    var count = parseInt(req.body.count);
+    if (isNaN(start) || isNaN(count)) return res.json({ msg: 'Invalid start / count argument' });
+    for (var i = start; i < start + count; ++i) {
+        ret.push({
+            text: 'Lorem ipsum dolor<br>sit amet  I\'m #' + (i + 1),
+            likeCount: 233,
+            createdAt: Date.now(),
+            author: {username: 'tester233', email: 'tester233@example.com'}
+        });
+    }
+    return res.json({ msg: 'Okay', count: 100, list: ret });
 });
 
 // Sends a comment on a sheet.
