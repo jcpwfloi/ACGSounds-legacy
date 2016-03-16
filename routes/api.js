@@ -81,47 +81,31 @@ router.post('/register', function(req, res) {
 // Lists all the comments of a given sheet.
 // `sheet_id`, `start` and `count` should be provided in request body.
 router.post('/comment/list', function (req, res) {
-    /*Sheet.find({ _id: req.body.sheet_id }).populate({
+    Sheet.find({ _id: req.body.sheet_id }).populate({
         path: 'comments',
         populate: { path: 'author', model: 'User', select: 'username email' }
     }).exec(function (err, sheet) {
         if (!sheet || sheet.length === 0) return res.json([]);
-        if (req.session.user) {
-            return res.json(sheet[0].comments.map(function (cmt) {
-                return {
-                    _id: cmt._id,
-                    createdAt: cmt.createdAt,
-                    author: cmt.author,
-                    text: cmt.text,
-                    likeCount: cmt.likeCount,
-                    isLiked: (req.session.user.commentLikes.indexOf(cmt._id.toString()) !== -1)
-                }
-            }));
-        } else {
-            return res.json(sheet[0].comments.map(function (cmt) {
-                return {
-                    _id: cmt._id,
-                    createdAt: cmt.createdAt,
-                    author: cmt.author,
-                    text: cmt.text,
-                    likeCount: cmt.likeCount
-                }
-            }));
+        var start = parseInt(req.body.start);
+        var count = parseInt(req.body.count);
+        if (isNaN(start) || isNaN(count)) return res.json({ msg: 'Invalid start / count argument' });
+        var ret = [];
+        for (var i = start; i < start + count; ++i) {
+            var cmt = sheet[0].comments[i];
+            if (!cmt) continue;
+            ret.push({
+                _id: cmt._id,
+                createdAt: cmt.createdAt,
+                author: cmt.author,
+                text: cmt.text,
+                likeCount: cmt.likeCount
+            });
+            if (req.session.user) {
+                ret[ret.length - 1].isLiked = req.session.user.commentLikes.indexOf(cmt._id.toString()) !== -1;
+            }
         }
-    });*/
-    var ret = [];
-    var start = parseInt(req.body.start);
-    var count = parseInt(req.body.count);
-    if (isNaN(start) || isNaN(count)) return res.json({ msg: 'Invalid start / count argument' });
-    for (var i = start; i < start + count; ++i) {
-        ret.push({
-            text: 'Lorem ipsum dolor<br>sit amet  I\'m #' + (i + 1),
-            likeCount: 233,
-            createdAt: Date.now(),
-            author: {username: 'tester233', email: 'tester233@example.com'}
-        });
-    }
-    return res.json({ msg: 'Okay', count: 100, list: ret });
+        return res.json({ msg: 'Okay', count: sheet[0].comments.length, list: ret });
+    });
 });
 
 // Sends a comment on a sheet.
