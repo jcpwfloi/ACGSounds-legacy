@@ -28,6 +28,13 @@
      return dest;
  }
 
+ function arrayRemove(array, value) {
+     var index = array.indexOf(value);
+     if (index > -1) {
+         array.slice(index, 1);
+     }
+ }
+
  String.prototype.format = function() {
      var args = arguments;
      return this.replace(/{(\d+)}/g, function(match, number) {
