@@ -17,7 +17,7 @@ $(function() {
             ));
             $("#commentBox li:last img").attr('src' , 'http://cn.gravatar.com/avatar/' + $.md5(ctnt.author.email));
             if (ctnt.isLiked) {
-                $('#comment-thumbup-' + floor).removeClass('text-lighten-4');
+                $('#comment-thumbup-' + (num + 1)).removeClass('text-lighten-4');
             }
         }, contentClearer: function () {
             $('#commentBox').html('');
@@ -33,7 +33,7 @@ $(function() {
     };
 
     window.likeComment = function (floor) {
-        var cmt = comments[floor - 1];
+        var cmt = pagination.contents[floor - 1];
         var likesDisp = $('#comment-likes-' + floor);
         var thumbBtn = $('#comment-thumbup-' + floor);
         if (thumbBtn.hasClass('disabled')) return;

@@ -49,7 +49,10 @@
       * @param {Function} [callback] Will be called with argument 'null' on success, or the error object on error
       */
      loadRemote: function (callback, callback_ctx) {
-         if (this.contents && this.contents[this.current * this.options.perPage]) return;
+         if (this.contents && this.contents[this.current * this.options.perPage]) {
+             callback.call(callback_ctx, null);
+             return;
+         }
          var data = {
              start: this.current * this.options.perPage,
              count: this.options.perPage
@@ -111,6 +114,7 @@
       */
      load: function (arrayOrUrl, callback) {
          this.current = 0;
+         this.contents = undefined;
          if (typeof arrayOrUrl === "string") {
              this.remoteURL = arrayOrUrl;
              this.init = true;
@@ -133,9 +137,9 @@
   */
  function getPagesRange(pag) {
      var ret = [];
-     var l1 = 0, u1 = Math.min(pag.options.dispRange, pag.itemCount);
+     var l1 = 0, u1 = Math.min(pag.options.dispRange, pag.pageCount);
      var l2 = Math.max(pag.current - pag.options.dispRange, 0), u2 = Math.min(Math.min(pag.current + pag.options.dispRange + 1, pag.itemCount), pag.pageCount);
-     var l3 = Math.max(pag.pageCount - pag.options.dispRange), u3 = pag.pageCount;
+     var l3 = Math.max(pag.pageCount - pag.options.dispRange, 0), u3 = pag.pageCount;
      for (var i = l1; i < u1; ++i) ret.push(i);
      if (u1 < l2) ret.push(-1);
      for (var i = Math.max(u1, l2); i < u2; ++i) ret.push(i);
