@@ -119,9 +119,14 @@
   */
  function getPagesRange(pag) {
      var ret = [];
-     for (var i = 0; i < 10; ++i) ret.push(i);
-     ret.push(-1);
-     for (var i = 10; i < pag.pageCount; ++i) ret.push(i);
+     var l1 = 0, u1 = Math.min(pag.options.dispRange, pag.itemCount);
+     var l2 = Math.max(pag.current - pag.options.dispRange, 0), u2 = Math.min(pag.current + pag.options.dispRange + 1, pag.itemCount);
+     var l3 = Math.max(pag.pageCount - pag.options.dispRange), u3 = pag.pageCount;
+     for (var i = l1; i < u1; ++i) ret.push(i);
+     if (u1 < l2) ret.push(-1);
+     for (var i = Math.max(u1, l2); i < u2; ++i) ret.push(i);
+     if (u2 < l3) ret.push(-1);
+     for (var i = Math.max(u2, l3); i < u3; ++i) ret.push(i);
      return ret;
  }
 
