@@ -1,34 +1,30 @@
 $(function() {
     var comments = [];
-    var addComment = function (cmt, floor) {
-        $('#commentBox').append($('.template-1').html().format(
-            cmt.author.username, cmt.text, floor, cmt.likeCount, (new Date(cmt.createdAt)).Format('yyyy-MM-dd hh:mm:ss')
-        ));
-        $("#commentBox li:last img").attr('src' , 'http://cn.gravatar.com/avatar/' + $.md5(cmt.author.email));
-        if (cmt.isLiked) {
-            $('#comment-thumbup-' + floor).removeClass('text-lighten-4');
+    var pagination = new Pagination({
+        pageButton: function (num, active) {
+        }, prevButton: function (num, disabled) {
+            return $('#template-pag-prev').html();
+        }, nextButton: function (num, disabled) {
+            return $('#template-pag-next').html();
+        }, contentRenderer: function (num, ctnt) {
+            $('#commentBox').append($('.template-1').html().format(
+                ctnt.author.username, ctnt.text, num + 1, ctnt.likeCount, (new Date(ctnt.createdAt)).Format('yyyy-MM-dd hh:mm:ss')
+            ));
+            $("#commentBox li:last img").attr('src' , 'http://cn.gravatar.com/avatar/' + $.md5(ctnt.author.email));
+            if (ctnt.isLiked) {
+                $('#comment-thumbup-' + floor).removeClass('text-lighten-4');
+            }
+        }, contentClearer: function () {
+            $('#commentBox').html('');
         }
-    };
-    var pag_size = 5;
-    var pag_cur = undefined;
+    });
     window.pag_go = function (page) {
-        $('#commentBox').html('');
-        if (pag_cur) $('#pag-' + pag_cur).removeClass('active');
-        $('#pag-' + page).addClass('active');
-        pag_cur = page;
-        --page;
-        for (var i = comments.length - page * pag_size - 1; i > Math.max(-1, comments.length - page * pag_size - 1 - pag_size); --i) {
-            addComment(comments[i], i + 1);
-        }
-        if (page === 0) $('#pag-prev').addClass('disabled');
-        else $('#pag-prev').removeClass('disabled');
-        if (page === Math.ceil(comments.length / pag_size) - 1) $('#pag-next').addClass('disabled');
-        else $('#pag-next').removeClass('disabled');
+        pagination.go(page);
     };
-    window.pag_prev = function () { if (pag_cur !== 1) window.pag_go(pag_cur - 1); };
-    window.pag_next = function () { if (pag_cur !== Math.ceil(comments.length / pag_size)) window.pag_go(pag_cur + 1); };
+    window.pag_prev = function () { pagination.prev(); };
+    window.pag_next = function () { pagination.next(); };
     var loadComments = function() {
-        var data = {
+        /*var data = {
             sheet_id: window.sheet_id,
             _csrf: $('meta[name=csrf-token]').attr('content')
         };
@@ -44,7 +40,17 @@ $(function() {
             pag_cur = undefined;
             window.pag_go(1);
         }, 'json').error(function (err) {
-        });
+        });*/
+        r = [];
+        for (var i = 0; i < 100; ++i) {
+            r.push({
+                text: 'Lorem ipsum Dolor<br>I\'m floor #' + (i + 1),
+                likeCount: 233,
+                createdAt: Date.now(),
+                author: {username: 'tester233', email: 'tester233@example.com'}
+            });
+        }
+        pagination.load(r, function (err) { console.log(err); });
     };
 
     window.likeComment = function (floor) {

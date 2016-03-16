@@ -1,5 +1,5 @@
 (function(window, document, undefined) {'use strict';
- function Pagination(opt, data) {
+ function Pagination(opt) {
      /**
       * Pagination is a library providing paging methods for ACGSounds
       * Author
@@ -8,25 +8,31 @@
       *     jQuery
       *
       * @param [opts]
-      * @param {Number} [opts.offset] 
+      * @param {Number} [opts.dispRange] 
       * @param {Number} [opts.perPage]
-      * @param {Number} [opts.current]
       * @param {Boolean} [opts.remote]
-      * @param {Function|false} [opts.render]
-      * @param {Function|false} [opts.csrf]
       * @param {JSON Object} [opts.postParam]
+      * @param {Function} [opts.pageButton]
+      * @param {Function} [opts.prevButton]
+      * @param {Function} [opts.nextButton]
+      * @param {Function} [opts.contentRenderer]
       * @constructor
       */
      this.defaults = {
-         offset: 5, //offset
-         perPage: 10,
+         dispRange: 5,
+         perPage: 4,
          remote: false,
-         csrf: function() {
-             return $('meta[name=csrf-token]').attr('content');
-         },
          postParam: {},
-         render: function(num, active) {
-             return '<li class="wave-effect{1}" data-id="{0}">{0}</div>'.format(num, active ? ' active': '');
+         pageButton: function (num, active) {
+             //return '<li class="wave-effect{1}">{0}</div>'.format(num + 1, active ? ' active': '');
+         },
+         prevButton: function (num, disabled) {
+         },
+         nextButton: function (num, disabled) {
+         },
+         contentRenderer: function (num, ctnt) {
+         },
+         contentClearer: function () {
          }
      };
 
@@ -38,88 +44,69 @@
  Pagination.prototype = {
      /**
       * Load Data from remote URL by POST API
-      * @param {String} url Remote URL
+      * @param {Function} [callback] Will be called with argument 'null' on success, or the error object on error
       */
-     getRemoteData: function(callback) {
+     /*loadRemote: function (callback) {
          var data = {
              page: this.current
          };
-         if (typeof this.options.csrf === "function") data._csrf = csrf();
          extend(data, this.options.postParam);
-         $.post(this.remoteURL, data, function(res) {
-             this.total = res.total;
-             if (typeof callback === "function") callback(null, res.data);
-         }, "json").onerror(function(e) {
-             if (typeof callback === "function") callback(e, null);
+         $.post(this.remoteURL, data, function (res) {
+             if (typeof callback === "function") callback(null);
+             renderAll();
+         }, "json").onerror(function (e) {
+             if (typeof callback === "function") callback(e);
          });;
+     },*/
+     loadFromArray: function (arr, callback) {
+         this.contents = arr;
+         this.current = 0;
+         this.pageCount = Math.ceil(arr.length / this.options.perPage);
+         this.go(0);
+         if (typeof callback === "function") callback(null);
      },
-     getLocalData: function(callback) {
-         var page = getNum(this);
-         callback(null, this.data.slice(page.begin, page.end));
-     },
-     getData: function(callback) {
-         if (!this.init) throw new Error('Pagination not Initialized');
-         if (this.remote) getRemoteData(callback);
-         else getLocalData(callback);
-     },
-     /**
-      * Load Data locally
-      */
-     localLoad: function(data, callback) {
-         this.data = data;
-         this.current = 1;
-         this.total = data.length / this.options.perPage;
-         if (typeof callback === "function") callback();
-     },
-     page: function(num, callback) {
+     go: function (num, callback) {
          this.current = num;
-         getData(function(err, doc) {
-             if (typeof callback === "function") {
-                 callback(err, doc, this.render());
-             }
-         });
-     },
-     load: function(data, callback) {
-         if (this.options.remote) {
-             if (typeof data !== "string") throw new Error('Remote URL not specified');
-             this.remoteURL = data;
-             this.init = true;
-             if (typeof callback === "function") callback();
-         } else {
-             if (typeof data !== "array") throw new Error('Please specify a local array as data');
-             this.init = true;
-             localLoad(data, callback);
+         this.options.contentClearer();
+         var rg = getPageRange(this);
+         for (var i = rg.begin; i < rg.end; ++i) {
+             this.options.contentRenderer(i, this.contents[i]);
          }
      },
-     render: function() {
-         return internalRender(Math.max(this.current - this.options.offset, 1), Math.min(this.current + this.options.offset, this.total), this.current, this);
+     prev: function (callback) {
+         if (this.current > 0) this.page(this.current - 1, num);
+     },
+     next: function (callback) {
+         if (this.current < this.pageCount - 1) this.page(this.current + 1, num);
+     },
+     /**
+      * @function load
+      * @param {Array|String} [arrayOrUrl] The array or the remote URL
+      * @param {Function} [callback] Will be called with argument 'null' on success, or the error object on error
+      */
+     load: function (arrayOrUrl, callback) {
+         if (typeof arrayOrUrl === "string") {
+             this.remoteURL = arrayOrUrl;
+             this.init = true;
+             this.loadRemote(callback);
+         } else if (arrayOrUrl instanceof Array) {
+             this.init = true;
+             this.loadFromArray(arrayOrUrl, callback);
+         } else {
+             throw new Error('Must specify an array or a string at creation');
+         }
      }
  };
 
  /**
-  * @function internalRender
-  * @param {Number} [begin] The beginning of the page number
-  * @param {Number} [end] The ending + 1 of the page number
-  * @param {Number} [current] The current Page number
-  * @param {Pagination} [paginationObject] The parent Object
-  */
- function internalRender(begin, end, current, paginationObject) {
-     var str = "";
-     for (var i = begin; i < end; ++ i) {
-         str += this.options.render(i, current == i);
-     }
-     return str;
- }
-
- /**
-  * @function getNum
+  * @function getPageRange
   * @param {Pagination} paginationObject The parent Object
   * @return {JSON Object} { begin: [begin value], end: [end value] }
   */
- function getNum(paginationObject) {
+ function getPageRange(paginationObject) {
      return {
-         begin: paginationObject.options.perPage * (paginationObject.current - 1),
-         end: Math.min(paginationObject.options.perPage * paginationObject.current, this.total)
+         begin: paginationObject.options.perPage * paginationObject.current,
+         end: Math.min(paginationObject.options.perPage * (paginationObject.current + 1), paginationObject.pageCount)
      };
  }
 

@@ -53,11 +53,11 @@ block content
                         .row.center
                             | Loading...
                     ul.pagination(id='pag')
-                        li.waves-effect(id='pag-prev')
+                        li.waves-effect(id='template-pag-prev', style='display: none')
                             a(href='javascript:pag_prev();')
                                 i.material-icons chevron_left
                         span(id='pag-numbers')
-                        li.waves-effect(id='pag-next')
+                        li.waves-effect(id='template-pag-next', style='display: none')
                             a(href='javascript:pag_next();')
                                 i.material-icons chevron_right
                     if user
@@ -85,6 +85,7 @@ block content
                     i.material-icons.thumb-up-icon thumb_up
 
 block script
+    script(src='/javascripts/runtime.min.js')
     script(src='/javascripts/comment.js')
     script(src='/javascripts/midievents.js')
     script(src='/javascripts/midifile.js')
