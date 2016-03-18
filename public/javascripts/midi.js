@@ -309,6 +309,19 @@
         source.connect(context.destination);
     }
 
+    function seek_WebAudioAPI(time){
+        if (source) source.disconnect();
+        if (song) {
+            var player_event = new Object();
+            Module.ccall('mid_song_seek', 'void', ['number', 'number'], [song, time * 1000]);
+            pause_total_time = 0;
+            start_time = context.currentTime - time;
+            player_event.time = time;
+            MIDIjs.player_callback(player_event);
+            source.connect(context.destination);
+        }
+    }
+
     function stop_WebAudioAPI() {
         pause_total_time = 0;
         if (source) {
@@ -331,6 +344,7 @@
         MIDIjs.message_callback(audio_status);
         var player_event = new Object;
         player_event.time = 0;
+        player_event.stop = true;
         MIDIjs.player_callback(player_event);
     }
 
@@ -431,6 +445,7 @@
         global.MIDIjs.resume = resume_WebAudioAPI;
         global.MIDIjs.play = play_WebAudioAPI;
         global.MIDIjs.stop = stop_WebAudioAPI;
+        global.MIDIjs.seek = seek_WebAudioAPI;
         audio_status = "audioMethod: WebAudioAPI" +
             ", sampleRate (Hz): " + context.sampleRate + 
                 ", audioBufferSize (Byte): " + audioBufferSize;

@@ -33,12 +33,28 @@ $(document).ready(function() {
         $('#pause').hide();
         $('#play').show();
     });
+    $('#seek').click(function(e) {
+        if (!MIDIjs.length) {
+            Materialize.toast('MIDI not loaded', 2000, 'rounded');
+        }
+        var clickPos = e.pageX;
+        var time = (clickPos - $(this).offset().left) * MIDIjs.length / ($(this).width());
+        MIDIjs.seek(time);
+        $('#pause').show();
+        $('#resume').hide();
+        $('#play').hide();
+    });
     $('#currentTime').html(parseTime(0));
     $('#totalTime').html(parseTime(0));
     MIDIjs.message_callback = function(res) {
         Materialize.toast(res, 2000);
     }
     MIDIjs.player_callback = function(res) {
+        if (res.stop) {
+            $('#play').show();
+            $('#resume').hide();
+            $('#pause').hide();
+        }
         if (MIDIjs.length) {
             $('#currentTime').html(parseTime(res.time));
             $('#totalTime').html(parseTime(MIDIjs.length));
