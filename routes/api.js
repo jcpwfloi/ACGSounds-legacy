@@ -41,6 +41,7 @@ router.post('/search', function(req, res) {
  */
 router.post('/login', function(req, res) {
     delete req.body._csrf;
+    delete req.body.password;
     User.findOne(req.body, function(err, user) {
         if (!user || user.password != req.body.password) {
             res.status(400);

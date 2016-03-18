@@ -27,13 +27,19 @@ router.get('/register', function(req, res) {
 router.get('/profile/:name', function (req, res) {
     User.find({username: req.params.name}, function (err, doc) {
         if (err) {
-            // TODO: Handle errors
             res.status(400);
-            res.json(err);
+            res.render('error', { message: JSON.stringify(err) } );
+        } else if (!doc || doc.length === 0) {
+            res.status(404);
+            res.render('error', { message: 'User not found' } );
         } else {
             res.render('profile', {
                 title: req.__('User Profile') + ' - ACGSounds',
-                targ_user: doc[0]
+                targ_user: {
+                    _id: doc[0]._id,
+                    username: doc[0].username,
+                    email: doc[0].email
+                }
             });
         }
     });
@@ -42,7 +48,6 @@ router.get('/profile/:name', function (req, res) {
 router.post('/sheetlist/:user_id', function(req, res) {
     Sheet.find({user: req.params.user_id}, function (err, doc) {
         if (err) {
-            // TODO: Handle errors
             res.status(400);
             res.json(err);
         } else {
@@ -99,12 +104,6 @@ router.post('/upload', multipartMiddleware, function(req, res) {
                 res.send('提交成功等待审核');
             });
         });
-    });
-});
-
-router.post('/mysheet', function(req, res) {
-    Sheet.find({user: req.session.user._id}, function(err, doc) {
-        res.json(doc);
     });
 });
 
