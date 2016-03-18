@@ -8,6 +8,7 @@
 //
 
 (function (global) {
+  var Module = null;
  
   var audioMethod;
   var context = 0;
@@ -175,17 +176,14 @@
       }
 
       num_missing--;
-      FS.createDataFile('pat/', filename, new Int8Array(request.response), true, true);
+      Module['FS_createDataFile']('pat/', filename, new Int8Array(request.response), true, true);
       MIDIjs.message_callback("Loading instruments: " + num_missing);
       if (num_missing == 0) {
         stream =  Module.ccall('mid_istream_open_mem', 'number', 
                                ['number', 'number', 'number'], 
                                [midiFileBuffer, midiFileArray.length , false]);
         var MID_AUDIO_S16LSB = 0x8010; // signed 16-bit samples
-        var options = Module.ccall('mid_create_options', 'number', 
-                                   ['number', 'number', 'number', 'number'], 
-                                   [context.sampleRate, MID_AUDIO_S16LSB, 1, audioBufferSize * 2]);
-        song = Module.ccall('mid_song_load', 'number', ['number', 'number'], [stream, options]);
+        song = Module.ccall('mid_song_load_with_options', 'number', ['number', 'number', 'number', 'number', 'number'], [stream, context.sampleRate, MID_AUDIO_S16LSB, 1, audioBufferSize * 2]);
         rval =  Module.ccall('mid_istream_close', 'number', ['number'], [stream]);
         Module.ccall('mid_song_start', 'void', ['number'], [song]);
 
@@ -225,7 +223,7 @@
       var index = script_src.lastIndexOf("midi.js");
       if (index == script_src.length - 7) {
          midijs_url = script_src.substr(0, index); 
-         libtimidity_url = midijs_url + 'libtimidity.js'; 
+         libtimidity_url = midijs_url + 'libtimidity.advanced.js'; 
          break;
       }
     }
@@ -250,6 +248,7 @@
 
   function play_WebAudioAPI_with_script_loaded(url) {
 
+    Module = TimidityModule;
     // Download url from server, url must honor same origin restriction
     MIDIjs.message_callback('Loading MIDI file ' + url + ' ...');
     var request = new XMLHttpRequest();
@@ -277,10 +276,7 @@
                              ['number', 'number', 'number'], 
                              [midiFileBuffer, midiFileArray.length , false]);
       var MID_AUDIO_S16LSB = 0x8010; // signed 16-bit samples
-      var options = Module.ccall('mid_create_options', 'number', 
-                                 ['number', 'number', 'number', 'number'], 
-                                 [context.sampleRate, MID_AUDIO_S16LSB, 1, audioBufferSize * 2]);
-      song = Module.ccall('mid_song_load', 'number', ['number', 'number'], [stream, options]);
+      song = Module.ccall('mid_song_load_with_options', 'number', ['number', 'number', 'number', 'number', 'number'], [stream, context.sampleRate, MID_AUDIO_S16LSB, 1, audioBufferSize * 2]);
       rval =  Module.ccall('mid_istream_close', 'number', ['number'], [stream]);
 
       num_missing = Module.ccall('mid_song_get_num_missing_instruments', 'number', ['number'], [song]);
