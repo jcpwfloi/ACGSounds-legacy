@@ -12,6 +12,27 @@ $(window).resize(resize);
 
 $(document).ready(function() {
     resize();
+    $('#play').click(function() {
+        MIDIjs.play('http://cdn.acgsounds.com/{0}.mid'.format(sheet_id));
+        $('#play').hide();
+        $('#pause').show();
+    });
+    $('#pause').click(function() {
+        MIDIjs.pause();
+        $('#pause').hide();
+        $('#resume').show();
+    });
+    $('#resume').click(function() {
+        MIDIjs.resume();
+        $('#resume').hide();
+        $('#pause').show();
+    });
+    $('#stop').click(function() {
+        MIDIjs.stop();
+        $('#resume').hide();
+        $('#pause').hide();
+        $('#play').show();
+    });
     $('#currentTime').html(parseTime(0));
     $('#totalTime').html(parseTime(0));
     MIDIjs.message_callback = function(res) {

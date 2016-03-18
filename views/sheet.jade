@@ -32,10 +32,14 @@ block content
                 .col.s12
                     .card(style='margin-bottom: 0')
                         .card-content
-                            a(href!='javascript:MIDIjs.play(\'http://cdn.acgsounds.com/' + sheet._id + '.mid\')')
+                            a#play(href='javascript:void(0)')
+                                i.material-icons play_circle_filled
+                            a#pause(href='javascript:void(0)', style='display: none')
+                                i.material-icons pause_circle_filled
+                            a#resume(href='javascript:void(0)', style='display: none')
                                 i.material-icons play_circle_filled
                             | &nbsp;&nbsp;
-                            a(href='#', onClick='MIDIjs.stop()')
+                            a#stop(href='#', onClick='javascript:void(0)')
                                 i.material-icons stop
                             .secondary-content
                                 | MIDI 播放控制
@@ -86,8 +90,6 @@ block content
 
 block script
     script(src='/javascripts/comment.js')
-    script(src='/javascripts/midievents.js')
-    script(src='/javascripts/midifile.js')
     script(src='/javascripts/midi.js')
 
     script window.sheet_id = "#{sheet._id}";
