@@ -344,7 +344,6 @@
         MIDIjs.message_callback(audio_status);
         var player_event = new Object;
         player_event.time = 0;
-        player_event.stop = true;
         MIDIjs.player_callback(player_event);
     }
 
