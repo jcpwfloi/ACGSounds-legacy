@@ -302,6 +302,16 @@
     }
     request.send();
   }
+
+  function pause_WebAudioAPI() {
+      if (source) {
+          source.disconnect();
+      }
+  }
+
+  function resume_WebAudioAPI(){
+      source.connect(context.destination);
+  }
   
   function stop_WebAudioAPI() {
     if (source) {
@@ -420,6 +430,8 @@
   global.MIDIjs.unmute_iOS_hack = unmute_iOS_hack;
 
   if (audioMethod == "WebAudioAPI") {
+    global.MIDIjs.pause = pause_WebAudioAPI;
+    global.MIDIjs.resume = resume_WebAudioAPI;
     global.MIDIjs.play = play_WebAudioAPI;
     global.MIDIjs.stop = stop_WebAudioAPI;
     audio_status = "audioMethod: WebAudioAPI" +
