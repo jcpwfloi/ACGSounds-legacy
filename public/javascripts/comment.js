@@ -1,4 +1,4 @@
-$(function() {
+(function(window, document, undefined) {'use strict';
     var comments = [];
     var addComment = function (cmt, floor) {
         $('#commentBox').append($('.template-1').html().format(
@@ -129,5 +129,5 @@ $(function() {
         loadCommentBox();
     });
 
-});
+})(window, document);
 
