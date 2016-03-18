@@ -14,6 +14,7 @@
  *  @return {String} `GET` value
  */
 function __get(a,b) {return a ? a : b;}
+function abs(a) {return a > 0 ? a : -a;}
 
 function each(obj, callback, context) {
     if (!obj) return;
