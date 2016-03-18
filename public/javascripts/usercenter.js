@@ -21,7 +21,7 @@ window.loadUserProfile = function (u) {
         var str = $('.template-1').html();
 
         each(res, function(sheet, key) {
-            var current = str.format(sheet.sheetName, '<div class="chip {0}">{1}</div>'.format(sheetStatusColor[sheet.approved], __(sheetStatus[sheet.approved])), sheet._id);
+            var current = str.format(sheet.sheetName, '<div class="chip white-text text-lighten-2 {0}">{1}</div>'.format(sheetStatusColor[sheet.approved], __(sheetStatus[sheet.approved])), sheet._id);
             $('#all').append(current);
             if (sheet.approved === 3) $('#approved').append(current);
             if (sheet.approved === 2) $('#unapproved').append(current);
