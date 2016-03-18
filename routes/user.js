@@ -25,6 +25,10 @@ router.get('/register', function(req, res) {
 });
 
 router.get('/profile/:name', function (req, res) {
+    if (req.session.user && req.session.user.username == req.params.name) {
+        res.redirect('/user/');
+        return;
+    }
     User.find({username: req.params.name}, function (err, doc) {
         if (err) {
             res.status(400);
