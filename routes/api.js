@@ -41,10 +41,10 @@ router.post('/search', function(req, res) {
  */
 router.post('/login', function(req, res) {
     delete req.body._csrf;
-    User.findOne(req.body, function(err, user) {
+    User.findOne(req.body, function (err, user) {
         if (!user || user.password != req.body.password) {
             res.status(400);
-            return res.json({error: 'EDATA'});
+            return res.json({ msg: 'ENOTMATCH' });
         } else {
             req.session.user = user;
             res.json({msg: 'Success'});
