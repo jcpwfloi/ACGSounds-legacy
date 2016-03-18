@@ -50,7 +50,7 @@ $(document).ready(function() {
         Materialize.toast(res, 2000);
     }
     MIDIjs.player_callback = function(res) {
-        if (res.stop && abs(res.time - MIDIjs.length) < 0.5) {
+        if (res.stop && abs(res.time - MIDIjs.length) < 3) {
             $('#play').show();
             $('#resume').hide();
             $('#pause').hide();
