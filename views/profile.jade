@@ -8,7 +8,7 @@ block content
     .container
         .row
             .col.s8
-                h4= __('User Center')
+                h4= __('User Profile')
                 .row
                     .col.s12
                         ul.tabs
@@ -56,18 +56,19 @@ block content
                     .col.s12
                         .card
                             .card-image
-                                img(data-email!=user.email)
-                                span.card-title= user.username
+                                img(data-email!=targ_user.email)
+                                span.card-title= targ_user.username
                             .card-content
-                                p= user.intro ? user.intro : __('这个人太懒了，什么都没有写')
+                                p= targ_user.intro ? targ_user.intro : __('这个人太懒了，什么都没有写')
                             .card-action
                                 a(href='#')= __('Follow')
 
 block script
+    script window.targ_user = !{JSON.stringify(targ_user)};
     script(src='/javascripts/usercenter.js')
     script.
         $(document).ready(function() {
-            window.loadUserProfile(window.user);
+            window.loadUserProfile(window.targ_user);
         });
 
 

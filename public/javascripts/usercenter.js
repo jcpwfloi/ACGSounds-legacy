@@ -7,10 +7,9 @@ window.locales = {
     'default': {}
 };
 
-$(document).ready(function() {
+window.loadUserProfile = function (u) {
     $('img[data-email]').attr('src',
-        'http://cn.gravatar.com/avatar/{0}?s=2048'
-        .format(user.email));
+        'http://cn.gravatar.com/avatar/' + $.md5($('img[data-email]').data('email')) + '?s=2048');
     var data = {
         _csrf: $('meta[name=csrf-token]').attr('content'),
     };
@@ -18,7 +17,7 @@ $(document).ready(function() {
     var sheetStatusColor = ['lime', '', 'grey', 'green'];
     var sheetStatus = ['Pending', '', 'Unapproved', 'Approved'];
 
-    $.post('/user/mysheet', data, function(res) {
+    $.post('/user/sheetlist/' + u._id, data, function(res) {
         var str = $('.template-1').html();
 
         each(res, function(sheet, key) {
@@ -30,4 +29,4 @@ $(document).ready(function() {
         });
     }).error(function(error) {
     });
-});
+};

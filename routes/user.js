@@ -2,6 +2,7 @@ var router = require('express').Router();
 var multipart = require('connect-multiparty');
 var multipartMiddleware = multipart({uploadDir: __dirname + '/../tmp'});
 var Sheet = require('../model/sheet');
+var User = require('../model/user');
 var Qiniu = require('../model/qiniu');
 var Step = require('step');
 var fs = require('fs');
@@ -23,6 +24,34 @@ router.get('/register', function(req, res) {
     });
 });
 
+router.get('/profile/:name', function (req, res) {
+    User.find({username: req.params.name}, function (err, doc) {
+        if (err) {
+            // TODO: Handle errors
+            res.status(400);
+            res.json(err);
+        } else {
+            res.render('profile', {
+                title: req.__('User Profile') + ' - ACGSounds',
+                targ_user: doc[0]
+            });
+        }
+    });
+});
+
+router.post('/sheetlist/:user_id', function(req, res) {
+    Sheet.find({user: req.params.user_id}, function (err, doc) {
+        if (err) {
+            // TODO: Handle errors
+            res.status(400);
+            res.json(err);
+        } else {
+            res.json(doc);
+        }
+    });
+});
+
+
 router.get('*', function(req, res, next) {
     if (req.session.user) next();
     else res.redirect('/user/login?callback=' + '/user' + req.url);
@@ -33,7 +62,6 @@ router.get('/', function(req, res) {
         title: req.__('User Center') + ' - ACGSounds'
     });
 });
-
 
 router.get('/upload', function(req, res) {
     res.render('upload', {
