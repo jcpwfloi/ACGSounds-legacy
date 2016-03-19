@@ -54,7 +54,7 @@
 	"Welcome, ": "欢迎您，",
 	"User Center": "用户中心",
 	"Profile Settings": "用户资料设置",
-    "User Profile": "用户资料",
+	"User Profile": "用户资料",
 	"Logout": "登出",
 	"Upload Sheets- ACGSounds": "上传乐谱 - ACGSounds",
 	"Sheet Name": "乐谱名称",
@@ -72,6 +72,9 @@
 	"这个人太懒了，什么都没有写": "这个人太懒了，什么都没有写",
 	"Follow": "关注",
 	"待审核": "待审核",
-    "Say something": "说点什么……",
-	"Submit comment": "发表评论"
+	"Say something": "说点什么……",
+	"Submit comment": "发表评论",
+	"Uploader: ": "上传者：",
+	"View Sheet": "查看乐谱",
+	"Tags: ": "标签："
 }

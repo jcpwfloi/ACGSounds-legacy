@@ -69,15 +69,15 @@ block content
                 .collapsible-header(class='{2}')
                     i.material-icons library_books
                     | {0}
-                    |  （上传者：
+                    |  （#{__('Uploader: ')}
                     a(href='/user/profile/{5}') {5}
                     | ）
                 .collapsible-body
                     p(style='white-space: pre-wrap') {1}
                     .row.center
-                        a.btn.orange.lighten-1(href='/sheets/{3}') 详细信息
+                        a.btn.orange.lighten-1(href='/sheets/{3}')= __('View Sheet')
                     .row.center
-                        | 标签：{4}
+                        | #{__('Tags: ')} {4}
         .col.s9
             .row(style='margin-bottom:0')
                 form.col.s10

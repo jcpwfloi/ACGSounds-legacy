@@ -50,7 +50,7 @@
 	"Welcome, ": "Welcome, ",
 	"User Center": "User Center",
 	"Profile Settings": "Profile Settings",
-    "User Profile": "User Profile",
+	"User Profile": "User Profile",
 	"Logout": "Logout",
 	"Sheet Name": "Sheet Name",
 	"Sheet Tags": "Sheet Tags",
@@ -67,6 +67,12 @@
 	"Upload pdf here": "Upload pdf here",
 	"Upload midi here": "Upload midi here",
 	"待审核": "Pending",
-    "Say something": "Say something",
-	"Submit comment": "Submit comment"
+	"Say something": "Say something",
+	"Submit comment": "Submit comment",
+	"Uploader: ": "Uploader: ",
+	"Details": "Details",
+	"Tags": "Tags",
+	"View Details": "View Details",
+	"View Sheet": "View Sheet",
+	"Tags: ": "Tags: "
 }
