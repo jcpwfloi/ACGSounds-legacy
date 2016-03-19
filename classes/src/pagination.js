@@ -127,6 +127,9 @@
      next: function (callback) {
          if (this.current < this.pageCount - 1) this.go(this.current + 1, callback);
      },
+     getItemCount: function () {
+         return this.itemCount;
+     },
      /**
       * @function load
       * @param {Array|String} [arrayOrUrl] The array or the remote URL

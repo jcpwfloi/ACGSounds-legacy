@@ -97,24 +97,26 @@ router.post('/comment/list', function (req, res) {
         var count = parseInt(req.body.count);
         if (isNaN(start) || isNaN(count)) return res.json({ msg: 'Invalid start / count argument' });
         if (start + count > sheet[0].comments.length) count = sheet[0].comments.length - start;
+        console.log(start, count, sheet[0].comments.length, sheet[0].comments.length - count - start);
+        start = sheet[0].comments.length - count - start;
         var ret = [];
         var likeDataRetrieved = 0;
         for (var i = start; i < start + count; ++i) {
             var cmt = sheet[0].comments[i];
             if (!cmt) continue;
-            ret.push({
+            ret[count - i + start - 1] = {
                 _id: cmt._id,
                 createdAt: cmt.createdAt,
                 author: cmt.author,
                 text: cmt.text,
                 likeCount: cmt.likeCount
-            });
+            };
             if (req.session.user) {
                 CommentUpvote.findOne({ user: req.session.user._id, comment: cmt._id }, (function (_ret, _i) { return function (err, record) {
                     if (record) _ret[_i].isLiked = true;
                     else _ret[_i].isLiked = false;
                     if (++likeDataRetrieved === count) res.json({ msg: 'Okay', count: sheet[0].comments.length, list: _ret });
-                }; })(ret, ret.length - 1));
+                }; })(ret, count - i + start - 1));
             }
         }
         if (!req.session.user) return res.json({ msg: 'Okay', count: sheet[0].comments.length, list: ret });
