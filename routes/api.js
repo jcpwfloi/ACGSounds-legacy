@@ -3,6 +3,7 @@ var router = require('express').Router();
 var Sheet = require('../model/sheet');
 var User = require('../model/user');
 var Comment = require('../model/comment');
+var CommentUpvote = require('../model/comment-upvote');
 
 /**
  * Search API v0.1
@@ -95,7 +96,9 @@ router.post('/comment/list', function (req, res) {
         var start = parseInt(req.body.start);
         var count = parseInt(req.body.count);
         if (isNaN(start) || isNaN(count)) return res.json({ msg: 'Invalid start / count argument' });
+        if (start + count > sheet[0].comments.length) count = sheet[0].comments.length - start;
         var ret = [];
+        var likeDataRetrieved = 0;
         for (var i = start; i < start + count; ++i) {
             var cmt = sheet[0].comments[i];
             if (!cmt) continue;
@@ -107,10 +110,14 @@ router.post('/comment/list', function (req, res) {
                 likeCount: cmt.likeCount
             });
             if (req.session.user) {
-                ret[ret.length - 1].isLiked = req.session.user.commentLikes.indexOf(cmt._id.toString()) !== -1;
+                CommentUpvote.findOne({ user: req.session.user._id, comment: cmt._id }, (function (_ret, _i) { return function (err, record) {
+                    if (record) _ret[_i].isLiked = true;
+                    else _ret[_i].isLiked = false;
+                    if (++likeDataRetrieved === count) res.json({ msg: 'Okay', count: sheet[0].comments.length, list: _ret });
+                }; })(ret, ret.length - 1));
             }
         }
-        return res.json({ msg: 'Okay', count: sheet[0].comments.length, list: ret });
+        if (!req.session.user) return res.json({ msg: 'Okay', count: sheet[0].comments.length, list: ret });
     });
 });
 
@@ -164,23 +171,19 @@ router.post('/comment/like', function (req, res) {
         return res.json({ msg: 'Please log in first  = =' });
     }
     var ret = { msg: 'Not processed. Unknown error QAQ' };
-    var callback = function (err) {
-        User.findOne({ _id: req.session.user._id }, function (err, user) {
-            req.session.user = user;
-            res.json(ret);
-        });
-    };
-    if (req.session.user.commentLikes.indexOf(req.body.id) !== -1) {
-        // Dad-tricking > <
-        // http://stackoverflow.com/q/15748660/
-        Comment.update({ _id: req.body.id }, { $inc: { 'likeCount': -1 } }, function (err) { });
-        User.update({ _id: req.session.user._id }, { $pull: { 'commentLikes': req.body.id } }, callback);
-        ret = { operation: 'cancel', msg: 'Success' };
-    } else {
-        Comment.update({ _id: req.body.id }, { $inc: { 'likeCount': 1 } }, function (err) { });
-        User.update({ _id: req.session.user._id }, { $push: { 'commentLikes': req.body.id } }, callback);
-        ret = { operation: 'like', msg: 'Success' };
-    }
+    var cond = { user: req.session.user._id, comment: req.body.id };
+    CommentUpvote.findOneAndRemove(cond, function (doc, record) {
+        if (record) {
+            Comment.update({ _id: req.body.id }, { $inc: { 'likeCount': -1 } }, function (err) { });
+            ret = { operation: 'cancel', msg: 'Success' };
+        } else {
+            Comment.update({ _id: req.body.id }, { $inc: { 'likeCount': 1 } }, function (err) { });
+            var upvoteRec = new CommentUpvote(cond);
+            upvoteRec.save();
+            ret = { operation: 'like', msg: 'Success' };
+        }
+        res.json(ret);
+    });
 });
 
 module.exports = router;
