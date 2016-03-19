@@ -4,7 +4,7 @@ var lastUpdate = require('./plugins/lastUpdate');
 var Schema = mongoose.Schema;
 
 var commentUpvoteSchema = new Schema({
-    user: { type: Schema.Types.ObjectId, ref: 'User' },
+    user: { type: Schema.Types.ObjectId, ref: 'User', index: true },
     comment: { type: Schema.Types.ObjectId, ref: 'Comment' }
 });
 
