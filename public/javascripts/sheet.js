@@ -36,6 +36,7 @@ $(document).ready(function() {
     $('#seek').click(function(e) {
         if (!MIDIjs.length) {
             Materialize.toast('MIDI not loaded', 2000, 'rounded');
+            return;
         }
         var clickPos = e.pageX;
         var time = (clickPos - $(this).offset().left) * MIDIjs.length / ($(this).width());
