@@ -275,7 +275,7 @@
             song = Module.ccall('mid_song_load_with_options', 'number', ['number', 'number', 'number', 'number', 'number'], [stream, context.sampleRate, MID_AUDIO_S16LSB, 1, audioBufferSize * 2]);
             rval =  Module.ccall('mid_istream_close', 'number', ['number'], [stream]);
             MIDIjs.length = Module.ccall('mid_song_get_total_time', 'number', ['number'], [song]) / 1000;
-            console.log('MIDI length: ' + MIDIjs.length + ' ms');
+            console.log('MIDI length: ' + MIDIjs.length + ' s');
 
             num_missing = Module.ccall('mid_song_get_num_missing_instruments', 'number', ['number'], [song]);
             if (0 < num_missing) {
