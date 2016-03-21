@@ -35,8 +35,7 @@ $(document).ready(function() {
     });
     $('#seek').click(function(e) {
         if (!MIDIjs.length) {
-            Materialize.toast('MIDI not loaded', 2000, 'rounded');
-            return;
+            $('#play').click();
         }
         var clickPos = e.pageX;
         var time = (clickPos - $(this).offset().left) * MIDIjs.length / ($(this).width());
@@ -51,15 +50,14 @@ $(document).ready(function() {
         Materialize.toast(res, 2000);
     }
     MIDIjs.player_callback = function(res) {
-        if (abs(res.time - MIDIjs.length) < 0.4) {
-            $('#play').show();
-            $('#resume').hide();
-            $('#pause').hide();
-        }
         if (MIDIjs.length) {
             $('#currentTime').html(parseTime(res.time));
             $('#totalTime').html(parseTime(MIDIjs.length));
             $('.determinate').css('width', Math.floor(res.time * 100 / MIDIjs.length) + '%');
+        }
+        if (abs(res.time - MIDIjs.length) < 0.4) {
+            $('#stop').click();
+            MIDIjs.length = undefined;
         }
     }
 });
