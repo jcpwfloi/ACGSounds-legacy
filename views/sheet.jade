@@ -29,8 +29,8 @@ block content
                             p(style='font-size: 11px') 标签：#{sheet.sheetTag.join(', ')}
                             p(style='font-size: 12px') 简介：#{sheet.sheetIntro.length > 100 ? sheet.sheetIntro.substr(0, 96) + '....' : sheet.sheetIntro}
                         .card-action
-                            a(href!='http://cdn.acgsounds.com/' + sheet._id + '.mid') 下载 MIDI
-                            a(href!='http://cdn.acgsounds.com/' + sheet._id + '.pdf') 下载 PDF
+                            a(href!='//o4fd7hr6m.qnssl.com/' + sheet._id + '.mid') 下载 MIDI
+                            a(href!='//o4fd7hr6m.qnssl.com/' + sheet._id + '.pdf') 下载 PDF
                 .col.s12
                     .card(style='margin-bottom: 0')
                         .card-content
@@ -80,7 +80,7 @@ block content
                         center
                             a.btn.lime.darken-1(href='javascript:loginWithCallback()') 登陆后发表评论
         .col.s8
-            object#pdf(data!='http://cdn.acgsounds.com/' + sheet._id + '.pdf', type='application/pdf', style='width: 100%; height: 600px')
+            object#pdf(data!='//o4fd7hr6m.qnssl.com/' + sheet._id + '.pdf', type='application/pdf', style='width: 100%; height: 600px')
 
         .template-1(style='display: none')
             li.collection-item.avatar(id='comment-display-{2}')

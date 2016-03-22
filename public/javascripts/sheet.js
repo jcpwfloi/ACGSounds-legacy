@@ -13,7 +13,7 @@ $(window).resize(resize);
 $(document).ready(function() {
     resize();
     $('#play').click(function() {
-        MIDIjs.play('http://cdn.acgsounds.com/{0}.mid'.format(sheet_id));
+        MIDIjs.play('//o4fd7hr6m.qnssl.com/{0}.mid'.format(sheet_id));
         $('#play').hide();
         $('#pause').show();
     });
