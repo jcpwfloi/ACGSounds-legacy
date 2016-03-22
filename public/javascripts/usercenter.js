@@ -9,7 +9,7 @@ window.locales = {
 
 window.loadUserProfile = function (u) {
     $('img[data-email]').attr('src',
-        'http://cn.gravatar.com/avatar/' + $.md5($('img[data-email]').data('email')) + '?s=2048');
+        '//cn.gravatar.com/avatar/' + $.md5($('img[data-email]').data('email')) + '?s=2048');
     var data = {
         _csrf: $('meta[name=csrf-token]').attr('content'),
     };
