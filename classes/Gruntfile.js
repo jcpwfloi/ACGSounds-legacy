@@ -19,7 +19,7 @@ module.exports = function(grunt) {
             },
             build: {
                 src: 'dist/runtime.js',
-                dest: '../public/javascripts/runtime.min.js'
+                dest: '../public/javascripts/dist/runtime.min.js'
             }
         },
         clean: {

@@ -29,9 +29,9 @@
       * @constructor
       */
 
-     extend(this, new EventListener());
+     EventListener.call(this);
 
-     this.defaults = extend(this.defaults, {
+     this.defaults = {
          dispRange: 2,
          perPage: 4,
          postParams: {},
@@ -49,7 +49,7 @@
          },
          contentClearer: function () {
          }
-     });
+     };
 
      this.options = this.options || {};
 
