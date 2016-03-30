@@ -39,8 +39,8 @@
  PoBoo.prototype = {
      load: function(midi) {
          if (typeof midi === "string") {
-             if (midi.indexOf('data') === 0) {
-                 //deal with base64 data
+             if (midi instanceof ArrayBuffer) {
+                 //deal with ArrayBuffer
              } else {
                  read_array_buffer_from_url(midi, function(buf) {
                      var file = new MIDIFile(buf);
