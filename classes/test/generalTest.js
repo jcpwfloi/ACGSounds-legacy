@@ -84,7 +84,7 @@ describe('General', function() {
     });
     describe('Data.prototype', function() {
         describe('#Format', function() {
-            it('should functions', function() {
+            it('should function', function() {
                 var str = '1998-04-03 08:00:00';
                 var date = new Date(891561600000);
                 assert.equal(date.Format('yyyy-MM-dd hh:mm:ss'), str);
