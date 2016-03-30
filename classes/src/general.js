@@ -31,7 +31,7 @@
  function arrayRemove(array, value) {
      var index = array.indexOf(value);
      if (index > -1) {
-         array.slice(index, 1);
+         array.splice(index, 1);
      }
  }
 
@@ -70,6 +70,7 @@
  //exports
  window.each = each;
  window.extend = extend;
+ window.arrayRemove = arrayRemove;
  window.General = General;
 
 })(window, document);
