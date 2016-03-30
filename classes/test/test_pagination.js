@@ -35,6 +35,15 @@ describe('Pagination', function () {
             pagination.next();
             chai.assert.deepEqual(desc(e),
                 ['prev', 'page0', 'page1', 'ellipsis', 'page23', 'page24', 'page25A', 'nextD']);
+            chai.assert.lengthOf(e.list, 1);
+        });
+        it('should be able to load a new array', function () {
+            pagination.loadFromArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+        });
+        it('should work with a rather small number of items', function () {
+            chai.assert.deepEqual(desc(e), ['prevD', 'page0A', 'page1', 'page2', 'next']);
+            pagination.loadFromArray([1, 2, 3]);
+            chai.assert.deepEqual(desc(e), ['prevD', 'page0A', 'nextD']);
         });
     });
 });
