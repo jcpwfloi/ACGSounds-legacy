@@ -14,44 +14,26 @@
       * where `count` represents the number of items in the **whole** database
       * and `list` contains the items **numbered from `start` to `start + count`**.
       *
+      * All callbacks and data will be sent through the 'refresh' event.
+      * For further details, see the docs directory.
+      *
       * @param [opts]
       * @param {Number} [opts.dispRange] Range of displayed page buttons. Below is an example with dispRange = 2.
       *                                  <  1 2 ... 5 6 [7] 8 9 ... 19 20  >
       * @param {Number} [opts.perPage] Number of items to show on a page.
       * @param {JSON Object} [opts.postParams] Used when loading remote data. The extra parameters to send in the request (e.g. CSRF token)
-      * @param {Function} [opts.pageButton] Function to create a page button. Returns the inner HTML. All page indices are 0-based.
-      * @param {Function} [opts.prevButton] Function to create a '< previous' button. Returns the inner HTML.
-      * @param {Function} [opts.nextButton] Function to create a 'next >' button. Returns the inner HTML.
-      * @param {Function} [opts.ellipsis] Function to create an ellipsis button. Returns the inner HTML.
-      * @param {Function} [opts.pageButtonsAdd] Function to add the buttons to the page. Receives the HTML and should add it to a pagination element.
-      * @param {Function} [opts.contentRenderer] Function to display an item. Should directly add the item to an HTML element.
-      * @param {Function} [opts.contentClearer] Function to clear the HTML area used to display items. Will be called on display refreshes.
       * @constructor
       */
 
      EventListener.call(this);
 
-     this.defaults = {
+     this.defaults = extend(this.defaults, {
          dispRange: 2,
          perPage: 4,
-         postParams: {},
-         pageButton: function (num, active) {
-         },
-         prevButton: function (disabled) {
-         },
-         nextButton: function (disabled) {
-         },
-         ellipsis: function () {
-         },
-         pageButtonsAdd: function (html) {
-         },
-         contentRenderer: function (num, ctnt) {
-         },
-         contentClearer: function () {
-         }
-     };
+         postParams: {}
+     });
 
-     this.options = this.options || {};
+     this.options = extend(this.options, {});
 
      extend(this.options, this.defaults, opt);
  }
@@ -100,26 +82,26 @@
          if (typeof callback === "function") callback(null);
      },
      /**
-      * Shows items of a page. Functions like `pageButton` etc. are called inside this method.
+      * Shows items of a page. Events will be fired inside this method.
       * @param {Number} [num] Zero-based # of the page
       */
      go: function (num) {
          this.current = num;
          var proceed = function () {
-            this.options.contentClearer();
-            var rg;
-            rg = getPagesRange(this);
-            var buttons_html = this.options.prevButton(this.current === 0);
-            for (var i = 0; i < rg.length; ++i) {
-                if (rg[i] === -1) buttons_html += this.options.ellipsis();
-                else buttons_html += this.options.pageButton(rg[i], this.current === rg[i]);
-            }
-            buttons_html += this.options.nextButton(this.current === this.pageCount - 1);
-            this.options.pageButtonsAdd(buttons_html);
+            var rg, pages, list = [];
+
+            pages = getPagesRange(this);
+            pages = pages.map((function (_cur) { return function (x) {
+                return x === -1 ? { type: 'ellipsis' } : { type: 'page', page: x, active: _cur === x }; };
+            })(this.current));
+            pages.unshift({ type: 'prev', disabled: this.current === 0 });
+            pages.push({ type: 'next', disabled: this.current === this.pageCount - 1 });
+
             rg = getSinglePageRange(this);
             for (var i = rg.begin; i < rg.end; ++i) {
-                this.options.contentRenderer(i, this.contents[i]);
+                list.push({ index: i, content: this.contents[i] });
             }
+            this.fire('refresh', { pages: pages, list: list });
          };
          if (this.remoteURL) this.loadRemote(proceed, this);
          else proceed();

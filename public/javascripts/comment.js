@@ -1,35 +1,37 @@
 $(function() {
     var comments = [];
-    var pagination = new Pagination({
-        pageButton: function (num, active) {
-            return $('#template-pag-button' + (active ? '-active' : '')).html().replace('display: none', '').format(num, num + 1);
-        }, prevButton: function (disabled) {
-            return $('#template-pag-prev' + (disabled ? '-disabled' : '')).html().replace('display: none', '');
-        }, nextButton: function (disabled) {
-            return $('#template-pag-next' + (disabled ? '-disabled' : '')).html().replace('display: none', '');
-        }, ellipsis: function () {
-            return $('#template-pag-ellipsis').html().replace('display: none', '');
-        }, pageButtonsAdd: function (html) {
-            $('#pagination-container').html(html);
-        }, contentRenderer: function (num, ctnt) {
-            $('#commentBox').append($('.template-1').html().format(
-                ctnt.author.username, ctnt.text, num + 1, pagination.getItemCount() - num, ctnt.likeCount, (new Date(ctnt.createdAt)).Format('yyyy-MM-dd hh:mm:ss')
-            ));
-            $("#commentBox li:last img").attr('src' , 'http://cn.gravatar.com/avatar/' + $.md5(ctnt.author.email));
-            if (ctnt.isLiked) {
-                $('#comment-thumbup-' + (num + 1)).removeClass('text-lighten-4');
-            }
-        }, contentClearer: function () {
-            $('#commentBox').html('');
-        }
-    });
+    var pagination = new Pagination();
     window.pagination = pagination;
+
     var loadComments = function() {
         pagination.options.postParams = {
             sheet_id: window.sheet_id,
             _csrf: $('meta[name=csrf-token]').attr('content')
         };
         pagination.load('/api/comment/list', function (err) { console.log(err); });
+        pagination.on('refresh', function (e) {
+            // Pagination buttons
+            var html = '';
+            each(e.pages, function (p) {
+                if (p.type === 'page') html += $('#template-pag-button' + (p.active ? '-active' : '')).html().replace('display: none', '').format(p.page, p.page + 1);
+                else if (p.type === 'ellipsis') html += $('#template-pag-ellipsis').html().replace('display: none', '');
+                else if (p.type === 'prev') html += $('#template-pag-prev' + (p.disabled ? '-disabled' : '')).html().replace('display: none', '');
+                else if (p.type === 'next') html += $('#template-pag-next' + (p.disabled ? '-disabled' : '')).html().replace('display: none', '');
+            });
+            $('#pagination-container').html(html);
+            // Contents
+            $('#commentBox').html('');
+            each(e.list, function (c) {
+                $('#commentBox').append($('.template-1').html().format(
+                    c.content.author.username, c.content.text, c.index + 1, pagination.getItemCount() - c.index,
+                    c.content.likeCount, (new Date(c.content.createdAt)).Format('yyyy-MM-dd hh:mm:ss')
+                ));
+                $("#commentBox li:last img").attr('src' , 'http://cn.gravatar.com/avatar/' + $.md5(c.content.author.email));
+                if (c.content.isLiked) {
+                    $('#comment-thumbup-' + (c.index + 1)).removeClass('text-lighten-4');
+                }
+            });
+        });
     };
 
     window.likeComment = function (floor) {
@@ -56,9 +58,11 @@ $(function() {
                     if (r.operation === 'like') {
                         likesDisp.html(Number(likesDisp.html()) + 1);
                         thumbBtn.removeClass('disabled').removeClass('text-lighten-4').children().first().removeClass('thumb-popping');
+                        cmt.isLiked = true; ++cmt.likeCount;
                     } else {
                         likesDisp.html(Number(likesDisp.html()) - 1);
                         thumbBtn.removeClass('disabled').addClass('text-lighten-4').children().first().removeClass('thumb-popping');
+                        cmt.isLiked = false; --cmt.likeCount;
                 }}, 400);
             }
         });
