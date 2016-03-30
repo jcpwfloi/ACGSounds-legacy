@@ -1,12 +1,24 @@
 module.exports = function(grunt) {
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
+        concat: {
+            build: {
+                files: {
+                    'dist/runtime.js': [
+                        'src/general.js',
+                        'src/EventListener.js',
+                        'src/pagination.js',
+                        'src/i18n.js'
+                    ]
+                }
+            }
+        },
         uglify: {
             options: {
                 banner: '/*! <%= pkg.name %> <%= pkg.version %> */\n'
             },
             build: {
-                src: ['src/general.js', 'src/pagination.js', 'src/i18n.js'],
+                src: 'dist/runtime.js',
                 dest: '../public/javascripts/runtime.min.js'
             }
         },
@@ -15,9 +27,10 @@ module.exports = function(grunt) {
         }
     });
 
-    grunt.loadNpmTasks('grunt-contrib-uglify');
-    grunt.loadNpmTasks('grunt-contrib-clean');
+    for (var key in grunt.file.readJSON('package.json').dependencies) {
+        if (key !== "grunt" && key.indexOf("grunt") === 0) grunt.loadNpmTasks(key);
+    }
 
-    grunt.registerTask('default', ['uglify']);
+    grunt.registerTask('default', ['concat', 'uglify']);
 };
 

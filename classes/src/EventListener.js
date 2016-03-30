@@ -1,4 +1,13 @@
 (function(window, document, undefined) {'use strict';
+ function EventListener(opts) {
+     this.events = {};
+
+     this.options = {};
+     this.defaults = {};
+
+     extend(this.options, this.defaults, opts);
+ }
+
  EventListener.prototype = {
      on: function(event, callback) {
          event = event.toLowerCase();
@@ -29,14 +38,16 @@
          var preventDefault = false;
          if (this.events.hasOwnProperty(event)) {
              each(this.events[event], function(callback) {
-                 preventDefault = callback.apply(this, args.slice(1)) === false || preventDefault;
+                 return preventDefault = callback.apply(this, args.slice(1)) === false || preventDefault;
              }, this);
          }
          if (event != 'catchall') {
-             args.unshift('catchAll')
-             preventDefault = this.fire.apply(this, args) === false || preventDefault();
+             args.unshift('catchAll');
+             preventDefault = this.fire.apply(this, args) === false || preventDefault;
          }
          return !preventDefault;
      }
  };
+ window.EventListener = EventListener;
 })(window, document);
+

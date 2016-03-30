@@ -18,7 +18,10 @@
       * @param {Function} [opts.contentRenderer]
       * @constructor
       */
-     this.defaults = {
+
+     extend(this, new EventListener());
+
+     this.defaults = extend(this.defaults, {
          dispRange: 2,
          perPage: 4,
          postParams: {},
@@ -36,9 +39,9 @@
          },
          contentClearer: function () {
          }
-     };
+     });
 
-     this.options = {};
+     this.options = this.options || {};
 
      extend(this.options, this.defaults, opt);
  }
@@ -129,6 +132,8 @@
          }
      }
  };
+
+ extend(Pagination.prototype, EventListener.prototype);
 
  /**
   * @function getPagesRange
