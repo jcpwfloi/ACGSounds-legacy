@@ -104,7 +104,7 @@
             this.fire('refresh', { pages: pages, list: list });
          };
          if (this.remoteURL) this.loadRemote(proceed, this);
-         else proceed();
+         else proceed.apply(this);
      },
      prev: function (callback) {
          if (this.current > 0) this.go(this.current - 1, callback);
