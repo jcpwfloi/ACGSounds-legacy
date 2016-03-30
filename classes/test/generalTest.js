@@ -74,5 +74,22 @@ describe('General', function() {
             assert.deepEqual(arr1, [456, 134, 125]);
         });
     });
+    describe('String.prototype', function() {
+        describe('#format()', function() {
+            it('should functions', function() {
+                assert.equal('fff{0}fff{1}'.format('团', '万岁！'), 'fff团fff万岁！');
+                assert.equal('{{{0}{1}}}'.format(0, 1), '{{01}}');
+            });
+        });
+    });
+    describe('Data.prototype', function() {
+        describe('#Format', function() {
+            it('should functions', function() {
+                var str = '1998-04-03 08:00:00.123';
+                var date = new Date(str);
+                assert.equal(date.Format('yyyy-MM-dd hh:mm:ss.S'), str);
+            });
+        });
+    });
 });
 
