@@ -8,7 +8,10 @@ module.exports = function(grunt) {
                         'src/general.js',
                         'src/EventListener.js',
                         'src/pagination.js',
-                        'src/i18n.js'
+                        'src/i18n.js',
+                        'src/midievents.js',
+                        'src/midifile.js',
+                        'src/PoBoo.js'
                     ]
                 }
             }

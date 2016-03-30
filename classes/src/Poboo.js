@@ -16,7 +16,7 @@
 
      this.options = {};
      this.defaults = {
-         canvasObject: '#drawer'
+         canvasObject: '#drawer',
          colors: [
              [248, 82, 28], //C
              [172, 68, 34], //C#
@@ -42,7 +42,8 @@
              if (midi.indexOf('data') === 0) {
                  //deal with base64 data
              } else {
-                 $.get(midi, function(res) {
+                 read_array_buffer_from_url(midi, function(buf) {
+                     var file = new MIDIFile(buf);
                  });
              }
          }
@@ -50,6 +51,19 @@
  };
 
  extend(PoBoo.prototype, EventListener.prototype);
+
+ function read_array_buffer_from_url(url, callback) {
+     var req = new XMLHttpRequest();
+     req.open('GET', url, true);
+     req.responseType = 'arraybuffer';
+     req.onload = function(e) {
+         var buf = req.response;
+         if (buf) {
+             callback(buf);
+         }
+     };
+     req.send(null);
+ }
 
  PoBoo.version = '<%= version %>';
 
