@@ -16,6 +16,9 @@ describe('Pagination', function () {
             return e.type + (e.page !== undefined ? e.page.toString() : '') + (e.active ? 'A' : '') + (e.disabled ? 'D' : '');
         });
     };
+    var contents = function (e) {
+        return e.list.map(function (e) { return e.content; });
+    };
     describe('Basic functionalities', function () {
         it('should work with lots of items', function () {
             pagination.go(13);
@@ -44,6 +47,44 @@ describe('Pagination', function () {
             chai.assert.deepEqual(desc(e), ['prevD', 'page0A', 'page1', 'page2', 'next']);
             pagination.loadFromArray([1, 2, 3]);
             chai.assert.deepEqual(desc(e), ['prevD', 'page0A', 'nextD']);
+            chai.assert.deepEqual(contents(e), [1, 2, 3]);
+        });
+        it('should work with custom display ranges', function () {
+            var p = new Pagination({ dispRange: 4, perPage: 1 });
+            p.on('refresh', function (_e) { e = _e; });
+            p.loadFromArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+            chai.assert.deepEqual(contents(e), [1]);
+            chai.assert.deepEqual(desc(e),
+                ['prevD', 'page0A', 'page1', 'page2', 'page3', 'page4', 'ellipsis', 'page16', 'page17', 'page18', 'page19', 'next']);
+            p.go(10);
+            chai.assert.deepEqual(contents(e), [11]);
+            chai.assert.deepEqual(desc(e),
+                ['prev', 'page0', 'page1', 'page2', 'page3', 'ellipsis', 'page6', 'page7', 'page8', 'page9',
+                 'page10A', 'page11', 'page12', 'page13', 'page14', 'ellipsis', 'page16', 'page17', 'page18', 'page19', 'next']);
+            p.go(19);
+            chai.assert.deepEqual(contents(e), [20]);
+            chai.assert.deepEqual(desc(e),
+                ['prev', 'page0', 'page1', 'page2', 'page3', 'ellipsis', 'page15', 'page16', 'page17', 'page18', 'page19A', 'nextD']);
+        });
+    });
+    describe('Miscellaneous', function () {
+        it('should not allow prev() and next() to go out of bound', function () {
+            pagination.loadFromArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+            chai.assert.deepEqual(contents(e), [1, 2, 3, 4]);
+            pagination.prev();
+            chai.assert.deepEqual(contents(e), [1, 2, 3, 4]);
+            pagination.go(2);
+            chai.assert.deepEqual(contents(e), [9, 10]);
+            pagination.next();
+            chai.assert.deepEqual(contents(e), [9, 10]);
+            pagination.loadFromArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]);
+            chai.assert.deepEqual(contents(e), [1, 2, 3, 4]);
+            pagination.prev();
+            chai.assert.deepEqual(contents(e), [1, 2, 3, 4]);
+            pagination.go(2);
+            chai.assert.deepEqual(contents(e), [9, 10, 11, 12]);
+            pagination.next();
+            chai.assert.deepEqual(contents(e), [9, 10, 11, 12]);
         });
     });
 });
