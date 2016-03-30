@@ -66,7 +66,7 @@ describe('General', function() {
         });
     });
     describe('#arrayRemove', function() {
-        it('should functions', function() {
+        it('should function', function() {
             var arr1 = [123, 456, 789, 134, 125];
             arrayRemove(arr1, 789);
             assert.deepEqual(arr1, [123, 456, 134, 125]);
@@ -76,7 +76,7 @@ describe('General', function() {
     });
     describe('String.prototype', function() {
         describe('#format()', function() {
-            it('should functions', function() {
+            it('should function', function() {
                 assert.equal('fff{0}fff{1}'.format('团', '万岁！'), 'fff团fff万岁！');
                 assert.equal('{{{0}{1}}}'.format(0, 1), '{{01}}');
             });
