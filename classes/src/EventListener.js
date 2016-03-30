@@ -19,7 +19,7 @@
 
      off: function(event, fn) {
          if (event !== undefined) {
-             event = event.toLowercase();
+             event = event.toLowerCase();
              if (fn !== undefined) {
                  if (this.events.hasOwnProperty(event)) {
                      arrayRemove(this.events[event], fn);
