@@ -68,7 +68,7 @@ describe('Pagination', function () {
         });
     });
     describe('Miscellaneous', function () {
-        it('should not allow prev() and next() to go out of bound', function () {
+        it('should not allow `prev()` and `next()` to go out of bound', function () {
             pagination.loadFromArray([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
             chai.assert.deepEqual(contents(e), [1, 2, 3, 4]);
             pagination.prev();
@@ -85,6 +85,9 @@ describe('Pagination', function () {
             chai.assert.deepEqual(contents(e), [9, 10, 11, 12]);
             pagination.next();
             chai.assert.deepEqual(contents(e), [9, 10, 11, 12]);
+        });
+        it('should count correctly in `getItemCount()`', function () {
+            chai.assert.equal(pagination.getItemCount(), 12);
         });
     });
 });
