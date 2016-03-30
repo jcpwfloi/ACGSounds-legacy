@@ -13,7 +13,7 @@ $(function() {
             $('#pagination-container').html(html);
         }, contentRenderer: function (num, ctnt) {
             $('#commentBox').append($('.template-1').html().format(
-                ctnt.author.username, ctnt.text, num + 1, ctnt.likeCount, (new Date(ctnt.createdAt)).Format('yyyy-MM-dd hh:mm:ss')
+                ctnt.author.username, ctnt.text, num + 1, pagination.getItemCount() - num, ctnt.likeCount, (new Date(ctnt.createdAt)).Format('yyyy-MM-dd hh:mm:ss')
             ));
             $("#commentBox li:last img").attr('src' , 'http://cn.gravatar.com/avatar/' + $.md5(ctnt.author.email));
             if (ctnt.isLiked) {
