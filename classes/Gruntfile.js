@@ -28,12 +28,9 @@ module.exports = function(grunt) {
         clean: {
             release: ["dist/", "npm-debug.log", "../public/javascripts/dist/"]
         },
-        mocha: {
-            all: {
-                src: ['test/index.html']
-            },
-            options: {
-                run: true
+        karma: {
+            unit: {
+                configFile: 'karma.conf.js'
             }
         }
     });
@@ -43,6 +40,6 @@ module.exports = function(grunt) {
     }
 
     grunt.registerTask('default', ['concat', 'uglify']);
-    grunt.registerTask('test', ['concat', 'mocha']);
+    grunt.registerTask('test', ['concat', 'karma']);
 };
 
