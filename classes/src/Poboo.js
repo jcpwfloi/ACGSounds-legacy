@@ -40,6 +40,9 @@
 
  var fallingTime = 3000;
 
+ var playing = false;
+ var drawer = null;
+
  function PoBoo(opts) {
      EventListener.call(this);
 
@@ -87,12 +90,14 @@
      load: function(midi) {
          if (midi instanceof ArrayBuffer) {
              this.midiFile = new MIDIFile(midi);
+             MIDIjs.load(midi);
              this.fire('load');
          } else if (typeof midi === "string") {
              if (midi.indexOf('data') === 0) {
              } else {
                  read_array_buffer_from_url(midi, function(buf) {
                      this.midiFile = new MIDIFile(buf);
+                     MIDIjs.load(buf);
                      this.fire('load');
                  }, this);
              }
@@ -101,10 +106,33 @@
      analyze: function() {
          read_midi_events.call(this);
          generate_pitch_pairs();
+     },
+     play: function() {
+         drawer = this.draw;
+         window.requestAnimationFrame(drawer);
+         playing = true;
+         MIDIjs.play();
+     },
+     pause: function() {
+         playing = false;
+         MIDIjs.pause();
+     },
+     resume: function() {
+         playing = true;
+         window.requestAnimationFrame(drawer);
+         MIDIjs.resume();
+     },
+     draw: function() {
+         internalDraw(MIDIjs.getTime());
+         if (playing) window.requestAnimationFrame(drawer);
      }
  };
 
  extend(PoBoo.prototype, EventListener.prototype);
+
+ function requestDraw() {
+     console.log(arguments);
+ }
 
  function read_array_buffer_from_url(url, callback, context) {
      var req = new XMLHttpRequest();
@@ -266,6 +294,11 @@
 
  if (typeof define === "function" && defined.amd) {
      define("PoBoo", [], function () { return PoBoo; });
+ }
+
+ function internalDraw(time) {
+     if (time < 0) return;
+     console.log(time);
  }
 
 })(window, document);

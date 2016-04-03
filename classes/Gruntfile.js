@@ -9,6 +9,7 @@ module.exports = function(grunt) {
                         'src/EventListener.js',
                         'src/pagination.js',
                         'src/i18n.js',
+                        'src/midi.js',
                         'src/midievents.js',
                         'src/midifile.js',
                         'src/PoBoo.js'
