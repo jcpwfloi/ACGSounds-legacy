@@ -38,10 +38,11 @@
  var keyInfo = [];
  var isBlack = [];
 
- var fallingTime = 3000;
+ var fallingTime = 2000;
 
  var playing = false;
  var drawer = null;
+ var context = null;
 
  function PoBoo(opts) {
      EventListener.call(this);
@@ -105,10 +106,11 @@
      },
      analyze: function() {
          read_midi_events.call(this);
-         generate_pitch_pairs();
+         generate_pitch_pairs.call(this);
      },
      play: function() {
          drawer = this.draw;
+         context = this;
          window.requestAnimationFrame(drawer);
          playing = true;
          MIDIjs.play();
@@ -123,16 +125,12 @@
          MIDIjs.resume();
      },
      draw: function() {
-         internalDraw(MIDIjs.getTime());
+         internalDraw.call(context, MIDIjs.getTime());
          if (playing) window.requestAnimationFrame(drawer);
      }
  };
 
  extend(PoBoo.prototype, EventListener.prototype);
-
- function requestDraw() {
-     console.log(arguments);
- }
 
  function read_array_buffer_from_url(url, callback, context) {
      var req = new XMLHttpRequest();
@@ -175,7 +173,31 @@
      this.fire('analyze', ret);
  }
 
+ function comp(a, b) {
+     if (a.first.time < b.first.time) return -1;
+     if (a.first.time === b.first.time) return 0;
+     if (a.first.time > b.first.time) return 1;
+ }
+
  function generate_pitch_pairs() {
+     var map = [], pair = [];
+     for (var i = 0; i < 88; ++ i) map.push([]);
+     //time, is_on, pitch, vel
+     each(this.analyzedEvents, function(val) {
+         val.pitch -= 21;
+         if (val.is_on == 1) map[val.pitch].push(val);
+         else {
+             if (map[val.pitch].length) {
+                 pair.push({
+                     first: map[val.pitch][map[val.pitch].length - 1],
+                     second: val
+                 });
+                 map[val.pitch].pop();
+             } else throw new Error('Pitch Pair does not match');
+         }
+     }, this);
+     pair.sort(comp);
+     this.pairs = pair;
  }
 
  function roundedRect(cornerX, cornerY, width, height, cornerRadius) {
@@ -298,7 +320,34 @@
 
  function internalDraw(time) {
      if (time < 0) return;
-     console.log(time);
+
+     time *= 1000;
+
+     clearBackground();
+     drawBackground();
+     var left, right;
+     var l = 0, r = this.pairs.length, mid;
+     console.log(time - fallingTime);
+     while (l + 1 < r) {
+         mid = l + r >> 1;
+         if (this.pairs[mid].first.time < time - fallingTime) l = mid;
+         else r = mid;
+     }
+     left = l;
+     l = 0, r = this.pairs.length;
+     while (l + 1 < r) {
+         mid = l + r >> 1;
+         if (this.pairs[mid].first.time < time + fallingTime) l = mid;
+         else r = mid;
+     }
+     right = mid;
+
+     for (var i = left; i <= right; ++ i) {
+         drawKey(this.pairs[i].first.pitch - 21, this.pairs[i].first.time - time, this.pairs[i].second.time - this.pairs[i].first.time);
+     }
+
+     //draw this.pairs[left, right]
+     
  }
 
 })(window, document);
