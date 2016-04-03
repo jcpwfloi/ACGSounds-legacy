@@ -20,6 +20,12 @@ describe('Pagination', function () {
         return e.list.map(function (e) { return e.content; });
     };
     describe('Basic functionalities', function () {
+        pagination.on('refresh', function (_e) { e = _e; });
+        var arr = [ { my_idx: 0, msg: "I'm something special" } ];
+        for (var i = 0; i < 100; ++i) {
+            arr.push({ my_idx: arr.length, msg: 233 });
+        }
+        pagination.loadFromArray(arr);
         it('should work with lots of items', function () {
             pagination.go(13);
             chai.assert.lengthOf(e.pages, 13);
