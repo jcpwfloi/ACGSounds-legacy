@@ -43,8 +43,6 @@
  function PoBoo(opts) {
      EventListener.call(this);
 
-     this.midiFile = {};
-
      this.options = {};
      this.defaults = {
          canvasObject: 'canvas',
@@ -88,18 +86,20 @@
  PoBoo.prototype = {
      load: function(midi) {
          if (midi instanceof ArrayBuffer) {
-             loadMIDIFileAndCatchError(this.midiFile, midi, this);
+             this.midiFile = new MIDIFile(midi);
+             this.fire('load');
          } else if (typeof midi === "string") {
              if (midi.indexOf('data') === 0) {
              } else {
                  read_array_buffer_from_url(midi, function(buf) {
-                     loadMIDIFileAndCatchError(this.midiFile, buf, this);
+                     this.midiFile = new MIDIFile(buf);
+                     this.fire('load');
                  }, this);
              }
          }
      },
      analyze: function() {
-         read_midi_events();
+         read_midi_events.call(this);
          generate_pitch_pairs();
      }
  };
@@ -142,22 +142,12 @@
              }
          }
      }
-     this.events = events;
+     this.event = events;
      this.analyzedEvents = ret;
      this.fire('analyze', ret);
  }
 
  function generate_pitch_pairs() {
- }
-
- function loadMIDIFileAndCatchError(dest, buf) {
-     try {
-         dest = new MIDIFile(buf);
-     } catch(e) {
-         this.fire('load', e);
-     } finally {
-         this.fire('load');
-     }
  }
 
  function roundedRect(cornerX, cornerY, width, height, cornerRadius) {
@@ -222,10 +212,14 @@
  function drawPianoKeyBoard() {
      ctx.fillStyle = 'rgba(0,0,0,1)';
      ctx.strokeStyle = 'rgba(100,100,100,1)';
+
      for (var i = 0; i < 52; ++ i)
-     ctx.strokeRect(i * keyWidth, height - keyHeight, keyWidth, keyHeight);
+         ctx.strokeRect(i * keyWidth, height - keyHeight, keyWidth, keyHeight);
+
      ctx.fillRect(keyWidth - blackKeyWidth / 2, height - keyHeight, blackKeyWidth, blackKeyHeight);
+
      canvas.globalCompositeOperation = 'source-over';
+
      for (var i = 0; i < 7; ++ i)
      for (var j = 0; j < 7; ++ j)
      if (blackKey[j]) {
@@ -241,10 +235,12 @@
 
      ctx.fillStyle = 'rgba(255, 255, 255, 1)';
      ctx.translate(keyWidth * 2, 0);
+
      for (var i = 0; i < 8; ++ i) {
          ctx.fillRect(0, -0.5, 1, height - keyHeight);
          ctx.translate(keyWidth * 7, 0);
      }
+
      ctx.restore();
  }
 
@@ -255,9 +251,12 @@
  function drawKey(keyCode, deltaTime, persistTime) {
      var thisKeyHeight = persistTime / fallingTime * (height - keyHeight);
      var thisKeyY = (height - keyHeight) / fallingTime * deltaTime;
+
      ctx.fillStyle = isBlack[keyCode] ? '#4db6ac' : '#b2dfdb';
      ctx.strokeStyle = 'black';
+
      if (thisKeyY > height - keyHeight) return;
+
      roundedRect(keyInfo[keyCode].x, thisKeyY, isBlack[keyCode] ? blackKeyWidth : keyWidth, ((thisKeyY + thisKeyHeight > height - keyHeight) ? height - keyHeight - thisKeyY : thisKeyHeight), 3);
  }
 
