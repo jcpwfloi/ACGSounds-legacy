@@ -28,6 +28,8 @@
  function PoBoo(opts) {
      EventListener.call(this);
 
+     this.midiFile = {};
+
      this.options = {};
      this.defaults = {
          canvasObject: 'canvas',
@@ -49,6 +51,15 @@
 
      extend(this.options, this.defaults, opts);
 
+     //start Internal EventListener
+     
+    this.on('load', function(err) {
+        if (this.midiFile) this.analyze();
+        else throw new Error('Error loading MIDIFile');
+    });
+
+     //end Internal EventListener
+
      canvas = document.getElementById('canvas');
      ctx = canvas.getContext('2d');
 
@@ -61,31 +72,44 @@
 
  PoBoo.prototype = {
      load: function(midi) {
-         if (typeof midi === "string") {
-             if (midi instanceof ArrayBuffer) {
-                 //deal with ArrayBuffer
+         if (midi instanceof ArrayBuffer) {
+             loadMIDIFileAndCatchError(this.midiFile, midi, this);
+         } else if (typeof midi === "string") {
+             if (midi.indexOf('data') === 0) {
              } else {
                  read_array_buffer_from_url(midi, function(buf) {
-                     var file = new MIDIFile(buf);
-                 });
+                     loadMIDIFileAndCatchError(this.midiFile, buf, this);
+                 }, this);
              }
          }
+     },
+     analyze: function() {
      }
  };
 
  extend(PoBoo.prototype, EventListener.prototype);
 
- function read_array_buffer_from_url(url, callback) {
+ function read_array_buffer_from_url(url, callback, context) {
      var req = new XMLHttpRequest();
      req.open('GET', url, true);
      req.responseType = 'arraybuffer';
      req.onload = function(e) {
          var buf = req.response;
          if (buf) {
-             callback(buf);
+             callback.call(context, buf);
          }
      };
      req.send(null);
+ }
+
+ function loadMIDIFileAndCatchError(dest, buf) {
+     try {
+         dest = new MIDIFile(buf);
+     } catch(e) {
+         this.fire('load', e);
+     } finally {
+         this.fire('load');
+     }
  }
 
  function roundedRect(cornerX, cornerY, width, height, cornerRadius) {
@@ -194,7 +218,7 @@
  window.PoBoo = PoBoo;
 
  if (typeof define === "function" && defined.amd) {
-     define("flow", [], function () { return PoBoo; });
+     define("PoBoo", [], function () { return PoBoo; });
  }
 
 })(window, document);
