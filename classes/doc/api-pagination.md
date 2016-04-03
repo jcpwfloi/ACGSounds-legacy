@@ -18,27 +18,40 @@ pagination.page(1, function(err, doc, pageHTMLStr) {});
 
 ## Back-end API Implementation
 
-POST-DATA:
+### Request params
+
+The request should include the following parameters:
+
+* **start** (_Number_): The index of the first item to retrieve
+* **count** (_Number_): The number of the items to retrieve,
+  i.e. the request is asking for items indexed inside range `[start .. start + count - 1]`
 
 ```javascript
 {
-	"page": 12 
+	"start": 25,
+    "count": 5
 }
 ```
 
-RESPONSE-DATA:
+### Response
+
+The response should contain at least the following fields:
+
+* **count** (_Number_): The number of items in the whole database, regardless of how much is requested
+* **list** (_Array_): The items requested. May contain any type of data.
+
+Often an optional **msg** (_String_) field is included.
 
 ```javascript
 {
-	"total": 20,
-	"data": [
+	"count": 20,
+	"list": [
 		{
 			"author": 'arcGravitus',
 			"email": 'jcpwfloi@gmail.com'
-		},
-		{
+		}, {
 			"author": 'Pisces',
-			"email": 'lvshiqing@hsefz.cn'
+			"email": '1786762946@qq.com'
 		}
 	]
 }
