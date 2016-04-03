@@ -16,7 +16,7 @@ Example.prototype = {
 extend(Example.prototype, EventListener.prototype);
 
 describe('EventListener', function() {
-    it('should functions on, off and fire', function() {
+    it('should function on, off and fire', function() {
         var a = new Example();
         var status = 0;
         a.on('click', function(e) {
