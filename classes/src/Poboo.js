@@ -299,7 +299,7 @@
 
  function drawKey(keyCode, deltaTime, persistTime) {
      var thisKeyHeight = persistTime / fallingTime * (height - keyHeight);
-     var thisKeyY = (height - keyHeight) / fallingTime * deltaTime;
+     var thisKeyY = (height - keyHeight) / fallingTime * (fallingTime - deltaTime);
 
      ctx.fillStyle = isBlack[keyCode] ? '#4db6ac' : '#b2dfdb';
      ctx.strokeStyle = 'black';
