@@ -181,10 +181,9 @@
 
  function generate_pitch_pairs() {
      var map = [], pair = [];
-     for (var i = 0; i < 88; ++ i) map.push([]);
+     for (var i = 0; i < 128; ++ i) map.push([]);
      //time, is_on, pitch, vel
      each(this.analyzedEvents, function(val) {
-         val.pitch -= 21;
          if (val.is_on == 1) map[val.pitch].push(val);
          else {
              if (map[val.pitch].length) {
