@@ -8,7 +8,22 @@
   *
   * API Introduction:
   *     @class PoBoo
+  *         @inherit EventListener
   *         @constructor(opts) opts alias options
+  *
+  *     @public
+  *
+  *     @private
+  *         @param {String, function, Object} read_array_buffer_from_url Reads from URL and request ArrayBuffer data
+  *         @param {Object, ArrayBuffer} loadMIDIFileAndCatchError() reads from ArrayBuffer and Convert it into a MIDIFile along with a "load" event
+  *         @param {Number, Number, Number, Number, Number} roundedRect(x, y, width, height, radius) draw a rounded rectangle with a radius `radius`
+  *         @param {} calculateKeySize() calculate the width and height of black and white keys
+  *         @param {} calculateKeyInfo() calculate the offsetX and `isBlack` of each distinct key
+  *         @param {} setPageCSS() set the margin and padding of body to 0 and disable scroll
+  *         @param {} drawPianoKeyBoard() draw piano keyboard
+  *         @param {} drawBackground() draw gray background
+  *         @param {} clearBackground() clear background
+  *         @param {Number, Number, Number} drawKey(keyCode, deltaTime, persistTime) draw key with `keycode` pitch(0-87), deltaTime(nowTime - topTime),persisTime the keypress time of distinct key.
   */
 
  var canvas, ctx;
@@ -84,6 +99,8 @@
          }
      },
      analyze: function() {
+         read_midi_events();
+         generate_pitch_pairs();
      }
  };
 
@@ -100,6 +117,37 @@
          }
      };
      req.send(null);
+ }
+ 
+ function read_midi_events() {
+     var file = this.midiFile;
+     var events = file.getEvents();
+     var ret = [];
+     for (var i = 0; i < events.length; ++i) {
+         if (events[i].type === MIDIEvents.EVENT_MIDI) {
+             if (events[i].subtype === MIDIEvents.EVENT_MIDI_NOTE_OFF) {
+                 ret.push({
+                     time: events[i].playTime,
+                     is_on: 0,
+                     pitch: events[i].param1,
+                     vel: events[i].param2
+                 });
+             } else if (events[i].subtype === MIDIEvents.EVENT_MIDI_NOTE_ON) {
+                 ret.push({
+                     time: events[i].playTime,
+                     is_on: 1,
+                     pitch: events[i].param1,
+                     vel: events[i].param2
+                 });
+             }
+         }
+     }
+     this.events = events;
+     this.analyzedEvents = ret;
+     this.fire('analyze', ret);
+ }
+
+ function generate_pitch_pairs() {
  }
 
  function loadMIDIFileAndCatchError(dest, buf) {
