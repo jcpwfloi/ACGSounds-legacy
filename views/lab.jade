@@ -9,14 +9,14 @@ html
         div#button(style="position:fixed;top:10px;width:70px;right:10px;background-color:indigo;text-align: center;color:white;padding:5px 0 5px 0;border-radius:5px;user-select:none;-webkit-user-select:none;-moz-user-select:none")
             a(href="javascript:keyboard.play()", style="color:white;text-decoration:none;display:block") Play
         div(style='position:fixed;top:40px;right:35px'): span(style='color:white')#fps
-        .container(style='position:fixed;top:10px;left:100px;width:500px')
+        .container(style='position:fixed;top:10px;left:100px;width:500px;user-select:none;-webkit-user-select:none;-moz-user-select:none')
             .progress.progress--active
                 b.progress__bar#progress
                     span.progress__text
                         em
-                            span#currentTime
+                            span#currentTime 00:00:00
                             |  / 
-                            span#totalTime
+                            span#totalTime 00:00:00
     script(src='//cdn.bootcss.com/jquery/2.1.2/jquery.min.js')
     script(src='/javascripts/dist/runtime.min.js')
     script.
@@ -52,6 +52,11 @@ html
             }
             $bar.css({ width: percent + '%' });
         };
+        $('.progress').click(function(e) {
+            var clickPos = e.pageX;
+            var time = (clickPos - $(this).offset().left) * MIDIjs.length / ($(this).width());
+            keyboard.seek(time);
+        });
         keyboard.on('load', function() {
         });
         keyboard.on('animate', function(e, time) {
