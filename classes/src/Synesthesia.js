@@ -334,8 +334,28 @@
      for (var i = 0; i < 88; ++i) if (isBlack[i]) fillKey(i, time);
  }
 
+ window.FPS = (function () {
+     var lastLoop = (new Date()).getMilliseconds();
+     var count = 1;
+     var fps = 0;
+
+     return function () {
+         var currentLoop = (new Date()).getMilliseconds();
+         if (lastLoop > currentLoop) {
+             fps = count;
+             count = 1;
+         } else {
+             count += 1;
+         }
+         lastLoop = currentLoop;
+         return fps;
+     };
+ }());
+
  function refreshNotes(time) {
      if (time < 0) return;
+
+     this.fire('animate', FPS());
 
      time *= 1000;
      time -= attackTimeAdjustment;
@@ -344,12 +364,12 @@
      drawBackground();
 
      compass.eachDo(
-        time, time + fallingTime, function (e) {
-            var i = e.index;
-            var keynum = this.pairs[i].first.pitch - 21;
-            drawNote(keynum, this.pairs[i].first.time - time, this.pairs[i].second.time - this.pairs[i].first.time);
-            if (this.pairs[i].first.time <= time) keyboardLastOn[keynum] = time;
-        }, this
+         time, time + fallingTime, function (e) {
+             var i = e.index;
+             var keynum = this.pairs[i].first.pitch - 21;
+             drawNote(keynum, this.pairs[i].first.time - time, this.pairs[i].second.time - this.pairs[i].first.time);
+             if (this.pairs[i].first.time <= time) keyboardLastOn[keynum] = time;
+         }, this
      );
      repaintKeys(time);
  }
