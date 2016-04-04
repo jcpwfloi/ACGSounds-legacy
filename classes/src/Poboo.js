@@ -275,8 +275,13 @@
              var top = height - keyHeight;
              var bottom = height;
              var middleX, path;
+             var middleX1, middleX2;
              var middleY = height - keyHeight + blackKeyHeight;
-             if (i !== 87 && isBlack[i + 1]) { //right black
+             if (i !== 87 && i !== 0 && isBlack[i + 1] && isBlack[i - 1]) {
+                 middleX1 = left + blackKeyWidth / 2;
+                 middleX2 = right - blackKeyWidth / 2;
+                 path = [[middleX1, top], [middleX1, middleY], [left, middleY], [left, bottom], [right, bottom], [right, middleY], [middleX2, middleY], [middleX2, top]];
+             } else if (i !== 87 && isBlack[i + 1]) { //right black
                  middleX = offsetWidth + keyWidth - blackKeyWidth / 2;
                  path = [[left, top], [left, bottom], [right, bottom], [right, middleY], [middleX, middleY], [middleX, top]];
              } else if (i !== 0 && isBlack[i - 1]) { // left black
@@ -378,7 +383,7 @@
  function clearKey(keyCode) {
      var key = keyInfo[keyCode];
 
-     fillPathWithColorAndStroke(key.path, 'white', 'rgba(100,100,100,1)');
+     fillPathWithColorAndStroke(key.path, isBlack[keyCode] ? 'black' : 'white', 'rgba(100,100,100,1)');
  }
 
  function internalDraw(time) {
