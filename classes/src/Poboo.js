@@ -353,7 +353,7 @@
 
  function drawKey(keyCode, deltaTime, persistTime) {
      var thisKeyHeight = persistTime / fallingTime * (height - keyHeight);
-     var thisKeyY = (height - keyHeight) / fallingTime * (fallingTime - deltaTime);
+     var thisKeyY = (height - keyHeight) / fallingTime * (fallingTime - deltaTime) - thisKeyHeight;
 
      //ctx.fillStyle = 'rgba(' + context.options.colors[relativePitch[keyCode]].join(',') + ',1)';
      ctx.fillStyle = giveHSLColor(context.options.colors[relativePitch[keyCode]]);
