@@ -40,8 +40,8 @@
  var keyRects = [];
 
  var fallingTime = 2000;
- var attackTimeAdjustment = 100;
- var releaseTime = 65;
+ var attackTimeAdjustment = 164;
+ var releaseTime = 55;
 
  var playing = false;
  var drawer = null;
