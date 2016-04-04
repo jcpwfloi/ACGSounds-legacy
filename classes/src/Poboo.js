@@ -149,6 +149,7 @@
  function read_midi_events() {
      var file = this.midiFile;
      var events = file.getEvents();
+     window.eee = events;
      var ret = [];
      for (var i = 0; i < events.length; ++i) {
          if (events[i].type === MIDIEvents.EVENT_MIDI) {
@@ -374,7 +375,7 @@
 
  function fillKey(keyCode) {
      var key = keyInfo[keyCode];
-     var color = giveHSLColor(relativePitch[keyCode]);
+     var color = giveHSLColor(context.options.colors[relativePitch[keyCode]]);
 
      filledKey.push(keyCode);
      fillPathWithColorAndStroke(key.path, color, 'rgba(100,100,100,1)');
