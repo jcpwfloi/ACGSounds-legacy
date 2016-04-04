@@ -225,9 +225,8 @@
 
      ctx.moveTo(path[0][0], path[0][1]);
 
-     for (var pos in path) {
-         if (pos == path[0]) continue;
-         ctx.lineTo(pos[0], pos[1]);
+     for (var i = 1; i < path.length; ++i) {
+         ctx.lineTo(path[i][0], path[i][1]);
      }
 
      ctx.closePath();
