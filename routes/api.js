@@ -97,7 +97,7 @@ router.post('/comment/list', function (req, res) {
         var count = parseInt(req.body.count);
         if (isNaN(start) || isNaN(count)) return res.json({ msg: 'Invalid start / count argument' });
         if (start + count > sheet[0].comments.length) count = sheet[0].comments.length - start;
-        console.log(start, count, sheet[0].comments.length, sheet[0].comments.length - count - start);
+        //console.log(start, count, sheet[0].comments.length, sheet[0].comments.length - count - start);
         start = sheet[0].comments.length - count - start;
         var ret = [];
         var likeDataRetrieved = 0;
