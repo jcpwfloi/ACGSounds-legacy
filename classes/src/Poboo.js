@@ -393,14 +393,14 @@
      var l = 0, r = this.pairs.length, mid;
      while (l + 1 < r) {
          mid = l + r >> 1;
-         if (this.pairs[mid].first.time < time - 2 * fallingTime) l = mid;
+         if (this.pairs[mid].first.time < time - fallingTime) l = mid;
          else r = mid;
      }
      left = l;
      l = 0, r = this.pairs.length;
      while (l + 1 < r) {
          mid = l + r >> 1;
-         if (this.pairs[mid].first.time < time + fallingTime) l = mid;
+         if (this.pairs[mid].first.time < time + 2 * fallingTime) l = mid;
          else r = mid;
      }
      right = mid;
