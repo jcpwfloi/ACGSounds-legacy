@@ -41,7 +41,7 @@
 
  var fallingTime = 2000;
  var attackTimeAdjustment = 164;
- var releaseTime = 55;
+ var releaseTime = 60;
 
  var playing = false;
  var drawer = null;
