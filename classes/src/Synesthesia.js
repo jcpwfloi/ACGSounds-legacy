@@ -23,23 +23,25 @@
   *         @param {} drawPianoKeyBoard() draw piano keyboard
   *         @param {} drawBackground() draw gray background
   *         @param {} clearBackground() clear background
-  *         @param {Number, Number, Number} drawKey(keyCode, deltaTime, persistTime) draw key with `keycode` pitch(0-87), deltaTime(nowTime - topTime),persisTime the keypress time of distinct key.
+  *         @param {Number, Number, Number} drawNote(keyCode, deltaTime, persistTime) draw key with `keycode` pitch(0-87), deltaTime(nowTime - topTime),persisTime the keypress time of distinct key.
   */
 
  var canvas, ctx;
 
  var BLACKKEYHEIGHT = 8.6, BLACKKEYWIDTH = 1.2, WHITEKEYHEIGHT = 14.4, WHITEKEYWIDTH = 2.4;
+ var blackKeyNoteWidth = 1, whiteKeyNoteWidth = 0.8;
 
  var height, width, keyHeight, keyWidth, blackKeyHeight, blackKeyWidth;
 
- var blackKey = [true, true, false, true, true, true, false];
- var isBlackGroup = [false, true, false, true, false, false, true, false, true, false, true, false];
+ var octaveBlacks = [false, true, false, true, false, false, true, false, true, false, true, false];
 
- var keyInfo = [];
- var isBlack = [], relativePitch = [];
+ var noteName = [];
+ var isBlack = [];
+ var keyRects = [];
 
  var fallingTime = 2000;
  var attackTimeAdjustment = 100;
+ var releaseTime = 65;
 
  var playing = false;
  var drawer = null;
@@ -52,18 +54,6 @@
      this.defaults = {
          canvasObject: 'canvas',
          colors: [
-             [ 360, 96, 51 ],
-             [ 14, 91, 51 ],
-             [ 29, 94, 52 ],
-             [ 49, 90, 60 ],
-             [ 60, 90, 60 ],
-             [ 135, 76, 32 ],
-             [ 172, 68, 34 ],
-             [ 248, 82, 28 ],
-             [ 273, 80, 27 ],
-             [ 302, 88, 26 ],
-             [ 313, 78, 37 ],
-             [ 325, 84, 46 ]
          ]
      };
 
@@ -84,7 +74,7 @@
      calculateKeySize();
      calculateKeyInfo();
      setPageCSS();
-     drawPianoKeyBoard();
+     repaintKeys(0);
      drawBackground();
  }
 
@@ -131,7 +121,7 @@
      },
      draw: function() {
          ctx.globalCompositeOperation = "source-over";
-         internalDraw.call(context, MIDIjs.getTime());
+         refreshNotes.call(context, MIDIjs.getTime());
          if (playing) window.requestAnimationFrame(drawer);
      }
  };
@@ -154,7 +144,6 @@
  function read_midi_events() {
      var file = this.midiFile;
      var events = file.getEvents();
-     window.eee = events;
      var ret = [];
      var firstNoteDown = -1;
      for (var i = 0; i < events.length; ++i) {
@@ -183,12 +172,6 @@
      this.fire('analyze', ret);
  }
 
- function comp(a, b) {
-     if (a.first.time < b.first.time) return -1;
-     if (a.first.time === b.first.time) return 0;
-     if (a.first.time > b.first.time) return 1;
- }
-
  function generate_pitch_pairs() {
      var map = [], pair = [];
      for (var i = 0; i < 128; ++ i) map.push([]);
@@ -205,7 +188,7 @@
              } else throw new Error('Pitch Pair does not match');
          }
      }, this);
-     pair.sort(comp);
+     pair.sort(function (a, b) { return a.first.time - b.first.time; });
      this.pairs = pair;
  }
 
@@ -226,22 +209,9 @@
      ctx.stroke();
  }
 
- function fillPathWithColorAndStroke(path, color, stroke) {
+ function fillRectWithColor(rect, color) {
      ctx.fillStyle = color;
-     ctx.strokeStyle = stroke;
-
-     ctx.beginPath();
-
-     ctx.moveTo(path[0][0], path[0][1]);
-
-     for (var i = 1; i < path.length; ++i) {
-         ctx.lineTo(path[i][0], path[i][1]);
-     }
-
-     ctx.closePath();
-
-     ctx.stroke();
-     ctx.fill();
+     ctx.fillRect(rect.x1, rect.y1, rect.x2 - rect.x1, rect.y2 - rect.y1);
  }
 
  function calculateKeySize() {
@@ -254,55 +224,25 @@
  }
 
  function calculateKeyInfo() {
-     for (var i = 0; i < 88; ++ i) isBlack.push(false), relativePitch.push(0);
-     isBlack[1] = true;
-     relativePitch[0] = 9;
-     relativePitch[1] = 10;
-     relativePitch[2] = 11;
-     for (var i = 0; i < 7; ++ i)
-     for (var j = 0; j < 12; ++ j) {
-         isBlack[3 + i * 12 + j] = isBlackGroup[j];
-         relativePitch[3 + i * 12 + j] = j;
+     for (var i = 0; i < 88; ++i) {
+         noteName[i] = (i + 9) % 12;
+         isBlack[i] = octaveBlacks[noteName[i]];
      }
-     isBlack.push(false);
      var offsetWidth = 0;
-     for (var i = 0; i < 88; ++ i) {
+     for (var i = 0; i < 88; ++i) {
          if (isBlack[i]) {
-             var left = offsetWidth - blackKeyWidth / 2;
-             var right = offsetWidth + blackKeyWidth / 2;
-             var top = height - keyHeight;
-             var bottom = height - keyHeight + blackKeyHeight;
-             var path = [[left, top], [right, top], [right, bottom], [left, bottom]];
-             keyInfo.push({
-                 isBlack: true,
-                 x: offsetWidth - blackKeyWidth / 2,
-                 path: path
+             keyRects.push({
+                 x1: offsetWidth - blackKeyWidth / 2,
+                 x2: offsetWidth + blackKeyWidth / 2,
+                 y1: height - keyHeight,
+                 y2: height - keyHeight + blackKeyHeight
              });
          } else {
-             var left = offsetWidth;
-             var right = offsetWidth + keyWidth;
-             var top = height - keyHeight;
-             var bottom = height;
-             var middleX, path;
-             var middleX1, middleX2;
-             var middleY = height - keyHeight + blackKeyHeight;
-             if (i !== 87 && i !== 0 && isBlack[i + 1] && isBlack[i - 1]) {
-                 middleX1 = left + blackKeyWidth / 2;
-                 middleX2 = right - blackKeyWidth / 2;
-                 path = [[middleX1, top], [middleX1, middleY], [left, middleY], [left, bottom], [right, bottom], [right, middleY], [middleX2, middleY], [middleX2, top]];
-             } else if (i !== 87 && isBlack[i + 1]) { //right black
-                 middleX = offsetWidth + keyWidth - blackKeyWidth / 2;
-                 path = [[left, top], [left, bottom], [right, bottom], [right, middleY], [middleX, middleY], [middleX, top]];
-             } else if (i !== 0 && isBlack[i - 1]) { // left black
-                 middleX = offsetWidth + blackKeyWidth / 2;
-                 path = [[middleX, top], [middleX, middleY], [left, middleY], [left, bottom], [right, bottom], [right, top]];
-             } else {
-                 path = [[left, top], [left, bottom], [right, bottom], [right, top]];
-             }
-             keyInfo.push({
-                 isBlack: false,
-                 x: offsetWidth,
-                 path: path
+             keyRects.push({
+                 x1: offsetWidth,
+                 x2: offsetWidth + keyWidth,
+                 y1: height - keyHeight,
+                 y2: height
              });
              offsetWidth += keyWidth;
          }
@@ -317,26 +257,13 @@
      document.body.style.overflowY = 'hidden';
  }
 
- function drawPianoKeyBoard() {
-     ctx.fillStyle = 'rgba(0,0,0,1)';
-     ctx.strokeStyle = 'rgba(100,100,100,1)';
-
-     for (var i = 0; i < 52; ++ i)
-     ctx.strokeRect(i * keyWidth, height - keyHeight, keyWidth, keyHeight);
-
-     ctx.fillRect(keyWidth - blackKeyWidth / 2, height - keyHeight, blackKeyWidth, blackKeyHeight);
-
-     for (var i = 0; i < 7; ++ i)
-     for (var j = 0; j < 7; ++ j)
-     if (blackKey[j]) {
-         var offsetWidth = (i * 7 + j + 2) * keyWidth;
-         ctx.fillRect(offsetWidth + keyWidth - blackKeyWidth / 2, height - keyHeight, blackKeyWidth, blackKeyHeight);
-     }
- }
+ /*function drawPianoKeyBoard() {
+     for (var i = 0; i < 88; ++i) clearKey(i);
+ }*/
 
  function drawBackground() {
      ctx.save();
-     ctx.fillStyle = 'rgba(100, 100, 100, 1)';
+     ctx.fillStyle = 'rgba(144, 144, 144, 1)';
      ctx.fillRect(0, 0, width, height - keyHeight);
 
      ctx.fillStyle = 'rgba(255, 255, 255, 1)';
@@ -356,17 +283,19 @@
 
  function max(a, b) { return a > b ? a : b; }
 
- function giveHSLColor(colorArray) {
-     return 'hsla({0},{1}%,{2}%,1)'.format(colorArray[0], colorArray[1], colorArray[2]);
+ function noteColor(keyCode, transparency) {
+     if (transparency > 1) transparency = 1;
+     var keyboardVal = (isBlack[keyCode] ? 0 : 100);
+     //context ? context.options.colors[noteName[keyCode]][0] : 0
+     return 'hsl({0},{1}%,{2}%)'.format(noteName[keyCode] * 30, 70 + (keyboardVal - 70) * transparency, 65 + (keyboardVal - 65) * transparency);
  }
 
- function drawKey(keyCode, deltaTime, persistTime) {
+ function drawNote(keyCode, deltaTime, persistTime) {
      var thisKeyHeight = persistTime / fallingTime * (height - keyHeight);
      var thisKeyY = (height - keyHeight) / fallingTime * (fallingTime - deltaTime) - thisKeyHeight;
 
-     //ctx.fillStyle = 'rgba(' + context.options.colors[relativePitch[keyCode]].join(',') + ',1)';
-     ctx.fillStyle = giveHSLColor(context.options.colors[relativePitch[keyCode]]);
-     ctx.strokeStyle = 'black';
+     ctx.fillStyle = noteColor(keyCode, 0);
+     ctx.strokeStyle = 'rgb(48, 48, 48)';
 
      var heightCalc = ((thisKeyY + thisKeyHeight > height - keyHeight) ? height - keyHeight - thisKeyY : thisKeyHeight);
 
@@ -376,26 +305,32 @@
      if (thisKeyY < 0)
          heightCalc = heightCalc + thisKeyY;
 
-     roundedRect(keyInfo[keyCode].x, max(thisKeyY, 0), isBlack[keyCode] ? blackKeyWidth : keyWidth, heightCalc, 3);
+     var noteWidth = isBlack[keyCode] ? blackKeyWidth * blackKeyNoteWidth : keyWidth * whiteKeyNoteWidth;
+     roundedRect((keyRects[keyCode].x1 + keyRects[keyCode].x2 - noteWidth) / 2, max(thisKeyY, 0), noteWidth, heightCalc, 3);
  }
 
- var filledKey = [];
+ var keyboardLastOn = [];
+ for (var i = 0; i < 88; ++i) keyboardLastOn[i] = -999999;
 
- function fillKey(keyCode) {
-     var key = keyInfo[keyCode];
-     var color = giveHSLColor(context.options.colors[relativePitch[keyCode]]);
-
-     filledKey.push(keyCode);
-     fillPathWithColorAndStroke(key.path, color, 'rgba(100,100,100,1)');
+ function fillKey(keyCode, time) {
+     fillRectWithColor(keyRects[keyCode],
+         noteColor(keyCode, (time - keyboardLastOn[keyCode]) / releaseTime));
  }
 
- function clearKey(keyCode) {
-     var key = keyInfo[keyCode];
-
-     fillPathWithColorAndStroke(key.path, isBlack[keyCode] ? 'black' : 'white', 'rgba(100,100,100,1)');
+ function repaintKeys(time) {
+     for (var i = 0; i < 88; ++i) if (!isBlack[i]) {
+         fillKey(i, time);
+         ctx.beginPath();
+         ctx.moveTo(keyRects[i].x1, keyRects[i].y1);
+         ctx.strokeWeight = 1;
+         ctx.strokeStyle = 'rgba(192, 192, 192, 1)';
+         ctx.lineTo(keyRects[i].x1, keyRects[i].y2);
+         ctx.stroke();
+     }
+     for (var i = 0; i < 88; ++i) if (isBlack[i]) fillKey(i, time);
  }
 
- function internalDraw(time) {
+ function refreshNotes(time) {
      if (time < 0) return;
 
      time *= 1000;
@@ -419,16 +354,14 @@
      }
      right = mid;
 
-     for (i in filledKey) clearKey(filledKey[i]);
-     filledKey = [];
-
+     var keynum;
      for (var i = left; i <= right; ++ i) {
-         drawKey(this.pairs[i].first.pitch - 21, this.pairs[i].first.time - time, this.pairs[i].second.time - this.pairs[i].first.time);
-         if (this.pairs[i].first.time <= time && time <= this.pairs[i].second.time) fillKey(this.pairs[i].first.pitch - 21);
+         keynum = this.pairs[i].first.pitch - 21;
+         drawNote(keynum, this.pairs[i].first.time - time, this.pairs[i].second.time - this.pairs[i].first.time);
+         if (this.pairs[i].first.time <= time && time <= this.pairs[i].second.time)
+             keyboardLastOn[keynum] = time;
      }
-
-     //draw this.pairs[left, right]
-
+     repaintKeys(time);
  }
 
  Synesthesia.version = '<%= version %>';
