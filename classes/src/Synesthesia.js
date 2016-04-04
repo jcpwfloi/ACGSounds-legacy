@@ -46,6 +46,8 @@
  var playing = false;
  var drawer = null;
  var context = null;
+ 
+ var compass = null;
 
  function Synesthesia(opts) {
      EventListener.call(this);
@@ -190,6 +192,8 @@
      }, this);
      pair.sort(function (a, b) { return a.first.time - b.first.time; });
      this.pairs = pair;
+     compass = new Compass({ threshold: fallingTime * 2 });
+     compass.load(pair.map(function (e, idx) { return { start: e.first.time, end: e.second.time, index: idx }; }));
  }
 
  function roundedRect(cornerX, cornerY, width, height, cornerRadius) {
@@ -338,29 +342,15 @@
 
      clearBackground();
      drawBackground();
-     var left, right;
-     var l = 0, r = this.pairs.length, mid;
-     while (l + 1 < r) {
-         mid = l + r >> 1;
-         if (this.pairs[mid].first.time < time - fallingTime) l = mid;
-         else r = mid;
-     }
-     left = l;
-     l = 0, r = this.pairs.length;
-     while (l + 1 < r) {
-         mid = l + r >> 1;
-         if (this.pairs[mid].first.time < time + 2 * fallingTime) l = mid;
-         else r = mid;
-     }
-     right = mid;
 
-     var keynum;
-     for (var i = left; i <= right; ++ i) {
-         keynum = this.pairs[i].first.pitch - 21;
-         drawNote(keynum, this.pairs[i].first.time - time, this.pairs[i].second.time - this.pairs[i].first.time);
-         if (this.pairs[i].first.time <= time && time <= this.pairs[i].second.time)
-             keyboardLastOn[keynum] = time;
-     }
+     compass.eachDo(
+        time, time + fallingTime, function (e) {
+            var i = e.index;
+            var keynum = this.pairs[i].first.pitch - 21;
+            drawNote(keynum, this.pairs[i].first.time - time, this.pairs[i].second.time - this.pairs[i].first.time);
+            if (this.pairs[i].first.time <= time) keyboardLastOn[keynum] = time;
+        }, this
+     );
      repaintKeys(time);
  }
 
