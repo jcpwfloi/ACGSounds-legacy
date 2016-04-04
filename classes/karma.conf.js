@@ -21,7 +21,8 @@ module.exports = function(config) {
       'dist/runtime.js',
       'test/generalTest.js',
       'test/EventListenerTest.js',
-      'test/paginationTest.js'
+      'test/paginationTest.js',
+      'test/CompassTest.js'
     ],
 
 

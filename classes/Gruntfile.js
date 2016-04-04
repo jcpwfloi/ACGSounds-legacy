@@ -12,6 +12,7 @@ module.exports = function(grunt) {
                         'src/midi.js',
                         'src/midievents.js',
                         'src/midifile.js',
+                        'src/Compass.js',
                         'src/Synesthesia.js'
                     ]
                 }
