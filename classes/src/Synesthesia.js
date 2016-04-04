@@ -1,13 +1,13 @@
 (function(window, document, undefined) {'use strict';
  /**
-  * PoBoo is a part of ACGSounds Runtime Library dedicated to
+  * Synesthesia is a part of ACGSounds Runtime Library dedicated to
   * render waterfall effect of MIDI.
   *
   * Author:
   *     @arcGravitus
   *
   * API Introduction:
-  *     @class PoBoo
+  *     @class Synesthesia
   *         @inherit EventListener
   *         @constructor(opts) opts alias options
   *
@@ -45,7 +45,7 @@
  var drawer = null;
  var context = null;
 
- function PoBoo(opts) {
+ function Synesthesia(opts) {
      EventListener.call(this);
 
      this.options = {};
@@ -88,7 +88,7 @@
      drawBackground();
  }
 
- PoBoo.prototype = {
+ Synesthesia.prototype = {
      load: function(midi) {
          if (midi instanceof ArrayBuffer) {
              this.midiFile = new MIDIFile(midi);
@@ -132,7 +132,7 @@
      }
  };
 
- extend(PoBoo.prototype, EventListener.prototype);
+ extend(Synesthesia.prototype, EventListener.prototype);
 
  function read_array_buffer_from_url(url, callback, context) {
      var req = new XMLHttpRequest();
@@ -427,12 +427,12 @@
 
  }
 
- PoBoo.version = '<%= version %>';
+ Synesthesia.version = '<%= version %>';
 
- window.PoBoo = PoBoo;
+ window.Synesthesia = Synesthesia;
 
  if (typeof define === "function" && defined.amd) {
-     define("PoBoo", [], function () { return PoBoo; });
+     define("Synesthesia", [], function () { return Synesthesia; });
  }
 
 })(window, document);

@@ -12,7 +12,7 @@ module.exports = function(grunt) {
                         'src/midi.js',
                         'src/midievents.js',
                         'src/midifile.js',
-                        'src/PoBoo.js'
+                        'src/Synesthesia.js'
                     ]
                 }
             }
