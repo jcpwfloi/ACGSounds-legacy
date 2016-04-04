@@ -127,7 +127,7 @@
      },
      seek: function(time) {
          MIDIjs.seek(time);
-         if (!playing) resume();
+         if (!playing) this.resume();
      },
      draw: function() {
          ctx.globalCompositeOperation = "source-over";
