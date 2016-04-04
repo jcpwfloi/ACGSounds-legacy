@@ -10,13 +10,22 @@ html
             a(href="javascript:keyboard.play()", style="color:white;text-decoration:none;display:block") Play
         div(style='position:fixed;top:40px;right:35px'): span(style='color:white')#fps
         .container(style='position:fixed;top:10px;left:100px;width:500px')
-            .progress
-                b.progress__bar.progress--active#progress
+            .progress.progress--active
+                b.progress__bar#progress
                     span.progress__text
-                        em#progressText
+                        em
+                            span#currentTime
+                            |  / 
+                            span#totalTime
     script(src='//cdn.bootcss.com/jquery/2.1.2/jquery.min.js')
     script(src='/javascripts/dist/runtime.min.js')
     script.
+        var parseTime = function (time) {
+            var d = new Date('2000/1/1 00:00:00');
+            d = new Date(d.getTime() + time * 1000);
+            return d.Format('hh:mm:ss');
+        }
+
         var keyboard = new Synesthesia({});
         var length;
         var $progress = $('.progress'), $bar = $('.progress__bar'), $text = $('.progress__text'), percent = 0, update, resetColors, speed = 200, orange = 30, yellow = 55, green = 85, timer;
@@ -25,7 +34,7 @@ html
             $progress.removeClass('progress--complete');
         };
         update = function () {
-            $text.find('em').text(percent + '%');
+            //$text.find('em').text(percent + '%');
             if (percent >= 100) {
                 percent = 100;
                 $progress.addClass('progress--complete');
@@ -47,10 +56,12 @@ html
         });
         keyboard.on('animate', function(e, time) {
             $('#fps').html(e + ' fps');
+            $('#currentTime').html(parseTime(time));
             percent = parseFloat((time / length * 100).toFixed(2));
             update();
         });
         keyboard.on('play', function() {
             length = MIDIjs.length;
+            $('#totalTime').html(parseTime(length));
         });
         keyboard.load('https://o4fd7hr6m.qnssl.com/56e40a1a29ebb2762739916b.mid');
