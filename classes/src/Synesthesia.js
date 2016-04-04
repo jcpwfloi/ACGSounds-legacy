@@ -125,8 +125,12 @@
          window.requestAnimationFrame(drawer);
          MIDIjs.resume();
      },
+     seek: function(time) {
+         MIDIjs.seek(time);
+         if (!playing) resume();
+     },
      draw: function() {
-         ctx.globalCompositeOperation="source-over";
+         ctx.globalCompositeOperation = "source-over";
          internalDraw.call(context, MIDIjs.getTime());
          if (playing) window.requestAnimationFrame(drawer);
      }
