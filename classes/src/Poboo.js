@@ -39,6 +39,7 @@
  var isBlack = [], relativePitch = [];
 
  var fallingTime = 2000;
+ var attackTimeAdjustment = 100;
 
  var playing = false;
  var drawer = null;
@@ -394,6 +395,7 @@
      if (time < 0) return;
 
      time *= 1000;
+     time -= attackTimeAdjustment;
 
      clearBackground();
      drawBackground();
