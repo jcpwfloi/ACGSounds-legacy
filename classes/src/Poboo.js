@@ -151,6 +151,7 @@
      var events = file.getEvents();
      window.eee = events;
      var ret = [];
+     var firstNoteDown = -1;
      for (var i = 0; i < events.length; ++i) {
          if (events[i].type === MIDIEvents.EVENT_MIDI) {
              if (events[i].subtype === MIDIEvents.EVENT_MIDI_NOTE_OFF) {
@@ -167,9 +168,11 @@
                      pitch: events[i].param1,
                      vel: events[i].param2
                  });
+                 if (firstNoteDown === -1) firstNoteDown = events[i].playTime;
              }
          }
      }
+     for (var i = 0; i < ret.length; ++i) ret[i].time -= firstNoteDown;
      this.event = events;
      this.analyzedEvents = ret;
      this.fire('analyze', ret);
