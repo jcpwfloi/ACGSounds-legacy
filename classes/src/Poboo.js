@@ -36,7 +36,7 @@
  var isBlackGroup = [false, true, false, true, false, false, true, false, true, false, true, false];
 
  var keyInfo = [];
- var isBlack = [];
+ var isBlack = [], relativePitch = [];
 
  var fallingTime = 2000;
 
@@ -51,29 +51,29 @@
      this.defaults = {
          canvasObject: 'canvas',
          colors: [
-             [248, 82, 28], //C
-             [172, 68, 34], //C#
-             [135, 76, 32], //D
-             [79, 59, 36], //D#
-             [60, 90, 60], //E
-             [49, 90, 60], //F
-             [29, 94, 52], //F#
-             [360, 96, 51], //G
-             [1, 89, 33], //G#
-             [325, 84, 46], //A
-             [273, 80, 27], //A#
-             [302, 88, 26] //B
+             [ 360, 96, 51 ],
+             [ 14, 91, 51 ],
+             [ 29, 94, 52 ],
+             [ 49, 90, 60 ],
+             [ 60, 90, 60 ],
+             [ 135, 76, 32 ],
+             [ 172, 68, 34 ],
+             [ 248, 82, 28 ],
+             [ 273, 80, 27 ],
+             [ 302, 88, 26 ],
+             [ 313, 78, 37 ],
+             [ 325, 84, 46 ]
          ]
      };
 
      extend(this.options, this.defaults, opts);
 
      //start Internal EventListener
-     
-    this.on('load', function(err) {
-        if (this.midiFile) this.analyze();
-        else throw new Error('Error loading MIDIFile');
-    });
+
+     this.on('load', function(err) {
+         if (this.midiFile) this.analyze();
+         else throw new Error('Error loading MIDIFile');
+     });
 
      //end Internal EventListener
 
@@ -144,7 +144,7 @@
      };
      req.send(null);
  }
- 
+
  function read_midi_events() {
      var file = this.midiFile;
      var events = file.getEvents();
@@ -212,8 +212,8 @@
          ctx.arcTo(cornerX, cornerY, cornerX + cornerRadius, cornerY, cornerRadius);
      else
          ctx.arcTo(cornerX, cornerY, cornerX - cornerRadius, cornerY, cornerRadius);
-     ctx.stroke();
      ctx.fill();
+     ctx.stroke();
  }
 
  function calculateKeySize() {
@@ -226,11 +226,15 @@
  }
 
  function calculateKeyInfo() {
-     for (var i = 0; i < 88; ++ i) isBlack.push(false);
+     for (var i = 0; i < 88; ++ i) isBlack.push(false), relativePitch.push(0);
      isBlack[1] = true;
+     relativePitch[0] = 9;
+     relativePitch[1] = 10;
+     relativePitch[2] = 11;
      for (var i = 0; i < 7; ++ i)
      for (var j = 0; j < 12; ++ j) {
          isBlack[3 + i * 12 + j] = isBlackGroup[j];
+         relativePitch[3 + i * 12 + j] = j;
      }
      isBlack.push(false);
      var offsetWidth = 0;
@@ -263,7 +267,7 @@
      ctx.strokeStyle = 'rgba(100,100,100,1)';
 
      for (var i = 0; i < 52; ++ i)
-         ctx.strokeRect(i * keyWidth, height - keyHeight, keyWidth, keyHeight);
+     ctx.strokeRect(i * keyWidth, height - keyHeight, keyWidth, keyHeight);
 
      ctx.fillRect(keyWidth - blackKeyWidth / 2, height - keyHeight, blackKeyWidth, blackKeyHeight);
 
@@ -297,24 +301,32 @@
      ctx.clearRect(0, 0, width, height - keyHeight);
  }
 
+ function max(a, b) { return a > b ? a : b; }
+
+ function giveHSLColor(colorArray) {
+     return 'hsla({0},{1}%,{2}%,1)'.format(colorArray[0], colorArray[1], colorArray[2]);
+ }
+
  function drawKey(keyCode, deltaTime, persistTime) {
      var thisKeyHeight = persistTime / fallingTime * (height - keyHeight);
      var thisKeyY = (height - keyHeight) / fallingTime * (fallingTime - deltaTime);
 
-     ctx.fillStyle = isBlack[keyCode] ? '#4db6ac' : '#b2dfdb';
+     //ctx.fillStyle = 'rgba(' + context.options.colors[relativePitch[keyCode]].join(',') + ',1)';
+     ctx.fillStyle = giveHSLColor(context.options.colors[relativePitch[keyCode]]);
      ctx.strokeStyle = 'black';
 
-     if (thisKeyY > height - keyHeight) return;
+     var heightCalc = ((thisKeyY + thisKeyHeight > height - keyHeight) ? height - keyHeight - thisKeyY : thisKeyHeight);
 
-     roundedRect(keyInfo[keyCode].x, thisKeyY, isBlack[keyCode] ? blackKeyWidth : keyWidth, ((thisKeyY + thisKeyHeight > height - keyHeight) ? height - keyHeight - thisKeyY : thisKeyHeight), 3);
+     if (thisKeyY > height - keyHeight) return;
+     if (thisKeyY < 0 && thisKeyY + heightCalc < 0) return;
+
+     if (thisKeyY < 0)
+         heightCalc = heightCalc + thisKeyY;
+
+     roundedRect(keyInfo[keyCode].x, max(thisKeyY, 0), isBlack[keyCode] ? blackKeyWidth : keyWidth, heightCalc, 3);
  }
 
- PoBoo.version = '<%= version %>';
-
- window.PoBoo = PoBoo;
-
- if (typeof define === "function" && defined.amd) {
-     define("PoBoo", [], function () { return PoBoo; });
+ function fillKey() {
  }
 
  function internalDraw(time) {
@@ -326,10 +338,9 @@
      drawBackground();
      var left, right;
      var l = 0, r = this.pairs.length, mid;
-     console.log(time - fallingTime);
      while (l + 1 < r) {
          mid = l + r >> 1;
-         if (this.pairs[mid].first.time < time - fallingTime) l = mid;
+         if (this.pairs[mid].first.time < time - 2 * fallingTime) l = mid;
          else r = mid;
      }
      left = l;
@@ -346,7 +357,15 @@
      }
 
      //draw this.pairs[left, right]
-     
+
+ }
+
+ PoBoo.version = '<%= version %>';
+
+ window.PoBoo = PoBoo;
+
+ if (typeof define === "function" && defined.amd) {
+     define("PoBoo", [], function () { return PoBoo; });
  }
 
 })(window, document);
