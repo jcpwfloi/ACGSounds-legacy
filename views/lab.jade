@@ -1,0 +1,16 @@
+doctype html
+html
+    head
+    body
+        canvas#canvas
+        div#button(style="position:fixed;top:10px;width:70px;left:10px;background-color:indigo;text-align: center;color:white;padding:5px 0 5px 0;border-radius:5px;user-select:none;-webkit-user-select:none;-moz-user-select:none")
+            a(href="https://acgsounds.com/", style="color:white;text-decoration:none;display:block") Return
+        div#button(style="position:fixed;top:10px;width:70px;right:10px;background-color:indigo;text-align: center;color:white;padding:5px 0 5px 0;border-radius:5px;user-select:none;-webkit-user-select:none;-moz-user-select:none")
+            a(href="javascript:keyboard.play()", style="color:white;text-decoration:none;display:block") Play
+    script(src='//cdn.bootcss.com/jquery/2.1.2/jquery.min.js')
+    script(src='/javascripts/dist/runtime.min.js')
+    script.
+        var keyboard = new PoBoo({});
+        keyboard.on('load', function() {
+        });
+        keyboard.load('https://o4fd7hr6m.qnssl.com/56e40a1a29ebb2762739916b.mid');

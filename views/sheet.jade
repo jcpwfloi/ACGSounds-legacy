@@ -18,6 +18,7 @@ block content
         }
     header
         +normalNav()
+    +paginationTemplates()
     .row
         .col.s4
             .row
@@ -58,14 +59,7 @@ block content
                             .indeterminate
                         .row.center
                             | Loading...
-                    ul.pagination(id='pag')
-                        li.waves-effect(id='pag-prev')
-                            a(href='javascript:pag_prev();')
-                                i.material-icons chevron_left
-                        span(id='pag-numbers')
-                        li.waves-effect(id='pag-next')
-                            a(href='javascript:pag_next();')
-                                i.material-icons chevron_right
+                    ul.pagination(id='pagination-container')
                     if user
                         div.input-field
                             textarea.materialize-textarea(id='text-comment')
@@ -87,13 +81,14 @@ block content
                 img.circle(src='', alt='')
                 a.title(href='/user/profile/{0}') {0}
                 p {1}
-                p.right-align.grey-text {4}
-                .secondary-content.grey-text(style='margin-right: 90px; margin-top: -10px') {2}#
-                .secondary-content.grey-text(style='margin-right: 40px; margin-top: -10px', id='comment-likes-{2}') {3}
+                p.right-align.grey-text {5}
+                .secondary-content.grey-text(style='margin-right: 90px; margin-top: -10px') {3}#
+                .secondary-content.grey-text(style='margin-right: 40px; margin-top: -10px', id='comment-likes-{2}') {4}
                 a.secondary-content.teal-text.text-lighten-4.thumb-up-btn(id='comment-thumbup-{2}', href='javascript:likeComment({2});', style='margin-top: -10px')
                     i.material-icons.thumb-up-icon thumb_up
 
 block script
+    script(src='/javascripts/dist/runtime.min.js')
     script(src='/javascripts/comment.js')
     script(src='/javascripts/external/midi.js')
 

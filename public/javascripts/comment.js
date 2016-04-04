@@ -1,54 +1,41 @@
-(function(window, document, undefined) {'use strict';
+$(function() {
     var comments = [];
-    var addComment = function (cmt, floor) {
-        $('#commentBox').append($('.template-1').html().format(
-            cmt.author.username, cmt.text, floor, cmt.likeCount, (new Date(cmt.createdAt)).Format('yyyy-MM-dd hh:mm:ss')
-        ));
-        $("#commentBox li:last img").attr('src' , '//cn.gravatar.com/avatar/' + $.md5(cmt.author.email));
-        if (cmt.isLiked) {
-            $('#comment-thumbup-' + floor).removeClass('text-lighten-4');
-        }
-    };
-    var pag_size = 5;
-    var pag_cur = undefined;
-    window.pag_go = function (page) {
-        $('#commentBox').html('');
-        if (pag_cur) $('#pag-' + pag_cur).removeClass('active');
-        $('#pag-' + page).addClass('active');
-        pag_cur = page;
-        --page;
-        for (var i = comments.length - page * pag_size - 1; i > Math.max(-1, comments.length - page * pag_size - 1 - pag_size); --i) {
-            addComment(comments[i], i + 1);
-        }
-        if (page === 0) $('#pag-prev').addClass('disabled');
-        else $('#pag-prev').removeClass('disabled');
-        if (page === Math.ceil(comments.length / pag_size) - 1) $('#pag-next').addClass('disabled');
-        else $('#pag-next').removeClass('disabled');
-    };
-    window.pag_prev = function () { if (pag_cur !== 1) window.pag_go(pag_cur - 1); };
-    window.pag_next = function () { if (pag_cur !== Math.ceil(comments.length / pag_size)) window.pag_go(pag_cur + 1); };
+    var pagination = new Pagination();
+    window.pagination = pagination;
+
     var loadComments = function() {
-        var data = {
+        pagination.options.postParams = {
             sheet_id: window.sheet_id,
             _csrf: $('meta[name=csrf-token]').attr('content')
         };
-        $.post('/api/comment/list', data, function(r) {
-            comments = r;
-            // Create pagination
-            $('#pag-numbers').html('');
-            for (var i = 0; i < Math.ceil(r.length / pag_size); ++i) {
-                var li = $('<li class="waves-effect" id="pag-{0}"><a href="javascript:;">{0}</a></li>'.format(i + 1));
-                li.click((function (_i) { return function () { window.pag_go(_i); }; })(i + 1));
-                $('#pag-numbers').append(li);
-            }
-            pag_cur = undefined;
-            window.pag_go(1);
-        }, 'json').error(function (err) {
+        pagination.load('/api/comment/list', function (err) { console.log(err); });
+        pagination.on('refresh', function (e) {
+            // Pagination buttons
+            var html = '';
+            each(e.pages, function (p) {
+                if (p.type === 'page') html += $('#template-pag-button' + (p.active ? '-active' : '')).html().replace('display: none', '').format(p.page, p.page + 1);
+                else if (p.type === 'ellipsis') html += $('#template-pag-ellipsis').html().replace('display: none', '');
+                else if (p.type === 'prev') html += $('#template-pag-prev' + (p.disabled ? '-disabled' : '')).html().replace('display: none', '');
+                else if (p.type === 'next') html += $('#template-pag-next' + (p.disabled ? '-disabled' : '')).html().replace('display: none', '');
+            });
+            $('#pagination-container').html(html);
+            // Contents
+            $('#commentBox').html('');
+            each(e.list, function (c) {
+                $('#commentBox').append($('.template-1').html().format(
+                    c.content.author.username, c.content.text, c.index + 1, pagination.getItemCount() - c.index,
+                    c.content.likeCount, (new Date(c.content.createdAt)).Format('yyyy-MM-dd hh:mm:ss')
+                ));
+                $("#commentBox li:last img").attr('src' , 'http://cn.gravatar.com/avatar/' + $.md5(c.content.author.email));
+                if (c.content.isLiked) {
+                    $('#comment-thumbup-' + (c.index + 1)).removeClass('text-lighten-4');
+                }
+            });
         });
     };
 
     window.likeComment = function (floor) {
-        var cmt = comments[floor - 1];
+        var cmt = pagination.contents[floor - 1];
         var likesDisp = $('#comment-likes-' + floor);
         var thumbBtn = $('#comment-thumbup-' + floor);
         if (thumbBtn.hasClass('disabled')) return;
@@ -71,9 +58,11 @@
                     if (r.operation === 'like') {
                         likesDisp.html(Number(likesDisp.html()) + 1);
                         thumbBtn.removeClass('disabled').removeClass('text-lighten-4').children().first().removeClass('thumb-popping');
+                        cmt.isLiked = true; ++cmt.likeCount;
                     } else {
                         likesDisp.html(Number(likesDisp.html()) - 1);
                         thumbBtn.removeClass('disabled').addClass('text-lighten-4').children().first().removeClass('thumb-popping');
+                        cmt.isLiked = false; --cmt.likeCount;
                 }}, 400);
             }
         });
@@ -129,5 +118,5 @@
         loadCommentBox();
     });
 
-})(window, document);
+});
 

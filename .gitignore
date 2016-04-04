@@ -17,6 +17,8 @@
 # to fit your needs!
 ################################################
 
+dist/
+*.orig
 
 
 
@@ -119,3 +121,4 @@ npm-debug.log
 nbproject
 .idea
 .node_history
+.vscode

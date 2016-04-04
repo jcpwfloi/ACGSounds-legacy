@@ -1,0 +1,27 @@
+mixin paginationTemplates()
+    div#template-pag-prev(style='display: none')
+        li.waves-effect(style='display: none', onclick='window.pagination.prev()')
+            a(href='javascript:;')
+                i.material-icons chevron_left
+    div#template-pag-prev-disabled(style='display: none')
+        li.disabled.waves-effect(onclick='window.pagination.prev()')
+            a(href='javascript:;')
+                i.material-icons chevron_left
+    div#template-pag-next(style='display: none')
+        li.waves-effect(style='display: none', onclick='window.pagination.next()')
+            a(href='javascript:;')
+                i.material-icons chevron_right
+    div#template-pag-next-disabled(style='display: none')
+        li.disabled.waves-effect(style='display: none', onclick='window.pagination.next()')
+            a(href='javascript:;')
+                i.material-icons chevron_right
+
+    div#template-pag-button(style='display: none')
+        li.waves-effect(onclick='window.pagination.go({0})')
+            a(href='javascript:;') {1}
+    div#template-pag-button-active(style='display: none')
+        li.active.waves-effect(onclick='window.pagination.go({0})')
+            a(href='javascript:;') {1}
+    div#template-pag-ellipsis(style='display: none')
+        li.waves-effect …
+
