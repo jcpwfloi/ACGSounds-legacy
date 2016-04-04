@@ -34,7 +34,6 @@ html
             $progress.removeClass('progress--complete');
         };
         update = function () {
-            //$text.find('em').text(percent + '%');
             if (percent >= 100) {
                 percent = 100;
                 $progress.addClass('progress--complete');
@@ -55,6 +54,7 @@ html
         $('.progress').click(function(e) {
             var clickPos = e.pageX;
             var time = (clickPos - $(this).offset().left) * MIDIjs.length / ($(this).width());
+            resetColors();
             keyboard.seek(time);
         });
         keyboard.on('load', function() {
