@@ -1,6 +1,7 @@
 doctype html
 html
     head
+        link(rel='stylesheet', href='/stylesheets/progress.css')
     body
         canvas#canvas
         div#button(style="position:fixed;top:10px;width:70px;left:10px;background-color:indigo;text-align: center;color:white;padding:5px 0 5px 0;border-radius:5px;user-select:none;-webkit-user-select:none;-moz-user-select:none")
@@ -8,13 +9,48 @@ html
         div#button(style="position:fixed;top:10px;width:70px;right:10px;background-color:indigo;text-align: center;color:white;padding:5px 0 5px 0;border-radius:5px;user-select:none;-webkit-user-select:none;-moz-user-select:none")
             a(href="javascript:keyboard.play()", style="color:white;text-decoration:none;display:block") Play
         div(style='position:fixed;top:40px;right:35px'): span(style='color:white')#fps
+        .container(style='position:fixed;top:10px;left:100px;width:500px')
+            .progress
+                b.progress__bar.progress--active#progress
+                    span.progress__text
+                        em#progressText
     script(src='//cdn.bootcss.com/jquery/2.1.2/jquery.min.js')
     script(src='/javascripts/dist/runtime.min.js')
     script.
         var keyboard = new Synesthesia({});
+        var length;
+        var $progress = $('.progress'), $bar = $('.progress__bar'), $text = $('.progress__text'), percent = 0, update, resetColors, speed = 200, orange = 30, yellow = 55, green = 85, timer;
+        resetColors = function () {
+            $bar.removeClass('progress__bar--green').removeClass('progress__bar--yellow').removeClass('progress__bar--orange').removeClass('progress__bar--blue');
+            $progress.removeClass('progress--complete');
+        };
+        update = function () {
+            $text.find('em').text(percent + '%');
+            if (percent >= 100) {
+                percent = 100;
+                $progress.addClass('progress--complete');
+                $bar.addClass('progress__bar--blue');
+                $text.find('em').text('Complete');
+            } else {
+                if (percent >= green) {
+                    $bar.addClass('progress__bar--green');
+                } else if (percent >= yellow) {
+                    $bar.addClass('progress__bar--yellow');
+                } else if (percent >= orange) {
+                    $bar.addClass('progress__bar--orange');
+                }
+                speed = Math.floor(Math.random() * 900);
+            }
+            $bar.css({ width: percent + '%' });
+        };
         keyboard.on('load', function() {
         });
-        keyboard.on('animate', function(e) {
+        keyboard.on('animate', function(e, time) {
             $('#fps').html(e + ' fps');
+            percent = parseFloat((time / length * 100).toFixed(2));
+            update();
+        });
+        keyboard.on('play', function() {
+            length = MIDIjs.length;
         });
         keyboard.load('https://o4fd7hr6m.qnssl.com/56e40a1a29ebb2762739916b.mid');

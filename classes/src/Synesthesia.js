@@ -104,6 +104,7 @@
      play: function() {
          drawer = this.draw;
          context = this;
+         this.fire('play');
          window.requestAnimationFrame(drawer);
          playing = true;
          MIDIjs.play();
@@ -355,7 +356,7 @@
  function refreshNotes(time) {
      if (time < 0) return;
 
-     this.fire('animate', FPS());
+     this.fire('animate', FPS(), time);
 
      time *= 1000;
      time -= attackTimeAdjustment;

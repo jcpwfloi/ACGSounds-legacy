@@ -38,7 +38,7 @@
          var preventDefault = false;
          if (this.events.hasOwnProperty(event)) {
              each(this.events[event], function(callback) {
-                 return preventDefault = callback.apply(this, args.slice(1)) === false || preventDefault;
+                 preventDefault = callback.apply(this, args.slice(1)) === false || preventDefault;
              }, this);
          }
          if (event != 'catchall') {
