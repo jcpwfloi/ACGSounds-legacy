@@ -7,10 +7,14 @@ html
             a(href="https://acgsounds.com/", style="color:white;text-decoration:none;display:block") Return
         div#button(style="position:fixed;top:10px;width:70px;right:10px;background-color:indigo;text-align: center;color:white;padding:5px 0 5px 0;border-radius:5px;user-select:none;-webkit-user-select:none;-moz-user-select:none")
             a(href="javascript:keyboard.play()", style="color:white;text-decoration:none;display:block") Play
+        div(style='position:fixed;top:40px;right:35px'): span(style='color:white')#fps
     script(src='//cdn.bootcss.com/jquery/2.1.2/jquery.min.js')
     script(src='/javascripts/dist/runtime.min.js')
     script.
         var keyboard = new Synesthesia({});
         keyboard.on('load', function() {
+        });
+        keyboard.on('animate', function(e) {
+            $('#fps').html(e + ' fps');
         });
         keyboard.load('https://o4fd7hr6m.qnssl.com/56e40a1a29ebb2762739916b.mid');
