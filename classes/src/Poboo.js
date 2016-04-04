@@ -125,6 +125,7 @@
          MIDIjs.resume();
      },
      draw: function() {
+         ctx.globalCompositeOperation="source-over";
          internalDraw.call(context, MIDIjs.getTime());
          if (playing) window.requestAnimationFrame(drawer);
      }
@@ -216,6 +217,25 @@
      ctx.stroke();
  }
 
+ function fillPathWithColorAndStroke(path, color, stroke) {
+     ctx.fillStyle = color;
+     ctx.strokeStyle = stroke;
+
+     ctx.beginPath();
+
+     ctx.moveTo(path[0][0], path[0][1]);
+
+     for (var pos in path) {
+         if (pos == path[0]) continue;
+         ctx.lineTo(pos[0], pos[1]);
+     }
+
+     ctx.closePath();
+
+     ctx.stroke();
+     ctx.fill();
+ }
+
  function calculateKeySize() {
      height = canvas.height = window.innerHeight;
      width = canvas.width = window.innerWidth;
@@ -240,14 +260,36 @@
      var offsetWidth = 0;
      for (var i = 0; i < 88; ++ i) {
          if (isBlack[i]) {
+             var left = offsetWidth - blackKeyWidth / 2;
+             var right = offsetWidth + blackKeyWidth / 2;
+             var top = height - keyHeight;
+             var bottom = height - keyHeight + blackKeyHeight;
+             var path = [[left, top], [right, top], [right, bottom], [left, bottom]];
              keyInfo.push({
                  isBlack: true,
-                 x: offsetWidth - blackKeyWidth / 2
+                 x: offsetWidth - blackKeyWidth / 2,
+                 path: path
              });
          } else {
+             var left = offsetWidth;
+             var right = offsetWidth + keyWidth;
+             var top = height - keyHeight;
+             var bottom = height;
+             var middleX, path;
+             var middleY = height - keyHeight + blackKeyHeight;
+             if (i !== 87 && isBlack[i + 1]) { //right black
+                 middleX = offsetWidth + keyWidth - blackKeyWidth / 2;
+                 path = [[left, top], [left, bottom], [right, bottom], [right, middleY], [middleX, middleY], [middleX, top]];
+             } else if (i !== 0 && isBlack[i - 1]) { // left black
+                 middleX = offsetWidth + blackKeyWidth / 2;
+                 path = [[middleX, top], [middleX, middleY], [left, middleY], [left, bottom], [right, bottom], [right, top]];
+             } else {
+                 path = [[left, top], [left, bottom], [right, bottom], [right, top]];
+             }
              keyInfo.push({
                  isBlack: false,
-                 x: offsetWidth
+                 x: offsetWidth,
+                 path: path
              });
              offsetWidth += keyWidth;
          }
@@ -270,8 +312,6 @@
      ctx.strokeRect(i * keyWidth, height - keyHeight, keyWidth, keyHeight);
 
      ctx.fillRect(keyWidth - blackKeyWidth / 2, height - keyHeight, blackKeyWidth, blackKeyHeight);
-
-     canvas.globalCompositeOperation = 'source-over';
 
      for (var i = 0; i < 7; ++ i)
      for (var j = 0; j < 7; ++ j)
@@ -326,7 +366,20 @@
      roundedRect(keyInfo[keyCode].x, max(thisKeyY, 0), isBlack[keyCode] ? blackKeyWidth : keyWidth, heightCalc, 3);
  }
 
- function fillKey() {
+ var filledKey = [];
+
+ function fillKey(keyCode) {
+     var key = keyInfo[keyCode];
+     var color = giveHSLColor(relativePitch[keyCode]);
+
+     filledKey.push(keyCode);
+     fillPathWithColorAndStroke(key.path, color, 'rgba(100,100,100,1)');
+ }
+
+ function clearKey(keyCode) {
+     var key = keyInfo[keyCode];
+
+     fillPathWithColorAndStroke(key.path, 'white', 'rgba(100,100,100,1)');
  }
 
  function internalDraw(time) {
@@ -352,8 +405,12 @@
      }
      right = mid;
 
+     for (i in filledKey) clearKey(filledKey[i]);
+     filledKey = [];
+
      for (var i = left; i <= right; ++ i) {
          drawKey(this.pairs[i].first.pitch - 21, this.pairs[i].first.time - time, this.pairs[i].second.time - this.pairs[i].first.time);
+         if (this.pairs[i].first.time <= time && time <= this.pairs[i].second.time) fillKey(this.pairs[i].first.pitch - 21);
      }
 
      //draw this.pairs[left, right]
