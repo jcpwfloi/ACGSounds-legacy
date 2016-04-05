@@ -38,7 +38,8 @@
              else this.babies.push(arr[i]);
          }
          this.babies.sort(function (a, b) { return a.start - b.start; });
-     }, eachDo: function (start, end, fun, context) {
+     },
+     eachDo: function (start, end, fun, context) {
          if (this.babies.length > 0) {
             var bStart, bEnd;
             var l = 0, r = this.babies.length, mid;
@@ -69,3 +70,4 @@
 
  window.Compass = Compass;
 })(window, document);
+

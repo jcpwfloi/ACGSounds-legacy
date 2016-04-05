@@ -104,22 +104,25 @@
      play: function() {
          drawer = this.draw;
          context = this;
-         this.fire('play');
          window.requestAnimationFrame(drawer);
          playing = true;
          MIDIjs.play();
+         this.fire('play');
      },
      pause: function() {
          playing = false;
          MIDIjs.pause();
+         this.fire('pause');
      },
      resume: function() {
          playing = true;
          window.requestAnimationFrame(drawer);
          MIDIjs.resume();
+         this.fire('resume');
      },
      seek: function(time) {
          MIDIjs.seek(time);
+         this.fire('seek', time);
          if (!playing) this.resume();
      },
      draw: function() {
@@ -286,8 +289,6 @@
      ctx.clearRect(0, 0, width, height - keyHeight);
  }
 
- function max(a, b) { return a > b ? a : b; }
-
  function noteColor(keyCode, transparency) {
      if (transparency > 1) transparency = 1;
      var keyboardVal = (isBlack[keyCode] ? 0 : 100);
@@ -354,7 +355,7 @@
  }());
 
  function refreshNotes(time) {
-     if (time < 0) return;
+     if (time < 0 || abs(time - MIDIjs.getTime()) > 1) return;
 
      this.fire('animate', FPS(), time);
 

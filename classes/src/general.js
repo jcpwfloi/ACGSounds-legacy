@@ -72,6 +72,8 @@
  window.extend = extend;
  window.arrayRemove = arrayRemove;
  window.General = General;
+ window.max = function(a, b) { return a > b ? a : b; }
+ window.abs = function(a) { return a > 0 ? a : -a; }
 
 })(window, document);
 
