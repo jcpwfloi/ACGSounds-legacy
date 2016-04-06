@@ -47,7 +47,7 @@ if (app.get('env') === 'production') {
         resave: false,
         saveUninitialized: true,
         store: new MemcachedStore({
-            hosts: ['0f70e13014304832.m.cnhzaliqshpub001.ocs.aliyuncs.com:11211']
+            hosts: ['memcache.jekciscd.scs.gz.baidubce.com:11211']
         })
     }));
 } else {
