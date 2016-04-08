@@ -8,12 +8,54 @@ Pagination is a class in ACGSounds Runtime Library. It uses AJAX requests to pul
 
 ```javascript
 var pagination = new Pagination({
-	remote: false
+	remote: false,
+    perPage: 5,     // number of items to display on one page
+    dispRange: 3    // number of adjacent pages (L / R) to show in the buttons
+                    // e.g. shows as [1] ... [4] [5] *6* [7] [8] ... [10] with dispRange = 2
 });
+pagination.load([ { foo: 1, bar: 2 }, { foo: 3, bar: 4, baz: 5 }, 'any type is okay', 2333 ]);
 
-pagination.load(data, function() {});
+////// OR //////
 
-pagination.page(1, function(err, doc, pageHTMLStr) {});
+var pagination = new Pagination({
+	remote: true
+});
+pagination.options.postParams = {
+    sheet_id: window.sheet_id,
+    _csrf: $('meta[name=csrf-token]').attr('content')
+};
+pagination.load('/api/comment/list', function (err) { console.log(err); });
+
+
+pagination.on('refresh', function (e) {
+    console.log(e.pages);
+    console.log(e.list);
+});
+```
+
+`e.pages` (_Array_) contains data for navigation.
+Each element describes a pagination button. Here are some examples.
+```javascript
+[
+    { type: 'prev', disabled: true },
+    { type: 'page', page: 0, active: true },    // page indices are 0-based
+    { type: 'page', page: 1, active: false },
+    { type: 'ellipsis' },
+    { type: 'page', page: 30, active: false },
+    { type: 'next', disabled: false }
+]
+```
+
+`e.list` (_Array_) contains the retrieved & sliced data.
+```javascript
+// On page #3 with perPage = 4
+[
+    // 0-based index
+    { index: 8, content: { foo: 'requested data' } },
+    { index: 9, content: 'baz' },
+    { index: 10, content: [ 233, 2333, 23333 ] },
+    { index: 11, content: { foo: 1, bar: 2, baz: 3 } }
+]
 ```
 
 ## Back-end API Implementation

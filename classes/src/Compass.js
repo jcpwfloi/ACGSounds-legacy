@@ -7,7 +7,14 @@
       * Dependencies:
       *     None
       *
-      * TODO: Description
+      * Initialized with a collection of ranges (closed intervals),
+      * Compass quickly finds which of the ranges intersect with another given range.
+      * The ranges are all inclusive (closed intervals).
+      *
+      * The implementation uses a threshold to divide the ranges into
+      * 'babies' (short ones) and 'giants' (long ones).
+      * For each query, a binary search is carried out on the sorted list of 'babies'
+      * while 'giants' are iterated through and checked.
       *
       * @param [opts]
       * @param {Number} [opts.threshold]
