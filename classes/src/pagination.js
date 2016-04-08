@@ -61,7 +61,7 @@
                 self.current = 0;
                 self.pageCount = Math.ceil(r.count / self.options.perPage);
              }
-             for (var i = 0; i < r.list.length; ++i) {
+             if (r.list instanceof Array) for (var i = 0; i < r.list.length; ++i) {
                  self.contents[i + self.current * self.options.perPage] = r.list[i];
              }
              if (typeof fn === "function") fn.call(callback_ctx, null);
@@ -75,6 +75,7 @@
       * @param {Function} [callback] Will be called with argument 'null' on success, or the error object on error
       */
      loadFromArray: function (arr, callback) {
+         arr = arr || [];
          this.contents = arr;
          this.itemCount = arr.length;
          this.pageCount = Math.ceil(arr.length / this.options.perPage);
@@ -94,8 +95,8 @@
             pages = pages.map((function (_cur) { return function (x) {
                 return x === -1 ? { type: 'ellipsis' } : { type: 'page', page: x, active: _cur === x }; };
             })(this.current));
-            pages.unshift({ type: 'prev', disabled: this.current === 0 });
-            pages.push({ type: 'next', disabled: this.current === this.pageCount - 1 });
+            pages.unshift({ type: 'prev', disabled: this.current <= 0 });
+            pages.push({ type: 'next', disabled: this.current >= this.pageCount - 1 });
 
             rg = getSinglePageRange(this);
             for (var i = rg.begin; i < rg.end; ++i) {
@@ -146,6 +147,7 @@
   * @return {Array} Things as [0, 1, 2, -1, 7, 8, 9, -1, 15, 16, 17], where -1 represents an ellipsis.
   */
  function getPagesRange(pag) {
+     if (pag.itemCount === 0) return [0];
      var ret = [];
      var l1 = 0, u1 = Math.min(pag.options.dispRange, pag.pageCount);
      var l2 = Math.max(pag.current - pag.options.dispRange, 0), u2 = Math.min(Math.min(pag.current + pag.options.dispRange + 1, pag.itemCount), pag.pageCount);

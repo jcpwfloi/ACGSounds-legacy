@@ -20,17 +20,21 @@ $(function() {
             });
             $('#pagination-container').html(html);
             // Contents
-            $('#commentBox').html('');
-            each(e.list, function (c) {
-                $('#commentBox').append($('.template-1').html().format(
-                    c.content.author.username, c.content.text, c.index + 1, pagination.getItemCount() - c.index,
-                    c.content.likeCount, (new Date(c.content.createdAt)).Format('yyyy-MM-dd hh:mm:ss')
-                ));
-                $("#commentBox li:last img").attr('src' , 'http://cn.gravatar.com/avatar/' + $.md5(c.content.author.email));
-                if (c.content.isLiked) {
-                    $('#comment-thumbup-' + (c.index + 1)).removeClass('text-lighten-4');
-                }
-            });
+            if (e.list.length === 0) {
+                $('#commentBox').html($('.template-nocomments').html());
+            } else {
+                $('#commentBox').html('');
+                each(e.list, function (c) {
+                    $('#commentBox').append($('.template-1').html().format(
+                        c.content.author.username, c.content.text, c.index + 1, pagination.getItemCount() - c.index,
+                        c.content.likeCount, (new Date(c.content.createdAt)).Format('yyyy-MM-dd hh:mm:ss')
+                    ));
+                    $("#commentBox li:last img").attr('src' , 'http://cn.gravatar.com/avatar/' + $.md5(c.content.author.email));
+                    if (c.content.isLiked) {
+                        $('#comment-thumbup-' + (c.index + 1)).removeClass('text-lighten-4');
+                    }
+                });
+            }
         });
     };
 
