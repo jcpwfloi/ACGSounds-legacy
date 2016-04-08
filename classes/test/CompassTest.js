@@ -121,6 +121,21 @@ describe('Compass', function () {
             cps = new Compass({ threshold: 70000 });
             cps.load(a3);
         });
+        it('3k elements, 3k queries', function () {
+            var cps, a3 = [], start, end;
+            for (var i = 0; i < 3333; ++i) {
+                start = Math.random() * 100000;
+                end = Math.random() * 100000;
+                a3.push({ start: Math.min(start, end), end: Math.max(start, end) });
+            }
+            cps = new Compass({ threshold: 70000 });
+            cps.load(a3);
+            for (var i = 0; i < 3000; ++i) {
+                start = Math.random() * 100000;
+                end = Math.random() * 100000;
+                cps.eachDo(Math.min(start, end), Math.max(start, end), function () { });
+            }
+        });
         it('5e4 elements, 10 queries', function () {
             var cps, a3 = [], start, end;
             for (var i = 0; i < 55555; ++i) {
