@@ -106,6 +106,7 @@
          context = this;
          window.requestAnimationFrame(drawer);
          playing = true;
+         resetKeyOnState.call(this);    // Reset all keys' state to "released"
          MIDIjs.play();
          this.fire('play');
      },
@@ -116,12 +117,14 @@
      },
      resume: function() {
          playing = true;
+         resetKeyOnState.call(this);
          window.requestAnimationFrame(drawer);
          MIDIjs.resume();
          this.fire('resume');
      },
      seek: function(time) {
          MIDIjs.seek(time);
+         resetKeyOnState.call(this);
          this.fire('seek', time);
          if (!playing) this.resume();
      },
@@ -317,6 +320,10 @@
 
  var keyboardLastOn = [];
  for (var i = 0; i < 88; ++i) keyboardLastOn[i] = -999999;
+
+ function resetKeyOnState() {
+     for (var i = 0; i < 88; ++i) keyboardLastOn[i] = -999999;
+ }
 
  function fillKey(keyCode, time) {
      fillRectWithColor(keyRects[keyCode],
