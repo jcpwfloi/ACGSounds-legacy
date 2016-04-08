@@ -91,5 +91,40 @@ describe('General', function() {
             });
         });
     });
+    describe('Performance', function() {
+        var arr = [];
+        for (var i = 0; i < 1e5; ++ i) arr.push(i);
+        it('Iterate 1e5 array using each', function() {
+            var count = 0;
+            each(arr, function(val) {
+                assert.equal(val, count ++);
+            }, this);
+        });
+        var arr2 = [], result = {};
+        for (var i = 0; i < 1e5; ++ i) {
+            var obj = {};
+            obj[i] = true;
+            result[i] = true;
+            arr2.push(obj);
+        }
+        it('Extend 1e5 objects', function() {
+            extend.apply(this, arr2);
+            assert.deepEqual(arr2[0], result);
+        });
+        it('arrayRemove an 1e5 array for 5e3 times', function() {
+            for (var i = 0; i < 5e3; ++ i) arrayRemove(arr, i);
+        });
+        it('Render a string for 1e5 times', function () {
+            for (var i = 0; i < 1e5; ++ i) {
+                var str = '{fffff{0}{{{}}}}}[{1}}{{}{}{}{}{';
+                str.format(0, 1);
+            }
+        });
+        it('Render `Date.now()` for 1e5 times', function() {
+            for (var i = 0; i < 1e5; ++ i) {
+                new Date().Format('yyMMddhhmmssSSS');
+            }
+        });
+    });
 });
 
