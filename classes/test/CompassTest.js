@@ -50,25 +50,25 @@ var testCorner = function (c) {
 
 describe('Compass', function () {
     describe('Basic functionalities', function () {
-        it('shoud work under normal circumstances', function () {
+        it('should work under normal circumstances', function () {
             var c = new Compass({ threshold: 500 });
             c.load(a1);
             testNormal(c);
         });
-        it('shoud handle corner cases correctly', function () {
+        it('should handle corner cases correctly', function () {
             var c = new Compass({ threshold: 500 });
             c.load(a1);
             testCorner(c);
         });
     });
     describe('Threshold adjustments', function () {
-        it('shoud work with default threshold (rather large)', function () {
+        it('should work with default threshold (rather large)', function () {
             var c = new Compass();
             c.load(a1);
             testNormal(c);
             testCorner(c);
         });
-        it('shoud work with different thresholds', function () {
+        it('should work with different thresholds', function () {
             var c = new Compass({ threshold: 1 });
             c.load(a1);
             testNormal(c);
