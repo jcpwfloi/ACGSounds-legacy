@@ -3,7 +3,7 @@ var assert = chai.assert;
 
 describe('General', function() {
     describe('#each()', function() {
-        it('shoud iterate array', function() {
+        it('should iterate array', function() {
             var arr = [1, 2, 3, 4];
             var temp = [];
             each(arr, function(val) {

@@ -47,7 +47,7 @@ if (app.get('env') === 'production') {
         resave: false,
         saveUninitialized: true,
         store: new MemcachedStore({
-            hosts: ['memcache.jekciscd.scs.gz.baidubce.com:11211'],
+            hosts: ['acgsounds.jekciscd.scs.gz.baidubce.com:11211'],
             prefix: 'acgsounds'
         })
     }));
