@@ -72,6 +72,18 @@ describe('Pagination', function () {
             chai.assert.deepEqual(desc(e),
                 ['prev', 'page0', 'page1', 'page2', 'page3', 'ellipsis', 'page15', 'page16', 'page17', 'page18', 'page19A', 'nextD']);
         });
+        it('should work with empty arrays', function () {
+            var p = new Pagination({ dispRange: 2, perPage: 3 });
+            p.on('refresh', function (_e) { e = _e; });
+            p.loadFromArray([]);
+            chai.assert.deepEqual(contents(e), []);
+            chai.assert.deepEqual(desc(e), ['prevD', 'page0A', 'nextD']);
+            p = new Pagination({ dispRange: 2, perPage: 3 });
+            p.on('refresh', function (_e) { e = _e; });
+            p.loadFromArray(null);
+            chai.assert.deepEqual(contents(e), []);
+            chai.assert.deepEqual(desc(e), ['prevD', 'page0A', 'nextD']);
+        });
     });
     describe('Miscellaneous', function () {
         it('should not allow `prev()` and `next()` to go out of bound', function () {
