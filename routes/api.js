@@ -96,12 +96,15 @@ router.post('/comment/list', function (req, res) {
         var start = parseInt(req.body.start);
         var count = parseInt(req.body.count);
         if (isNaN(start) || isNaN(count)) return res.json({ msg: 'Invalid start / count argument' });
+        sheet[0].comments = sheet[0].comments || [];
         if (start + count > sheet[0].comments.length) count = sheet[0].comments.length - start;
         //console.log(start, count, sheet[0].comments.length, sheet[0].comments.length - count - start);
         start = sheet[0].comments.length - count - start;
         var ret = [];
         var likeDataRetrieved = 0;
-        for (var i = start; i < start + count; ++i) {
+        if (count === 0) {
+            return res.json({ msg: 'Okay, empty', count: 0, list: [] });
+        } else for (var i = start; i < start + count; ++i) {
             var cmt = sheet[0].comments[i];
             if (!cmt) continue;
             ret[count - i + start - 1] = {
@@ -121,6 +124,7 @@ router.post('/comment/list', function (req, res) {
         }
         if (!req.session.user) return res.json({ msg: 'Okay', count: sheet[0].comments.length, list: ret });
     });
+    //res.json({ msg: 'Test', count: 0, list: [] });
 });
 
 /**

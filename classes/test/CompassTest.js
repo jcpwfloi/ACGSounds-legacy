@@ -111,74 +111,73 @@ describe('Compass', function () {
         });
     });
     describe('Performance', function () {
+        L = 1000000; // Total length (1000 s)
+        Q = 5000;    // Query range (5 s)
+        T = 5000;    // Most notes are under 5 seconds long
+        function randLen(x) {
+            // Assume 1 out of 50 notes is longer than 5 seconds
+            if (Math.random() < 0.98) return Math.random() * T;
+            else return Math.random() * L;
+        }
+        it('a reasonably long sheet (~20 min) in 10 secs (600 frames), enough to be < 30 ms', function () {
+            var cps, a3 = [], start, end;
+            for (var i = 0; i < 20000; ++i) {
+                start = Math.random() * L;
+                a3.push({ start: start, end: start + randLen() });
+            }
+            cps = new Compass({ threshold: T });
+            cps.load(a3);
+            for (var i = 0; i < 600; ++i) {
+                start = Math.random() * L;
+                cps.eachDo(start, start + Q, function () { });
+            }
+        });
         it('1e5 elements, initialization', function () {
             var cps, a3 = [], start, end;
-            for (var i = 0; i < 111111; ++i) {
-                start = Math.random() * 100000;
-                end = Math.random() * 100000;
-                a3.push({ start: Math.min(start, end), end: Math.max(start, end) });
+            for (var i = 0; i < 100000; ++i) {
+                start = Math.random() * L;
+                a3.push({ start: start, end: start + randLen() });
             }
-            cps = new Compass({ threshold: 70000 });
+            cps = new Compass({ threshold: T });
             cps.load(a3);
         });
-        it('3k elements, 3k queries', function () {
+        it('3000 elements, 1e5 queries', function () {
             var cps, a3 = [], start, end;
-            for (var i = 0; i < 3333; ++i) {
-                start = Math.random() * 100000;
-                end = Math.random() * 100000;
-                a3.push({ start: Math.min(start, end), end: Math.max(start, end) });
-            }
-            cps = new Compass({ threshold: 70000 });
-            cps.load(a3);
             for (var i = 0; i < 3000; ++i) {
-                start = Math.random() * 100000;
-                end = Math.random() * 100000;
-                cps.eachDo(Math.min(start, end), Math.max(start, end), function () { });
+                start = Math.random() * L;
+                a3.push({ start: start, end: start + randLen() });
+            }
+            cps = new Compass({ threshold: T });
+            cps.load(a3);
+            for (var i = 0; i < 100000; ++i) {
+                start = Math.random() * L;
+                cps.eachDo(start, start + Q, function () { });
             }
         });
-        it('5e4 elements, 10 queries', function () {
+        it('5e4 elements, 2000 queries', function () {
             var cps, a3 = [], start, end;
-            for (var i = 0; i < 55555; ++i) {
-                start = Math.random() * 100000;
-                end = Math.random() * 100000;
-                a3.push({ start: Math.min(start, end), end: Math.max(start, end) });
+            for (var i = 0; i < 50000; ++i) {
+                start = Math.random() * L;
+                a3.push({ start: start, end: start + randLen() });
             }
-            cps = new Compass({ threshold: 70000 });
+            cps = new Compass({ threshold: T });
             cps.load(a3);
-            for (var i = 0; i < 10; ++i) {
-                start = Math.random() * 100000;
-                end = Math.random() * 100000;
-                cps.eachDo(Math.min(start, end), Math.max(start, end), function () { });
+            for (var i = 0; i < 2000; ++i) {
+                start = Math.random() * L;
+                cps.eachDo(start, start + Q, function () { });
             }
         });
-        it('5e4 elements, 200 queries', function () {
+        it('5e4 elements with extra fields, 2000 queries', function () {
             var cps, a3 = [], start, end;
-            for (var i = 0; i < 55555; ++i) {
-                start = Math.random() * 100000;
-                end = Math.random() * 100000;
-                a3.push({ start: Math.min(start, end), end: Math.max(start, end) });
+            for (var i = 0; i < 50000; ++i) {
+                start = Math.random() * L;
+                a3.push({ start: start, end: start + randLen(), ex1: 1, ex2: 2, ex3: { ex4: 'xyzzy' } });
             }
-            cps = new Compass({ threshold: 70000 });
+            cps = new Compass({ threshold: T });
             cps.load(a3);
-            for (var i = 0; i < 200; ++i) {
-                start = Math.random() * 100000;
-                end = Math.random() * 100000;
-                cps.eachDo(Math.min(start, end), Math.max(start, end), function () { });
-            }
-        });
-        it('5e4 elements with extra fields, 200 queries', function () {
-            var cps, a3 = [], start, end;
-            for (var i = 0; i < 55555; ++i) {
-                start = Math.random() * 100000;
-                end = Math.random() * 100000;
-                a3.push({ start: Math.min(start, end), end: Math.max(start, end), ex1: 1, ex2: 2, ex3: { ex4: 'xyzzy' } });
-            }
-            cps = new Compass({ threshold: 70000 });
-            cps.load(a3);
-            for (var i = 0; i < 200; ++i) {
-                start = Math.random() * 100000;
-                end = Math.random() * 100000;
-                cps.eachDo(Math.min(start, end), Math.max(start, end), function () { });
+            for (var i = 0; i < 2000; ++i) {
+                start = Math.random() * L;
+                cps.eachDo(start, start + Q, function () { });
             }
         });
     });
