@@ -9,8 +9,6 @@ var csurf = require('csurf');
 var session = require('express-session');
 var MemcachedStore = require('connect-memcached')(session);
 
-require('mongoose').connect('mongodb://127.0.0.1/acgs_sheet');
-
 var routes = require('./routes/index');
 var search = require('./routes/search');
 var api = require('./routes/api');
@@ -20,6 +18,10 @@ var audit = require('./routes/audit');
 var lab = require('./routes/lab');
 
 var app = express();
+
+var mongooseAddr = app.get('env') == 'production' ? 'mongodb://172.16.7.177/acgs_sheet' : 'mongodb://127.0.0.1/acgs_sheet';
+
+require('mongoose').connect(mongooseAddr);
 
 i18n.configure({
     locales: ['zh', 'en'],
