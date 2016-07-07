@@ -7,7 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var csurf = require('csurf');
 var session = require('express-session');
-var MemcachedStore = require('connect-memcached')(session);
+var RedisStore = require('connect-redis')(session);
 
 var routes = require('./routes/index');
 var search = require('./routes/search');
@@ -48,9 +48,9 @@ if (app.get('env') === 'production') {
         secret: 'iughp093478yoEFIUH',
         resave: false,
         saveUninitialized: true,
-        store: new MemcachedStore({
-            hosts: ['memcache.ueuwwukm.scs.gz.baidubce.com:11211'],
-            prefix: 'acgsounds'
+        store: new RedisStore({
+          host: '172.16.7.177',
+          port: '6379'
         })
     }));
 } else {
