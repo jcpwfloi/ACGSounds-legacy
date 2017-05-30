@@ -144,6 +144,7 @@ router.post('/comment/create', function (req, res) {
     var comment = new Comment({
         author: req.session.user._id,
         text: req.body.text,
+        sheet: req.body.sheet_id,
         likeCount: 0
     });
     comment.save(function (err) {
