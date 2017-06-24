@@ -19,7 +19,7 @@ var lab = require('./routes/lab');
 
 var app = express();
 
-var mongooseAddr = app.get('env') == 'production' ? 'mongodb://172.16.7.177/acgs_sheet' : 'mongodb://127.0.0.1/acgs_sheet';
+var mongooseAddr = app.get('env') == 'production' ? 'mongodb://127.0.0.1/acgs_sheet' : 'mongodb://127.0.0.1/acgs_sheet';
 
 require('mongoose').connect(mongooseAddr);
 
@@ -49,7 +49,7 @@ if (app.get('env') === 'production') {
         resave: false,
         saveUninitialized: true,
         store: new RedisStore({
-          host: '172.16.7.177',
+          host: '127.0.0.1',
           port: '6379'
         })
     }));
